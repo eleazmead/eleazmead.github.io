@@ -8,7 +8,7 @@ on:
     branches:
       - main
 
-permissions:
+permissions: 
   contents: read
   pages: write
   id-token: write
@@ -71,6 +71,10 @@ jobs:
       - name: Build (production / main branch)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: npm run build:production
+
+      - name: Copy index.html to 404.html for SPA routing
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: cp dist/eleazmead/browser/index.html dist/eleazmead/browser/404.html
 
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
