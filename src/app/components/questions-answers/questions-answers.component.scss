@@ -1,0 +1,100 @@
+.questions-answers {
+  padding: 5.5rem 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(251, 247, 242, 0.8), rgba(255, 255, 255, 0.72)),
+    linear-gradient(145deg, rgba(217, 160, 168, 0.12), rgba(184, 149, 126, 0.12));
+
+  @media (min-width: 1024px) {
+    padding: 7.5rem 4rem;
+  }
+}
+
+.questions-answers__container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.questions-answers__intro {
+  max-width: 680px;
+  margin: 0 auto 3rem;
+  text-align: center;
+
+  .section-heading::after {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.questions-answers__body {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.85;
+}
+
+.questions-answers__list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.questions-answers__item {
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 52%, transparent);
+  background: rgba(255, 255, 255, 0.38);
+
+  &:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 52%, transparent);
+  }
+
+  &[open] .questions-answers__question::after {
+    transform: rotate(45deg);
+  }
+}
+
+.questions-answers__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 1.15rem 1.25rem;
+  color: var(--color-secondary);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.25;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: '+';
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: 1.45rem;
+    font-weight: 300;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+}
+
+.questions-answers__answer {
+  margin: 0;
+  padding: 0 1.25rem 1.35rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questions-answers__question::after {
+    transition: none;
+  }
+}

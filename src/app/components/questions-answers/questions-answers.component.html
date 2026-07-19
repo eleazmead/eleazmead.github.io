@@ -1,0 +1,21 @@
+<section class="questions-answers" id="questions-answers">
+  <div class="questions-answers__container">
+    <div class="questions-answers__intro">
+      <h2 class="section-heading" appFadeUp>{{ 'questionsAndAnswers.heading' | translate }}</h2>
+      <p class="questions-answers__body">{{ 'questionsAndAnswers.body' | translate }}</p>
+    </div>
+
+    <div class="questions-answers__list">
+      @for (itemId of itemIds; track itemId) {
+        <details class="questions-answers__item" appFadeUp>
+          <summary class="questions-answers__question">
+            {{ textKey(itemId, 'question') | translate }}
+          </summary>
+          <p class="questions-answers__answer">
+            {{ textKey(itemId, 'answer') | translate }}
+          </p>
+        </details>
+      }
+    </div>
+  </div>
+</section>

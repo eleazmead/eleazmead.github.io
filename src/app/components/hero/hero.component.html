@@ -1,25 +1,40 @@
 <section class="hero" id="hero">
+  <img class="hero__backdrop" [src]="config.assets.heroBackdropAvif" alt="" aria-hidden="true" />
+  <div class="hero__veil" aria-hidden="true"></div>
+
   <div class="hero__content">
     <div class="hero__names fade-in">
-      <span class="hero__name">{{ config.couple.name1 }}</span>
+      <span class="hero__name">{{ 'couple.name1' | translate }}</span>
       <span class="hero__ampersand">&amp;</span>
-      <span class="hero__name">{{ config.couple.name2 }}</span>
+      <span class="hero__name">{{ 'couple.name2' | translate }}</span>
     </div>
 
     <div class="hero__divider"></div>
 
-    <p class="hero__headline fade-in fade-in--d1">{{ 'hero.headline' | translate }}</p>
-    <p class="hero__subheadline fade-in fade-in--d2">{{ 'hero.subheadline' | translate }}</p>
-    <p class="hero__meta fade-in fade-in--d3">
-      {{ config.couple.weddingDate }}&ensp;&bull;&ensp;{{ config.couple.venue }}
+    <p class="hero__headline fade-in fade-in--d1">
+      @if (guestFirstName()) {
+        {{ headlineTemplate().replace('{0}', guestFirstName()!) }}
+      } @else if (guestNameLoading()) {
+        {{ loadingHeadline() }}
+      } @else {
+        {{ unpersonalizedHeadline() }}
+      }
     </p>
-    <a href="#rsvp" class="hero__cta fade-in fade-in--d4">{{ 'hero.cta' | translate }}</a>
+    <div class="hero__details fade-in fade-in--d2">
+      <p class="hero__date">{{ 'couple.weddingDate' | translate }}</p>
+      <div class="hero__events">
+        <p>
+          <span>{{ 'hero.ceremonyLabel' | translate }}</span>
+          {{ 'couple.ceremonyVenue' | translate }}
+        </p>
+        <p>
+          <span>{{ 'hero.receptionLabel' | translate }}</span>
+          {{ 'couple.receptionVenue' | translate }}
+        </p>
+      </div>
+    </div>
+    <a href="#rsvp" class="hero__cta fade-in fade-in--d4" (click)="scrollToRsvp($event)">
+      {{ 'hero.cta' | translate }}
+    </a>
   </div>
-
-  <svg class="hero__ornament" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <line x1="0" y1="10" x2="80" y2="10" stroke="currentColor" stroke-width="0.5"/>
-    <circle cx="100" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="0.5"/>
-    <circle cx="100" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="0.5"/>
-    <line x1="120" y1="10" x2="200" y2="10" stroke="currentColor" stroke-width="0.5"/>
-  </svg>
 </section>

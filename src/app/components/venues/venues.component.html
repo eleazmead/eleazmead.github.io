@@ -1,0 +1,40 @@
+<section class="venues" id="venues">
+  <div class="venues__container">
+    <div class="venues__intro">
+      <h2 class="section-heading" appFadeUp>{{ 'venues.heading' | translate }}</h2>
+      <p class="venues__body">{{ 'venues.body' | translate }}</p>
+    </div>
+
+    <div class="venues__grid">
+      @for (venueId of venueIds; track venueId; let i = $index) {
+        <article class="venues__item" appFadeUp>
+          <div class="venues__copy">
+            <h3 class="venues__name">{{ textKey(venueId, 'name') | translate }}</h3>
+            <p class="venues__description">{{ textKey(venueId, 'description') | translate }}</p>
+            <address class="venues__address">
+              {{ textKey(venueId, 'address') | translate }}
+            </address>
+          </div>
+
+          @if (shouldShowPhoto(venueId)) {
+            <img
+              class="venues__photo"
+              [src]="photoUrl(venueId)"
+              [alt]="('venues.photoAlt' | translate).replace('{0}', (i + 1).toString())"
+              loading="lazy"
+              (error)="markPhotoFailed(venueId)"
+            />
+          } @else {
+            <div
+              class="venues__photo-placeholder"
+              role="img"
+              [attr.aria-label]="('venues.photoAlt' | translate).replace('{0}', (i + 1).toString())"
+            >
+              <span>{{ 'venues.photoPlaceholder' | translate }}</span>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  </div>
+</section>

@@ -1,29 +1,29 @@
 <section class="rsvp" id="rsvp">
   <div class="rsvp__container">
     <h2 class="section-heading" appFadeUp>{{ 'rsvp.heading' | translate }}</h2>
-    <p class="rsvp__deadline">{{ 'rsvp.deadline' | translate }}</p>
+    @if (hasInvitationHash()) {
+      <div class="rsvp__note" appFadeUp>
+        <p class="rsvp__deadline">
+          {{ 'rsvp.deadline.prefix' | translate }}
+          <strong>{{ 'rsvp.deadline.date' | translate }}</strong>
+        </p>
+        <p class="rsvp__note-body">{{ 'rsvp.note' | translate }}</p>
+      </div>
+    }
 
     @switch (state()) {
-
       @case ('idle') {
+        <div class="rsvp__panel rsvp__panel--centered">
+          <div class="rsvp__spinner"></div>
+          <p class="rsvp__status-text">{{ 'rsvp.search.searching' | translate }}</p>
+        </div>
+      }
+
+      @case ('no_invitation_link') {
         <div class="rsvp__panel">
-          <label class="form-field__label" for="rsvp-search">
-            {{ 'rsvp.search.label' | translate }}
-          </label>
-          <div class="rsvp__search-row">
-            <input
-              id="rsvp-search"
-              class="rsvp__search-input"
-              type="text"
-              [placeholder]="'rsvp.search.placeholder' | translate"
-              [value]="searchQuery()"
-              (input)="searchQuery.set($any($event.target).value)"
-              (keydown.enter)="onSearch()"
-            />
-            <button class="rsvp__search-btn" type="button" (click)="onSearch()">
-              {{ 'rsvp.search.buttonLabel' | translate }}
-            </button>
-          </div>
+          <p class="rsvp__invite-only-msg">
+            {{ 'rsvp.inviteOnly.message' | translate }}
+          </p>
         </div>
       }
 
@@ -31,25 +31,14 @@
         <div class="rsvp__panel">
           <p class="rsvp__not-found-msg">
             {{ 'rsvp.search.notFound' | translate }}
-            <a class="rsvp__whatsapp-link" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">{{ 'rsvp.search.notFoundContact' | translate }}</a>.
+            <a
+              class="rsvp__whatsapp-link"
+              [href]="whatsappUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ 'rsvp.search.notFoundContact' | translate }}</a
+            >.
           </p>
-          <label class="form-field__label" for="rsvp-search-retry">
-            {{ 'rsvp.search.label' | translate }}
-          </label>
-          <div class="rsvp__search-row">
-            <input
-              id="rsvp-search-retry"
-              class="rsvp__search-input"
-              type="text"
-              [placeholder]="'rsvp.search.placeholder' | translate"
-              [value]="searchQuery()"
-              (input)="searchQuery.set($any($event.target).value)"
-              (keydown.enter)="onSearch()"
-            />
-            <button class="rsvp__search-btn" type="button" (click)="onSearch()">
-              {{ 'rsvp.search.buttonLabel' | translate }}
-            </button>
-          </div>
         </div>
       }
 
@@ -69,7 +58,9 @@
             </div>
             <div class="rsvp__already-msg">
               <p>{{ alreadyRsvpedMessage() }}</p>
-              <p class="rsvp__already-msg--muted">{{ 'rsvp.alreadyRsvped.notEditable' | translate }}</p>
+              <p class="rsvp__already-msg--muted">
+                {{ 'rsvp.alreadyRsvped.notEditable' | translate }}
+              </p>
             </div>
           </div>
         } @else {
@@ -106,22 +97,22 @@
             </div>
             @if (getSelectionFor(initiatorName())?.attending) {
               <div class="rsvp__meal-section">
-                <p class="rsvp__meal-heading">{{ config.sections.mainCourse.heading }}</p>
+                <p class="rsvp__meal-heading">{{ 'mainCourse.heading' | translate }}</p>
                 <div class="rsvp__meal-options">
-                  @for (opt of mainCourseOptions; track opt.id) {
+                  @for (opt of mainCourseOptions; track opt) {
                     <label
                       class="rsvp__meal-option"
-                      [class.rsvp__meal-option--selected]="getMealChoice(initiatorName()) === opt.id"
+                      [class.rsvp__meal-option--selected]="getMealChoice(initiatorName()) === opt"
                     >
                       <input
                         type="radio"
                         [name]="'meal-' + initiatorName()"
-                        [value]="opt.id"
-                        [checked]="getMealChoice(initiatorName()) === opt.id"
-                        (change)="setMealChoice(initiatorName(), opt.id)"
+                        [value]="opt"
+                        [checked]="getMealChoice(initiatorName()) === opt"
+                        (change)="setMealChoice(initiatorName(), opt)"
                       />
-                      <span class="rsvp__meal-label">{{ opt.label }}</span>
-                      <span class="rsvp__meal-desc">{{ opt.description }}</span>
+                      <span class="rsvp__meal-label">{{ mealLabel(opt) }}</span>
+                      <span class="rsvp__meal-desc">{{ mealDescription(opt) }}</span>
                     </label>
                   }
                 </div>
@@ -140,7 +131,11 @@
                       @if (respondedNames().has(name)) {
                         <!-- Already responded — show read-only status -->
                         <span class="rsvp__already-responded">
-                          {{ respondedNames().get(name) ? ('rsvp.yes' | translate) : ('rsvp.no' | translate) }}
+                          {{
+                            respondedNames().get(name)
+                              ? ('rsvp.yes' | translate)
+                              : ('rsvp.no' | translate)
+                          }}
                           &nbsp;·&nbsp;{{ 'rsvp.related.alreadyResponded' | translate }}
                         </span>
                       } @else {
@@ -150,9 +145,11 @@
                           [class.rsvp__toggle-btn--excluded]="!getSelectionFor(name)?.included"
                           (click)="toggleInclude(name)"
                         >
-                          {{ getSelectionFor(name)?.included
+                          {{
+                            getSelectionFor(name)?.included
                               ? ('rsvp.related.exclude' | translate)
-                              : ('rsvp.related.include' | translate) }}
+                              : ('rsvp.related.include' | translate)
+                          }}
                         </button>
                         @if (getSelectionFor(name)?.included) {
                           <div class="form-field__radios rsvp__radios--inline">
@@ -177,22 +174,26 @@
                           </div>
                           @if (getSelectionFor(name)?.attending) {
                             <div class="rsvp__meal-section rsvp__meal-section--related">
-                              <p class="rsvp__meal-heading">{{ config.sections.mainCourse.heading }}</p>
+                              <p class="rsvp__meal-heading">
+                                {{ 'mainCourse.heading' | translate }}
+                              </p>
                               <div class="rsvp__meal-options">
-                                @for (opt of mainCourseOptions; track opt.id) {
+                                @for (opt of mainCourseOptions; track opt) {
                                   <label
                                     class="rsvp__meal-option"
-                                    [class.rsvp__meal-option--selected]="getMealChoice(name) === opt.id"
+                                    [class.rsvp__meal-option--selected]="
+                                      getMealChoice(name) === opt
+                                    "
                                   >
                                     <input
                                       type="radio"
                                       [name]="'meal-' + name"
-                                      [value]="opt.id"
-                                      [checked]="getMealChoice(name) === opt.id"
-                                      (change)="setMealChoice(name, opt.id)"
+                                      [value]="opt"
+                                      [checked]="getMealChoice(name) === opt"
+                                      (change)="setMealChoice(name, opt)"
                                     />
-                                    <span class="rsvp__meal-label">{{ opt.label }}</span>
-                                    <span class="rsvp__meal-desc">{{ opt.description }}</span>
+                                    <span class="rsvp__meal-label">{{ mealLabel(opt) }}</span>
+                                    <span class="rsvp__meal-desc">{{ mealDescription(opt) }}</span>
                                   </label>
                                 }
                               </div>
@@ -230,7 +231,7 @@
                 <span class="rsvp__confirm-status">
                   {{ entry[1].attending ? ('rsvp.yes' | translate) : ('rsvp.no' | translate) }}
                   @if (entry[1].attending && getMealChoice(entry[0])) {
-                    &nbsp;·&nbsp;{{ getMealChoice(entry[0]) === 'beef' ? config.sections.mainCourse.options[0].label : config.sections.mainCourse.options[1].label }}
+                    &nbsp;·&nbsp;{{ mealLabel(getMealChoice(entry[0])!) }}
                   }
                 </span>
               </li>
@@ -269,7 +270,6 @@
           </button>
         </div>
       }
-
     }
   </div>
 </section>

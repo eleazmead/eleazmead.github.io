@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { APP_CONFIG } from '../../config/app.config';
 import { TranslatePipe } from '../../shared/translate.pipe';
 
 @Component({
@@ -9,6 +8,4 @@ import { TranslatePipe } from '../../shared/translate.pipe';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })
-export class FooterComponent {
-  readonly config = APP_CONFIG;
-}
+export class FooterComponent {}
