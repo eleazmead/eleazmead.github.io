@@ -1,3 +1,7 @@
-<button class="lang-toggle" (click)="toggle()" aria-label="Switch language">
+<button
+  class="lang-toggle"
+  (click)="toggle()"
+  [attr.aria-label]="'languageToggle.ariaLabel' | translate"
+>
   {{ currentLabel() }}
 </button>

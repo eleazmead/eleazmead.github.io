@@ -233,9 +233,15 @@
   font-size: 0.8rem;
 }
 
-.admin__row--pending td { color: #888; }
-.admin__row--yes td:first-child { color: #e8e8e8; }
-.admin__row--no td:first-child { color: #999; }
+.admin__row--pending td {
+  color: #888;
+}
+.admin__row--yes td:first-child {
+  color: #e8e8e8;
+}
+.admin__row--no td:first-child {
+  color: #999;
+}
 
 .admin__badge {
   display: inline-block;

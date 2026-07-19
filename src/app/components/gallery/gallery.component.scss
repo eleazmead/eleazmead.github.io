@@ -1,5 +1,8 @@
 .gallery {
   padding: 5rem 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(251, 247, 242, 0.82), rgba(255, 255, 255, 0.74)),
+    linear-gradient(25deg, rgba(18, 18, 18, 0.035), transparent 32%);
 
   @media (min-width: 1024px) {
     padding: 7rem 4rem;
@@ -40,7 +43,7 @@
 
 .gallery__tile-inner {
   aspect-ratio: 1 / 1;
-  background-color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-accent));
   opacity: 0.55;
   transition: transform 0.35s ease;
 }
@@ -49,7 +52,7 @@
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(59, 47, 47, 0.88);
+  background: rgba(18, 18, 18, 0.88);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,7 +66,7 @@
   right: 1.5rem;
   background: transparent;
   border: none;
-  color: var(--color-primary);
+  color: var(--color-surface);
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
@@ -88,11 +91,19 @@
 }
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gallery__overlay { animation: none; }
-  .gallery__tile-inner { transition: none; }
+  .gallery__overlay {
+    animation: none;
+  }
+  .gallery__tile-inner {
+    transition: none;
+  }
 }

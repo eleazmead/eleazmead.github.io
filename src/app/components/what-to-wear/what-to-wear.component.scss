@@ -1,0 +1,112 @@
+.what-to-wear {
+  padding: 5.5rem 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(251, 247, 242, 0.78), rgba(255, 255, 255, 0.7)),
+    linear-gradient(130deg, rgba(217, 160, 168, 0.14), rgba(184, 149, 126, 0.1));
+
+  @media (min-width: 1024px) {
+    padding: 7.5rem 4rem;
+  }
+}
+
+.what-to-wear__container {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+    gap: 4rem;
+  }
+}
+
+.what-to-wear__copy {
+  max-width: 620px;
+}
+
+.what-to-wear__lead {
+  margin: 0 0 1.6rem;
+  color: var(--color-secondary);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.what-to-wear__guidance {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.what-to-wear__group {
+  padding-left: 1.25rem;
+  border-left: 1px solid color-mix(in srgb, var(--color-primary) 48%, transparent);
+
+  p {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+}
+
+.what-to-wear__subheading {
+  margin: 0 0 0.45rem;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.what-to-wear__closing {
+  margin: 1.75rem 0 0;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.what-to-wear__image,
+.what-to-wear__placeholder {
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(18, 18, 18, 0.12);
+  border-radius: 0.45rem;
+  box-shadow: 0 18px 38px rgba(18, 18, 18, 0.11);
+}
+
+.what-to-wear__image {
+  display: block;
+  object-fit: cover;
+}
+
+.what-to-wear__placeholder {
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    linear-gradient(135deg, rgba(184, 149, 126, 0.18), rgba(217, 160, 168, 0.2)),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.78) 0,
+      rgba(255, 255, 255, 0.78) 12px,
+      rgba(184, 149, 126, 0.1) 12px,
+      rgba(184, 149, 126, 0.1) 24px
+    );
+  color: var(--color-secondary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}

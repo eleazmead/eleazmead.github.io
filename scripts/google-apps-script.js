@@ -27,6 +27,9 @@
  *   G (7) — RSVPFish_Count
  *   H (8) — RSVPSubmittedAt
  *   I (9) — RSVPSubmittedBy
+ *   J (10) — FullNameHash_MD5
+ *   K (11) — Guest1FullName_MD5
+ *   L (12) — Guest2FullName_MD5
  *
  * LOG COLUMN MAPPING (Log tab):
  *   A (1) — id
@@ -35,6 +38,18 @@
  *   D (4) — count
  *   E (5) — createdAt
  */
+
+function generateMd5Hash(input) {
+  const value = String(input || '').trim();
+  if (!value) return '';
+
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, value, Utilities.Charset.UTF_8)
+    .map((byte) => {
+      const unsignedByte = byte < 0 ? byte + 256 : byte;
+      return unsignedByte.toString(16).padStart(2, '0');
+    })
+    .join('');
+}
 
 function doPost(e) {
   try {
@@ -47,32 +62,31 @@ function doPost(e) {
 
       // Compute grand total from merged rsvpRaw (source of truth)
       const allEntries = Object.values(JSON.parse(payload.rsvpRaw)).flat();
-      const grandTotal = allEntries.filter(e => e.RSVP).length;
+      const grandTotal = allEntries.filter((e) => e.RSVP).length;
 
-      guestSheet.getRange(row, 4).setValue(payload.rsvpRaw);           // D — RSVP_Raw
-      guestSheet.getRange(row, 5).setValue(grandTotal);                 // E — RSVPTotal
-      guestSheet.getRange(row, 6).setValue(payload.rsvpBeefCount);     // F — RSVPBeef_Count
-      guestSheet.getRange(row, 7).setValue(payload.rsvpFishCount);     // G — RSVPFish_Count
-      guestSheet.getRange(row, 8).setValue(payload.rsvpSubmittedAt);   // H — RSVPSubmittedAt
-      guestSheet.getRange(row, 9).setValue(payload.rsvpSubmittedBy);   // I — RSVPSubmittedBy
+      guestSheet.getRange(row, 4).setValue(payload.rsvpRaw); // D — RSVP_Raw
+      guestSheet.getRange(row, 5).setValue(grandTotal); // E — RSVPTotal
+      guestSheet.getRange(row, 6).setValue(payload.rsvpBeefCount); // F — RSVPBeef_Count
+      guestSheet.getRange(row, 7).setValue(payload.rsvpFishCount); // G — RSVPFish_Count
+      guestSheet.getRange(row, 8).setValue(payload.rsvpSubmittedAt); // H — RSVPSubmittedAt
+      guestSheet.getRange(row, 9).setValue(payload.rsvpSubmittedBy); // I — RSVPSubmittedBy
 
       // Append log row
       const logSheet = ss.getSheetByName('Log');
       const log = payload.log;
       logSheet.appendRow([log.id, log.name, log.event, log.count, log.createdAt]);
 
-      return ContentService
-        .createTextOutput(JSON.stringify({ status: 'ok' }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
     }
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'unknown_action' }))
-      .setMimeType(ContentService.MimeType.JSON);
-
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: 'unknown_action' }),
+    ).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'error', message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: 'error', message: err.message }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }

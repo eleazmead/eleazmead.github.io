@@ -1,6 +1,8 @@
 .rsvp {
   padding: 5rem 1.5rem;
-  background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-background));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(251, 247, 242, 0.78)),
+    linear-gradient(135deg, rgba(217, 160, 168, 0.12), rgba(184, 149, 126, 0.1));
 }
 
 .rsvp__container {
@@ -8,14 +10,35 @@
   margin: 0 auto;
 }
 
+.rsvp__note {
+  margin-bottom: 2.5rem;
+  padding: 1.35rem 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 62%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 62%, transparent);
+  background: rgba(255, 255, 255, 0.38);
+}
+
 .rsvp__deadline {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 300;
-  color: var(--color-muted);
-  letter-spacing: 0.06em;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 2.5rem;
+  margin: 0 0 0.85rem;
+
+  strong {
+    font-weight: 800;
+  }
+}
+
+.rsvp__note-body {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  font-weight: 300;
+  line-height: 1.75;
 }
 
 // Panels
@@ -43,7 +66,7 @@
   min-width: 0;
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-primary);
-  background: var(--color-background);
+  background: var(--color-surface);
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -59,7 +82,7 @@
 .rsvp__search-btn {
   padding: 0.75rem 1.5rem;
   background-color: var(--color-secondary);
-  color: var(--color-background);
+  color: var(--color-surface);
   border: none;
   font-family: var(--font-body);
   font-size: 0.75rem;
@@ -71,7 +94,8 @@
   transition: background-color 0.25s ease;
 
   &:hover {
-    background-color: var(--color-text);
+    background-color: var(--color-accent);
+    color: var(--color-secondary);
   }
 }
 
@@ -206,7 +230,8 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: color-mix(in srgb, var(--color-background) 70%, var(--color-primary));
+  background: color-mix(in srgb, var(--color-surface) 72%, var(--color-primary));
+  border-left: 2px solid var(--color-accent);
 }
 
 .rsvp__toggle-btn {
@@ -244,7 +269,7 @@
   align-self: flex-start;
   padding: 0.875rem 2.5rem;
   background-color: var(--color-secondary);
-  color: var(--color-background);
+  color: var(--color-surface);
   border: none;
   font-family: var(--font-body);
   font-size: 0.75rem;
@@ -255,7 +280,8 @@
   transition: background-color 0.25s ease;
 
   &:hover {
-    background-color: var(--color-text);
+    background-color: var(--color-accent);
+    color: var(--color-secondary);
   }
 }
 
@@ -335,11 +361,15 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rsvp__spinner { animation: none; }
+  .rsvp__spinner {
+    animation: none;
+  }
 }
 
 // Status text (searching / submitting)
@@ -386,7 +416,9 @@
   padding: 0.875rem 1rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 60%, transparent);
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
   position: relative;
 
   input[type='radio'] {
@@ -463,13 +495,22 @@
 }
 
 // Not found / error messages
+.rsvp__invite-only-msg,
 .rsvp__not-found-msg,
 .rsvp__error-msg {
   font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 300;
-  color: #c0604a;
   line-height: 1.6;
+}
+
+.rsvp__invite-only-msg {
+  color: var(--color-text);
+}
+
+.rsvp__not-found-msg,
+.rsvp__error-msg {
+  color: #c0604a;
 }
 
 .rsvp__whatsapp-link {
@@ -489,6 +530,7 @@
   gap: 1.25rem;
   padding: 2.5rem;
   border: 1px solid var(--color-primary);
+  background: rgba(255, 255, 255, 0.42);
   text-align: center;
 }
 

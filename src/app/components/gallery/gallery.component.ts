@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
+import { TranslationService } from '../../shared/translation.service';
 
 @Component({
   selector: 'app-gallery',
@@ -12,6 +13,7 @@ import { FadeUpDirective } from '../../shared/fade-up.directive';
 })
 export class GalleryComponent implements OnInit {
   private readonly http = inject(HttpClient);
+  private readonly ts = inject(TranslationService);
 
   readonly images = signal<string[]>([]);
   readonly selectedIndex = signal<number | null>(null);
@@ -39,5 +41,9 @@ export class GalleryComponent implements OnInit {
 
   imageUrl(filename: string): string {
     return `gallery/${filename}`;
+  }
+
+  textWithNumber(key: string, number: number): string {
+    return this.ts.t(key).replace('{0}', String(number));
   }
 }

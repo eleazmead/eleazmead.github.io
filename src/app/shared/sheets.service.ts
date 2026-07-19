@@ -69,6 +69,9 @@ export class SheetsService {
       rsvpFishCount: row[cols.rsvpFishCount] ? Number(row[cols.rsvpFishCount]) : null,
       rsvpSubmittedAt: row[cols.rsvpSubmittedAt] ?? null,
       rsvpSubmittedBy: row[cols.rsvpSubmittedBy] ?? null,
+      fullNameHashMd5: row[cols.fullNameHashMd5] ?? '',
+      guest1FullNameHashMd5: row[cols.guest1FullNameHashMd5] ?? '',
+      guest2FullNameHashMd5: row[cols.guest2FullNameHashMd5] ?? '',
     };
   }
 }

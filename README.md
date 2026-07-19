@@ -44,6 +44,52 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ng test
 ```
 
+## RSVP guest search
+
+Guest lookup is invitation-link based. The public route `/:rsvpHash` reads an MD5 hash from the URL path and matches it against the Google Sheet `FullNameHash_MD5`, `Guest1FullName_MD5`, or `Guest2FullName_MD5` column. The bare `/` route shows an invite-only message instead of a search form.
+
+The RSVP note and deadline are configurable in the i18n JSON files. The deadline date uses `rsvp.deadline.date` so it can be emphasized separately from the rest of the note. This note only appears when the URL contains an invitation hash.
+
+## Hero and event details
+
+The first section uses `APP_CONFIG.assets.heroBackdropAvif` as the animated AVIF backdrop path, and personalizes `public/i18n/en.json` `hero.headline` by replacing `{0}` with the matched guest's first name. All display text, including couple names, event date, venues, RSVP copy, meal labels, footer copy, language toggle labels, and admin labels, lives in `public/i18n/en.json` and `public/i18n/fil.json`.
+
+While the matched guest name is loading, the hero shows `Hi there,` instead of generic guest text.
+
+The hero RSVP CTA scrolls to the RSVP section with an explicit click handler while keeping the `#rsvp` anchor href.
+
+The language toggle switches the site between English and Tagalog. Keep both i18n JSON files structurally complete whenever copy changes; keep non-text settings such as theme color, backdrop AVIF path, stable option IDs, and WhatsApp URL in `src/app/config/app.config.ts`.
+
+The global visual theme uses a subtle wedding-stationery background with warm vellum tones, lace-like linework, and blush/taupe washes behind the sections.
+
+The Our Story section renders a timeline. Timeline dates, titles, and narratives live in the i18n JSON files. Timeline photos are loaded by filename from `public/our-story/`: use `Mmm_YYYY_1` for the required first image and `Mmm_YYYY_2` for the optional second image, for example `Sep_2016_1.png` and `Sep_2016_2.jpg`. Supported extensions are `.jpg`, `.jpeg`, and `.png`; matching is case-insensitive. Run `npm run generate-gallery` after adding photos, or restart the dev server, so `public/our-story/manifest.json` is updated. The site shows a maximum of two photos side by side per timeline item.
+
+## Venues
+
+The third section highlights the ceremony and reception venues. Venue names, descriptions, addresses, and placeholder text live in the i18n JSON files.
+
+Venue photo paths are configured in `APP_CONFIG.assets.venuePhotos`. Put the files under `public/venues/`, for example `public/venues/st-josephs-church.jpg` and `public/venues/the-lighthouse-fullerton.jpg`.
+
+## Wedding Timeline
+
+The section after RSVP shows the wedding day sequence. Event times, titles, descriptions, and the stay-tuned note live in the i18n JSON files.
+
+## What to Wear
+
+The What to Wear section appears after the Wedding Timeline. Attire wording lives in the i18n JSON files, and the attire guide image path is configured in `APP_CONFIG.assets.attireGuideImage`. Put the image under `public/attire/`, for example `public/attire/wedding-attire-guide.jpg`.
+
+## Gift Registry
+
+The Gift Registry section appears after What to Wear. Its wording lives in the i18n JSON files.
+
+## Questions & Answers
+
+The Questions & Answers section appears after Gift Registry. Add a new Q&A by adding a stable ID to `APP_CONFIG.questionsAndAnswers.items`, then adding matching `questionsAndAnswers.items.<id>.question` and `questionsAndAnswers.items.<id>.answer` keys in the i18n JSON files.
+
+## Google Apps Script
+
+The deployable Google Apps Script source is `scripts/google-apps-script.js`. It includes `generateMd5Hash(input)`, which returns a lowercase MD5 hex digest for a non-empty trimmed input string and an empty string for blank input.
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:

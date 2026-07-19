@@ -1,0 +1,24 @@
+<section class="wedding-timeline" id="wedding-timeline">
+  <div class="wedding-timeline__container">
+    <div class="wedding-timeline__intro">
+      <h2 class="section-heading" appFadeUp>{{ 'weddingTimeline.heading' | translate }}</h2>
+      <p class="wedding-timeline__body">{{ 'weddingTimeline.body' | translate }}</p>
+    </div>
+
+    <ol class="wedding-timeline__list">
+      @for (eventId of eventIds; track eventId) {
+        <li class="wedding-timeline__event" appFadeUp>
+          <time class="wedding-timeline__time">{{ textKey(eventId, 'time') | translate }}</time>
+          <div class="wedding-timeline__copy">
+            <h3 class="wedding-timeline__title">{{ textKey(eventId, 'title') | translate }}</h3>
+            <p class="wedding-timeline__description">
+              {{ textKey(eventId, 'description') | translate }}
+            </p>
+          </div>
+        </li>
+      }
+    </ol>
+
+    <p class="wedding-timeline__note" appFadeUp>{{ 'weddingTimeline.note' | translate }}</p>
+  </div>
+</section>
