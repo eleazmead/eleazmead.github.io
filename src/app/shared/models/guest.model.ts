@@ -9,6 +9,9 @@ export interface GuestRow {
   rsvpFishCount: number | null;
   rsvpSubmittedAt: string | null;
   rsvpSubmittedBy: string | null;
+  fullNameHashMd5: string;
+  guest1FullNameHashMd5: string;
+  guest2FullNameHashMd5: string;
 }
 
 export type MealChoice = 'beef' | 'fish';

@@ -1,15 +1,17 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '../../shared/translate.pipe';
+import { TranslationService } from '../../shared/translation.service';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { GuestSearchService } from '../../shared/guest-search.service';
 import { SheetsService } from '../../shared/sheets.service';
-import { TranslationService } from '../../shared/translation.service';
 import { APP_CONFIG } from '../../config/app.config';
 import { GuestRow, RsvpEntry, MealChoice } from '../../shared/models/guest.model';
 import { nowSGT } from '../../shared/utils/date.utils';
 
 export type RsvpFlowState =
   | 'idle'
+  | 'no_invitation_link'
   | 'searching'
   | 'found'
   | 'confirming'
@@ -31,11 +33,13 @@ export class RsvpComponent implements OnInit {
   private readonly guestSearch = inject(GuestSearchService);
   private readonly sheets = inject(SheetsService);
   private readonly ts = inject(TranslationService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly config = APP_CONFIG;
   readonly whatsappUrl = APP_CONFIG.contacts.whatsappUrl;
   readonly state = signal<RsvpFlowState>('idle');
-  readonly searchQuery = signal('');
+  readonly rsvpHashInput = signal('');
+  readonly hasInvitationHash = computed(() => this.rsvpHashInput().trim().length > 0);
   readonly matchedRow = signal<GuestRow | null>(null);
   readonly initiatorName = signal('');
   readonly relatedNames = signal<string[]>([]);
@@ -43,7 +47,7 @@ export class RsvpComponent implements OnInit {
   readonly mealSelections = signal<Map<string, MealChoice>>(new Map());
   readonly mealError = signal('');
   readonly errorMessage = signal('');
-  readonly mainCourseOptions = APP_CONFIG.sections.mainCourse.options;
+  readonly mainCourseOptions = APP_CONFIG.mealChoices.options;
 
   /** True only when the current initiator already has an entry in the primary guest's entries array. */
   readonly initiatorAlreadyRsvped = computed(() => {
@@ -75,43 +79,41 @@ export class RsvpComponent implements OnInit {
     const myEntry = entries.find((e) => e.Guest === initiator);
     const submittedBy = row.rsvpSubmittedBy ?? Object.keys(row.rsvpRaw)[0] ?? initiator;
     const date = this.formatDate(myEntry?.Date ?? row.rsvpSubmittedAt ?? '');
-    return this.ts.t('rsvp.alreadyRsvped.message').replace('{initiator}', submittedBy).replace('{date}', date);
+    return this.ts
+      .t('rsvp.alreadyRsvped.message')
+      .replace('{initiator}', submittedBy)
+      .replace('{date}', date);
   });
 
   ngOnInit(): void {
-    // Pre-load guest list in the background; errors are handled on first search
-    this.guestSearch.loadGuests().subscribe({ error: () => {} });
+    const hashInput = this.route.snapshot.paramMap.get('rsvpHash')?.trim() ?? '';
+    this.rsvpHashInput.set(hashInput);
+
+    if (!hashInput) {
+      this.state.set('no_invitation_link');
+      return;
+    }
+
+    this.searchByHash(hashInput);
   }
 
-  onSearch(): void {
-    if (!this.searchQuery().trim()) return;
+  private searchByHash(hashInput: string): void {
+    if (!hashInput.trim()) {
+      this.state.set('no_invitation_link');
+      return;
+    }
+
     this.state.set('searching');
 
     this.guestSearch.loadGuests().subscribe({
       next: () => {
-        const result = this.guestSearch.findMatch(this.searchQuery());
+        const result = this.guestSearch.findMatchByHash(hashInput);
         if (!result) {
           this.state.set('not_found');
           return;
         }
-        const { row, matchedName } = result;
-        this.matchedRow.set(row);
-        this.initiatorName.set(matchedName);
 
-        // All names in the group except the initiator
-        const allGroupNames = [row.fullName, row.guest1Name, row.guest2Name].filter((n) => n.trim());
-        const related = allGroupNames.filter((n) => n !== matchedName);
-        this.relatedNames.set(related);
-
-        // Initiator is included by default; related guests default to excluded
-        const map = new Map<string, Selection>();
-        map.set(matchedName, { attending: true, included: true });
-        for (const name of related) {
-          map.set(name, { attending: true, included: false });
-        }
-        this.selections.set(map);
-        this.mealSelections.set(new Map());
-        this.mealError.set('');
+        this.prepareMatchedGuest(result.row, result.matchedName);
         this.state.set('found');
       },
       error: () => {
@@ -119,6 +121,24 @@ export class RsvpComponent implements OnInit {
         this.state.set('error');
       },
     });
+  }
+
+  private prepareMatchedGuest(row: GuestRow, matchedName: string): void {
+    this.matchedRow.set(row);
+    this.initiatorName.set(matchedName);
+
+    const allGroupNames = [row.fullName, row.guest1Name, row.guest2Name].filter((n) => n.trim());
+    const related = allGroupNames.filter((n) => n !== matchedName);
+    this.relatedNames.set(related);
+
+    const map = new Map<string, Selection>();
+    map.set(matchedName, { attending: true, included: true });
+    for (const name of related) {
+      map.set(name, { attending: true, included: false });
+    }
+    this.selections.set(map);
+    this.mealSelections.set(new Map());
+    this.mealError.set('');
   }
 
   toggleInclude(name: string): void {
@@ -154,7 +174,7 @@ export class RsvpComponent implements OnInit {
       .filter(([, v]) => v.included && v.attending)
       .every(([name]) => this.mealSelections().has(name));
     if (!allAttendingHaveMeal) {
-      this.mealError.set(APP_CONFIG.sections.mainCourse.required);
+      this.mealError.set(this.ts.t('mainCourse.required'));
       return;
     }
 
@@ -215,7 +235,7 @@ export class RsvpComponent implements OnInit {
 
   retryFromError(): void {
     this.errorMessage.set('');
-    this.state.set('idle');
+    this.searchByHash(this.rsvpHashInput());
   }
 
   getSelectionFor(name: string): Selection | undefined {
@@ -237,5 +257,13 @@ export class RsvpComponent implements OnInit {
     } catch {
       return isoString;
     }
+  }
+
+  mealLabel(choice: MealChoice): string {
+    return this.ts.t(`mainCourse.options.${choice}.label`);
+  }
+
+  mealDescription(choice: MealChoice): string {
+    return this.ts.t(`mainCourse.options.${choice}.description`);
   }
 }

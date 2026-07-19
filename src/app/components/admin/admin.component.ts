@@ -1,28 +1,29 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { SheetsService } from '../../shared/sheets.service';
-import { GuestRow, RsvpEntry } from '../../shared/models/guest.model';
+import { GuestRow, MealChoice, RsvpEntry } from '../../shared/models/guest.model';
 import { environment } from '../../../environments/environment';
-import { APP_CONFIG } from '../../config/app.config';
+import { TranslatePipe } from '../../shared/translate.pipe';
+import { TranslationService } from '../../shared/translation.service';
 
 interface AdminRow {
   guestName: string;
   partyOf: string;
-  meal: string;
-  rsvp: 'Yes' | 'No' | 'Pending';
+  meal: MealChoice | null;
+  rsvp: 'yes' | 'no' | 'pending';
   dateSubmitted: string;
 }
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent {
   private readonly sheets = inject(SheetsService);
+  private readonly ts = inject(TranslationService);
 
   readonly authenticated = signal(false);
   readonly passwordInput = signal('');
@@ -31,10 +32,6 @@ export class AdminComponent {
   readonly fetchError = signal('');
   readonly guestRows = signal<GuestRow[]>([]);
   readonly lastRefreshed = signal<Date | null>(null);
-
-  readonly couple = APP_CONFIG.couple;
-  readonly beefLabel = APP_CONFIG.sections.mainCourse.options[0].label;
-  readonly fishLabel = APP_CONFIG.sections.mainCourse.options[1].label;
 
   readonly adminRows = computed((): AdminRow[] => {
     const rows: AdminRow[] = [];
@@ -46,9 +43,9 @@ export class AdminComponent {
         rows.push({
           guestName: member,
           partyOf: g.fullName,
-          meal: entry?.MealChoice === 'beef' ? this.beefLabel : entry?.MealChoice === 'fish' ? this.fishLabel : '—',
-          rsvp: entry ? (entry.RSVP ? 'Yes' : 'No') : 'Pending',
-          dateSubmitted: entry ? this.formatDate(entry.Date) : '—',
+          meal: entry?.MealChoice ?? null,
+          rsvp: entry ? (entry.RSVP ? 'yes' : 'no') : 'pending',
+          dateSubmitted: entry ? this.formatDate(entry.Date) : this.ts.t('admin.noValue'),
         });
       }
     }
@@ -59,11 +56,11 @@ export class AdminComponent {
     const rows = this.adminRows();
     return {
       total: rows.length,
-      attending: rows.filter((r) => r.rsvp === 'Yes').length,
-      declined: rows.filter((r) => r.rsvp === 'No').length,
-      pending: rows.filter((r) => r.rsvp === 'Pending').length,
-      beef: rows.filter((r) => r.rsvp === 'Yes' && r.meal === this.beefLabel).length,
-      fish: rows.filter((r) => r.rsvp === 'Yes' && r.meal === this.fishLabel).length,
+      attending: rows.filter((r) => r.rsvp === 'yes').length,
+      declined: rows.filter((r) => r.rsvp === 'no').length,
+      pending: rows.filter((r) => r.rsvp === 'pending').length,
+      beef: rows.filter((r) => r.rsvp === 'yes' && r.meal === 'beef').length,
+      fish: rows.filter((r) => r.rsvp === 'yes' && r.meal === 'fish').length,
     };
   });
 
@@ -77,7 +74,7 @@ export class AdminComponent {
       this.authenticated.set(true);
       this.fetchGuests();
     } else {
-      this.loginError.set('Incorrect password.');
+      this.loginError.set(this.ts.t('admin.loginError'));
     }
   }
 
@@ -91,7 +88,7 @@ export class AdminComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.fetchError.set('Failed to load guest list. Check your Sheets API key.');
+        this.fetchError.set(this.ts.t('admin.fetchError'));
         this.loading.set(false);
       },
     });
@@ -99,17 +96,25 @@ export class AdminComponent {
 
   exportToExcel(): void {
     const data = this.adminRows().map((r) => ({
-      'Guest Name': r.guestName,
-      'Party Of': r.partyOf,
-      'Meal Choice': r.meal,
-      RSVP: r.rsvp,
-      'Date Submitted': r.dateSubmitted,
+      [this.ts.t('admin.table.guestName')]: r.guestName,
+      [this.ts.t('admin.table.partyOf')]: r.partyOf,
+      [this.ts.t('admin.table.mealChoice')]: this.mealLabel(r.meal),
+      [this.ts.t('admin.table.rsvp')]: this.rsvpLabel(r.rsvp),
+      [this.ts.t('admin.table.dateSubmitted')]: r.dateSubmitted,
     }));
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'RSVP');
+    XLSX.utils.book_append_sheet(wb, ws, this.ts.t('admin.exportSheetName'));
     const now = new Date().toISOString().slice(0, 19).replace(/[T:]/g, '-');
-    XLSX.writeFile(wb, `EleazMeadRSVP_${now}.xlsx`);
+    XLSX.writeFile(wb, `${this.ts.t('admin.exportFilenamePrefix')}_${now}.xlsx`);
+  }
+
+  mealLabel(meal: AdminRow['meal']): string {
+    return meal ? this.ts.t(`mainCourse.options.${meal}.label`) : this.ts.t('admin.noValue');
+  }
+
+  rsvpLabel(status: AdminRow['rsvp']): string {
+    return this.ts.t(`admin.rsvpStatus.${status}`);
   }
 
   private formatDate(iso: string): string {

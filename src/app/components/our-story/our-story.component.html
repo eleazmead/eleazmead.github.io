@@ -1,20 +1,58 @@
 <section class="our-story" id="our-story">
   <div class="our-story__container">
-    <div class="our-story__text">
+    <div class="our-story__intro">
       <h2 class="section-heading" appFadeUp>{{ 'ourStory.heading' | translate }}</h2>
       <p class="our-story__body">{{ 'ourStory.body' | translate }}</p>
     </div>
-    @if (images.length > 0) {
-      <div class="our-story__image-wrap">
-        @for (url of images; track url; let i = $index) {
-          <img
-            class="our-story__image"
-            [src]="url"
-            [alt]="'Our story photo ' + (i + 1)"
-            loading="lazy"
-          />
-        }
-      </div>
-    }
+
+    <div class="our-story__timeline">
+      @for (item of timelineItems; track item.id; let i = $index) {
+        <article class="our-story__item" appFadeUp>
+          <div
+            class="our-story__photos"
+            [class.our-story__photos--single]="visiblePhotoCount(item) === 1"
+            [class.our-story__photos--empty]="visiblePhotoCount(item) === 0"
+          >
+            @for (url of photoUrls(item); track url; let photoIndex = $index) {
+              @if (isPhotoVisible(url)) {
+                <div class="our-story__photo-frame">
+                  <img
+                    class="our-story__photo"
+                    [src]="url"
+                    [alt]="
+                      ('ourStory.imageAlt' | translate)
+                        .replace('{0}', (i + 1).toString())
+                        .replace('{1}', (photoIndex + 1).toString())
+                    "
+                    loading="lazy"
+                    (error)="markPhotoFailed(url)"
+                  />
+                </div>
+              }
+            }
+
+            @if (visiblePhotoCount(item) === 0) {
+              <div
+                class="our-story__photo-placeholder"
+                role="img"
+                [attr.aria-label]="
+                  ('ourStory.imageAlt' | translate)
+                    .replace('{0}', (i + 1).toString())
+                    .replace('{1}', '1')
+                "
+              >
+                <span>{{ 'ourStory.photoPlaceholder' | translate }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="our-story__copy">
+            <p class="our-story__date">{{ textKey(item.id, 'date') | translate }}</p>
+            <h3 class="our-story__title">{{ textKey(item.id, 'title') | translate }}</h3>
+            <p class="our-story__narrative">{{ textKey(item.id, 'body') | translate }}</p>
+          </div>
+        </article>
+      }
+    </div>
   </div>
 </section>

@@ -1,0 +1,44 @@
+<section class="what-to-wear" id="what-to-wear">
+  <div class="what-to-wear__container">
+    <div class="what-to-wear__copy" appFadeUp>
+      <h2 class="section-heading">{{ 'whatToWear.heading' | translate }}</h2>
+      <p class="what-to-wear__lead">{{ 'whatToWear.lead' | translate }}</p>
+
+      <div class="what-to-wear__guidance">
+        <div class="what-to-wear__group">
+          <h3 class="what-to-wear__subheading">{{ 'whatToWear.ladies.heading' | translate }}</h3>
+          <p>{{ 'whatToWear.ladies.body' | translate }}</p>
+        </div>
+
+        <div class="what-to-wear__group">
+          <h3 class="what-to-wear__subheading">
+            {{ 'whatToWear.gentlemen.heading' | translate }}
+          </h3>
+          <p>{{ 'whatToWear.gentlemen.body' | translate }}</p>
+        </div>
+      </div>
+
+      <p class="what-to-wear__closing">{{ 'whatToWear.closing' | translate }}</p>
+    </div>
+
+    <div class="what-to-wear__image-wrap" appFadeUp>
+      @if (shouldShowImage()) {
+        <img
+          class="what-to-wear__image"
+          [src]="attireGuideImage"
+          [alt]="'whatToWear.imageAlt' | translate"
+          loading="lazy"
+          (error)="markImageFailed()"
+        />
+      } @else {
+        <div
+          class="what-to-wear__placeholder"
+          role="img"
+          [attr.aria-label]="'whatToWear.imageAlt' | translate"
+        >
+          <span>{{ 'whatToWear.imagePlaceholder' | translate }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

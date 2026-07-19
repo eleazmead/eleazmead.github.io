@@ -1,46 +1,54 @@
 <div class="admin">
-
   @if (!authenticated()) {
     <!-- Login gate -->
     <div class="admin__login">
-      <h1 class="admin__login-title">Admin Access</h1>
-      <p class="admin__login-sub">{{ couple.name1 }} &amp; {{ couple.name2 }} · {{ couple.weddingDate }}</p>
+      <h1 class="admin__login-title">{{ 'admin.loginTitle' | translate }}</h1>
+      <p class="admin__login-sub">
+        {{ 'couple.name1' | translate }} &amp; {{ 'couple.name2' | translate }} ·
+        {{ 'couple.weddingDate' | translate }}
+      </p>
       <div class="admin__login-form">
         <input
           class="admin__login-input"
           type="password"
-          placeholder="Enter password"
+          [placeholder]="'admin.passwordPlaceholder' | translate"
           [value]="passwordInput()"
           (input)="onPasswordChange($any($event.target).value)"
           (keydown.enter)="login()"
           autocomplete="current-password"
         />
-        <button class="admin__login-btn" type="button" (click)="login()">Sign in</button>
+        <button class="admin__login-btn" type="button" (click)="login()">
+          {{ 'admin.signIn' | translate }}
+        </button>
       </div>
       @if (loginError()) {
         <p class="admin__login-error">{{ loginError() }}</p>
       }
     </div>
-
   } @else {
     <!-- Admin dashboard -->
     <header class="admin__header">
       <div class="admin__header-left">
-        <h1 class="admin__title">RSVP Dashboard</h1>
-        <p class="admin__subtitle">{{ couple.name1 }} &amp; {{ couple.name2 }} · {{ couple.weddingDate }}</p>
+        <h1 class="admin__title">{{ 'admin.title' | translate }}</h1>
+        <p class="admin__subtitle">
+          {{ 'couple.name1' | translate }} &amp; {{ 'couple.name2' | translate }} ·
+          {{ 'couple.weddingDate' | translate }}
+        </p>
       </div>
       <div class="admin__header-actions">
         <button class="admin__btn admin__btn--ghost" type="button" (click)="fetchGuests()">
-          ↻ Refresh
+          ↻ {{ 'admin.refresh' | translate }}
         </button>
         <button class="admin__btn admin__btn--primary" type="button" (click)="exportToExcel()">
-          ↓ Export Excel
+          ↓ {{ 'admin.exportExcel' | translate }}
         </button>
       </div>
     </header>
 
     @if (lastRefreshed()) {
-      <p class="admin__refreshed">Last refreshed: {{ lastRefreshed()!.toLocaleTimeString('en-SG') }}</p>
+      <p class="admin__refreshed">
+        {{ 'admin.lastRefreshed' | translate }} {{ lastRefreshed()!.toLocaleTimeString('en-SG') }}
+      </p>
     }
 
     @if (fetchError()) {
@@ -51,58 +59,63 @@
     <div class="admin__summary">
       <div class="admin__card">
         <span class="admin__card-value">{{ summary().total }}</span>
-        <span class="admin__card-label">Total Guests</span>
+        <span class="admin__card-label">{{ 'admin.summary.totalGuests' | translate }}</span>
       </div>
       <div class="admin__card admin__card--yes">
         <span class="admin__card-value">{{ summary().attending }}</span>
-        <span class="admin__card-label">Attending</span>
+        <span class="admin__card-label">{{ 'admin.summary.attending' | translate }}</span>
       </div>
       <div class="admin__card admin__card--no">
         <span class="admin__card-value">{{ summary().declined }}</span>
-        <span class="admin__card-label">Declined</span>
+        <span class="admin__card-label">{{ 'admin.summary.declined' | translate }}</span>
       </div>
       <div class="admin__card">
         <span class="admin__card-value">{{ summary().pending }}</span>
-        <span class="admin__card-label">Pending</span>
+        <span class="admin__card-label">{{ 'admin.summary.pending' | translate }}</span>
       </div>
       <div class="admin__card">
         <span class="admin__card-value">{{ summary().beef }}</span>
-        <span class="admin__card-label">Beef</span>
+        <span class="admin__card-label">{{ 'admin.summary.beef' | translate }}</span>
       </div>
       <div class="admin__card">
         <span class="admin__card-value">{{ summary().fish }}</span>
-        <span class="admin__card-label">Fish</span>
+        <span class="admin__card-label">{{ 'admin.summary.fish' | translate }}</span>
       </div>
     </div>
 
     <!-- Guest table -->
     @if (loading()) {
-      <p class="admin__loading">Loading guest list…</p>
+      <p class="admin__loading">{{ 'admin.loading' | translate }}</p>
     } @else {
       <div class="admin__table-wrap">
         <table class="admin__table">
           <thead>
             <tr>
-              <th>Guest Name</th>
-              <th>Party Of</th>
-              <th>Meal Choice</th>
-              <th>RSVP</th>
-              <th>Date Submitted</th>
+              <th>{{ 'admin.table.guestName' | translate }}</th>
+              <th>{{ 'admin.table.partyOf' | translate }}</th>
+              <th>{{ 'admin.table.mealChoice' | translate }}</th>
+              <th>{{ 'admin.table.rsvp' | translate }}</th>
+              <th>{{ 'admin.table.dateSubmitted' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             @for (row of adminRows(); track row.guestName) {
-              <tr [class.admin__row--pending]="row.rsvp === 'Pending'"
-                  [class.admin__row--yes]="row.rsvp === 'Yes'"
-                  [class.admin__row--no]="row.rsvp === 'No'">
+              <tr
+                [class.admin__row--pending]="row.rsvp === 'pending'"
+                [class.admin__row--yes]="row.rsvp === 'yes'"
+                [class.admin__row--no]="row.rsvp === 'no'"
+              >
                 <td>{{ row.guestName }}</td>
                 <td class="admin__td--muted">{{ row.partyOf }}</td>
-                <td>{{ row.meal }}</td>
+                <td>{{ mealLabel(row.meal) }}</td>
                 <td>
-                  <span class="admin__badge" [class.admin__badge--yes]="row.rsvp === 'Yes'"
-                        [class.admin__badge--no]="row.rsvp === 'No'"
-                        [class.admin__badge--pending]="row.rsvp === 'Pending'">
-                    {{ row.rsvp }}
+                  <span
+                    class="admin__badge"
+                    [class.admin__badge--yes]="row.rsvp === 'yes'"
+                    [class.admin__badge--no]="row.rsvp === 'no'"
+                    [class.admin__badge--pending]="row.rsvp === 'pending'"
+                  >
+                    {{ rsvpLabel(row.rsvp) }}
                   </span>
                 </td>
                 <td class="admin__td--muted">{{ row.dateSubmitted }}</td>
@@ -113,5 +126,4 @@
       </div>
     }
   }
-
 </div>

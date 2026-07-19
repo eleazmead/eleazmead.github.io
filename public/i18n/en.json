@@ -1,50 +1,274 @@
 {
+  "app": {
+    "title": "Eleaz & Mead"
+  },
+  "couple": {
+    "name1": "Eleaz",
+    "name2": "Mead",
+    "weddingDate": "16 January 2027, Saturday",
+    "ceremonyVenue": "St. Joseph's Church Victoria Street",
+    "receptionVenue": "The Lighthouse Fullerton, Singapore",
+    "hashtag": "#EleazMead"
+  },
   "hero": {
-    "headline": "We're getting married",
-    "subheadline": "Join us as we celebrate our love",
+    "headline": "{0}, we're getting married in the heart of the Lion City and we will be delighted to have you join us as we celebrate our love.",
+    "loadingGreeting": "Hi there",
+    "ceremonyLabel": "Wedding Mass Ceremony",
+    "receptionLabel": "Wedding Dinner Reception",
     "cta": "RSVP Now"
   },
   "ourStory": {
     "heading": "Our Story",
-    "body": "Placeholder story text. Replace with the couple's narrative."
+    "body": "A little timeline of the ordinary days, brave choices, shared miles, and cups of coffee that brought us here.",
+    "imageAlt": "Our story moment {0}, photo {1}",
+    "photoPlaceholder": "Photo coming soon",
+    "timeline": {
+      "metAtWork": {
+        "date": "September 2016",
+        "title": "Where It Began",
+        "body": "We first met at work, not knowing that a simple introduction would quietly become the first page of our story."
+      },
+      "coffeeRuns": {
+        "date": "April 2017",
+        "title": "Coffee, Runs, and Us",
+        "body": "Our relationship began over coffee, then grew through cafe-hopping, steady conversations, and the joy of running side by side."
+      },
+      "longDistance": {
+        "date": "September 2019",
+        "title": "Across the Miles",
+        "body": "For a short season, love stretched across distance when Mead moved to Singapore to begin a new chapter in her career."
+      },
+      "lionCity": {
+        "date": "February 2020",
+        "title": "To the Lion City",
+        "body": "Soon after, Eleaz followed the love of her life to Singapore, choosing work, home, and everyday life with Mead."
+      },
+      "fluffyEra": {
+        "date": "March 2022",
+        "title": "Our Softest Season",
+        "body": "We were so happy and settled together that we became the chubbiest, fluffiest, cutest version of ourselves."
+      },
+      "fitnessJourney": {
+        "date": "November 2024",
+        "title": "Back to the Road",
+        "body": "After walking through life's highs and lows together, we began our fitness journey and returned to one of our first love languages: running together."
+      },
+      "proposal": {
+        "date": "May 2025",
+        "title": "The Yes",
+        "body": "Eleaz proposed to Mead, and a promise we had been building day by day became our next forever."
+      },
+      "bigDay": {
+        "date": "January 2027",
+        "title": "The Big Day",
+        "body": "We will begin our married life surrounded by the people who have loved, prayed for, and cheered us on."
+      }
+    }
+  },
+  "venues": {
+    "heading": "Venues",
+    "body": "Two beautiful places will hold the most meaningful parts of our day: a sacred beginning and a celebration by the bay.",
+    "photoPlaceholder": "Venue photo coming soon",
+    "photoAlt": "Wedding venue photo {0}",
+    "items": {
+      "church": {
+        "name": "St. Joseph's Church (Victoria Street)",
+        "description": "A historic Catholic church in the heart of Singapore, where quiet beauty, tradition, and prayer will frame the beginning of our married life.",
+        "address": "143 Victoria Street, Singapore 188020"
+      },
+      "reception": {
+        "name": "THE LIGHTHOUSE | The Fullerton Hotel Singapore",
+        "description": "An elegant rooftop dining room overlooking Marina Bay, where dinner, stories, and city lights will carry the celebration into the evening.",
+        "address": "1 Fullerton Square, Singapore 049178"
+      }
+    }
   },
   "rsvp": {
     "heading": "RSVP",
-    "deadline": "Please respond by Month DD, YYYY",
+    "deadline": {
+      "prefix": "Kindly RSVP by",
+      "date": "31 October 2026."
+    },
+    "note": "As attending our wedding will involve travelling for some of our guests, we understand the additional time, effort, and arrangements required. Please know that there is absolutely no pressure, though having you celebrate with us would mean so much.",
     "yes": "Joyfully accepts",
     "no": "Regretfully declines",
-    "submit": "Confirm Attendance",
-    "successMessage": "Thank you for your response! We look forward to celebrating this special day with you.",
+    "submit": "Send RSVP",
+    "successMessage": "Thank you! We can't wait to celebrate with you.",
     "goBack": "Go back",
-    "rsvpFor": "Responding for",
-    "confirmHeading": "Review your response",
-    "confirmBody": "Please review your selections carefully. Responses cannot be changed after submission.",
-    "submitting": "Sending your response...",
+    "rsvpFor": "RSVP for",
+    "confirmHeading": "Review your RSVP",
+    "confirmBody": "Please review before submitting. Responses cannot be edited after submission.",
+    "submitting": "Submitting your RSVP...",
     "errorMessage": "Something went wrong. Please try again or contact us directly.",
+    "inviteOnly": {
+      "message": "Only invited guests can send an RSVP and attend the event. Please use the invitation link shared by the couple."
+    },
     "search": {
-      "label": "Enter your name to find your invitation",
-      "placeholder": "e.g. Juan dela Cruz",
-      "buttonLabel": "Find My Invitation",
-      "notFound": "We could not find your name on the guest list. Please double-check your spelling, or",
+      "label": "Enter your first and last name to find your invitation",
+      "placeholder": "e.g. Eleazer",
+      "buttonLabel": "Find Me",
+      "notFound": "We could not verify this invitation link. Please",
       "notFoundContact": "message us on WhatsApp",
-      "searching": "Looking up your invitation..."
+      "searching": "Searching..."
     },
     "related": {
-      "promptHeading": "We found additional guests in your party",
-      "promptBody": "Would you like to respond on their behalf as well?",
+      "promptHeading": "We also found these guests in your group",
+      "promptBody": "Would you like to RSVP for them as well?",
       "include": "Include",
       "exclude": "Exclude",
       "alreadyResponded": "Already responded"
     },
     "alreadyRsvped": {
-      "message": "A response has already been submitted for this guest by {initiator} on {date}.",
-      "notEditable": "Attendance responses cannot be changed once submitted. Please contact us directly if you need to make any adjustments."
+      "message": "This guest has already RSVP-ed by {initiator} on {date}.",
+      "notEditable": "RSVP responses cannot be changed once submitted. Please contact us if you need to make an update."
     }
   },
-  "gallery": {
-    "heading": "Our Moments"
+  "mainCourse": {
+    "heading": "Select your main course",
+    "required": "Please select a main course for all attending guests.",
+    "options": {
+      "beef": {
+        "label": "Wagyu Beef Striploin",
+        "description": "Confit potato, chanterelle mushroom, seasonal vegetables, red wine reduction"
+      },
+      "fish": {
+        "label": "St John Temasek Seabass",
+        "description": "Fennel-potato puree, seasonal vegetables, chablis cream, truffle butter seared"
+      }
+    }
+  },
+  "weddingTimeline": {
+    "heading": "Wedding Timeline",
+    "body": "A first look at how the day will unfold, from the ceremony to our evening celebration.",
+    "note": "We will share more in-depth details of the timeline closer to the big day, so please stay tuned on this website.",
+    "events": {
+      "partyAssembles": {
+        "time": "01:40 PM",
+        "title": "Wedding Party Assembles",
+        "description": "Our wedding party gathers and prepares for the ceremony to begin."
+      },
+      "ceremonyBegins": {
+        "time": "02:00 PM",
+        "title": "Ceremony Begins",
+        "description": "We begin our wedding Mass surrounded by family, friends, and prayer."
+      },
+      "massConcludes": {
+        "time": "03:15 PM",
+        "title": "Wedding Mass Concludes",
+        "description": "After the Mass, we will take group photos with our loved ones at the church."
+      },
+      "leaveChurch": {
+        "time": "03:40 PM",
+        "title": "Leave Church",
+        "description": "Guests may make their way from the church and enjoy the afternoon before dinner."
+      },
+      "break": {
+        "time": "03:40 PM to 06:00 PM",
+        "title": "Afternoon Break",
+        "description": "A short gap between the ceremony and reception for rest, travel, or a quiet coffee nearby."
+      },
+      "guestArrival": {
+        "time": "06:00 PM",
+        "title": "Guest Arrival at The Lighthouse",
+        "description": "Guests arrive at The Lighthouse for the evening reception."
+      },
+      "dinnerBegins": {
+        "time": "07:00 PM",
+        "title": "Dinner Reception Begins",
+        "description": "Dinner, speeches, laughter, and celebration begin as the city lights settle in."
+      },
+      "receptionConcludes": {
+        "time": "10:00 PM",
+        "title": "Reception Concludes",
+        "description": "We close the evening with full hearts and grateful goodbyes."
+      }
+    }
+  },
+  "whatToWear": {
+    "heading": "What to Wear",
+    "lead": "Formal or cocktail attire.",
+    "ladies": {
+      "heading": "For Ladies",
+      "body": "Dresses, elegant jumpsuits, or dressy separates are welcome. We would love to see you in soft pink or light brown. We advise to leave the white dresses for the bride!"
+    },
+    "gentlemen": {
+      "heading": "For Gentlemen",
+      "body": "A suit, blazer with tailored trousers, or a long-sleeved dress shirt with formal trousers is recommended. Please avoid shorts, jeans, T-shirts, and slippers. Black, brown, gray or white are welcome."
+    },
+    "closing": "We invite you to dress elegantly and comfortably for our church ceremony and evening celebration.",
+    "imageAlt": "Wedding attire guide",
+    "imagePlaceholder": "Attire guide coming soon"
+  },
+  "giftRegistry": {
+    "heading": "Gift Registry",
+    "body": "Should you wish to bless us with a wedding gift, a monetary contribution toward our future together would be sincerely appreciated.",
+    "closing": "We are truly looking forward to celebrating this special occasion with you."
+  },
+  "questionsAndAnswers": {
+    "heading": "Questions & Answers",
+    "body": "A few helpful notes as you prepare to celebrate with us.",
+    "items": {
+      "rsvpDeadline": {
+        "question": "When should I RSVP?",
+        "answer": "Kindly send your RSVP by 31 October 2026 so we can make the final arrangements with care."
+      },
+      "plusOnes": {
+        "question": "Can I bring a plus one?",
+        "answer": "Please refer to the names included in your invitation link. To keep the celebration intimate, we can only accommodate invited guests."
+      },
+      "dressCode": {
+        "question": "What should I wear?",
+        "answer": "Formal or cocktail attire is requested. Soft pink, light brown, black, brown, gray, or white are welcome, while white dresses are reserved for the bride."
+      },
+      "timelineDetails": {
+        "question": "Will more timeline details be shared?",
+        "answer": "Yes. We will share more in-depth details closer to the big day, so please stay tuned on this website."
+      }
+    }
   },
   "footer": {
     "message": "Made with love"
+  },
+  "languageToggle": {
+    "ariaLabel": "Switch language",
+    "labels": {
+      "en": "EN",
+      "fil": "FIL"
+    }
+  },
+  "admin": {
+    "loginTitle": "Admin Access",
+    "passwordPlaceholder": "Enter password",
+    "signIn": "Sign in",
+    "loginError": "Incorrect password.",
+    "title": "RSVP Dashboard",
+    "refresh": "Refresh",
+    "exportExcel": "Export Excel",
+    "lastRefreshed": "Last refreshed:",
+    "fetchError": "Failed to load guest list. Check your Sheets API key.",
+    "loading": "Loading guest list...",
+    "summary": {
+      "totalGuests": "Total Guests",
+      "attending": "Attending",
+      "declined": "Declined",
+      "pending": "Pending",
+      "beef": "Beef",
+      "fish": "Fish"
+    },
+    "table": {
+      "guestName": "Guest Name",
+      "partyOf": "Party Of",
+      "mealChoice": "Meal Choice",
+      "rsvp": "RSVP",
+      "dateSubmitted": "Date Submitted"
+    },
+    "rsvpStatus": {
+      "yes": "Yes",
+      "no": "No",
+      "pending": "Pending"
+    },
+    "noValue": "-",
+    "exportSheetName": "RSVP",
+    "exportFilenamePrefix": "EleazMeadRSVP"
   }
 }

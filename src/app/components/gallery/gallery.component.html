@@ -9,19 +9,19 @@
             class="gallery__tile"
             type="button"
             (click)="open(i)"
-            [attr.aria-label]="'View photo ' + (i + 1)"
+            [attr.aria-label]="textWithNumber('gallery.tileAriaLabel', i + 1)"
           >
             <img
               class="gallery__tile-img"
               [src]="imageUrl(filename)"
-              [alt]="'Photo ' + (i + 1)"
+              [alt]="textWithNumber('gallery.imageAlt', i + 1)"
               loading="lazy"
             />
           </button>
         }
       </div>
     } @else {
-      <p class="gallery__empty">Photos coming soon.</p>
+      <p class="gallery__empty">{{ 'gallery.empty' | translate }}</p>
     }
   </div>
 
@@ -30,17 +30,22 @@
       class="gallery__overlay"
       role="dialog"
       aria-modal="true"
-      aria-label="Photo lightbox"
+      [attr.aria-label]="'gallery.lightboxAriaLabel' | translate"
       (click)="close()"
     >
-      <button class="gallery__overlay-close" type="button" (click)="close()" aria-label="Close">
+      <button
+        class="gallery__overlay-close"
+        type="button"
+        (click)="close()"
+        [attr.aria-label]="'gallery.closeAriaLabel' | translate"
+      >
         &#215;
       </button>
       <div class="gallery__overlay-content" (click)="stopPropagation($event)">
         <img
           class="gallery__overlay-img"
           [src]="imageUrl(images()[selectedIndex()!])"
-          [alt]="'Photo ' + (selectedIndex()! + 1)"
+          [alt]="textWithNumber('gallery.imageAlt', selectedIndex()! + 1)"
         />
       </div>
     </div>

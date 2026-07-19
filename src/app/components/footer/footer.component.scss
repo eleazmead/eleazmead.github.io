@@ -1,7 +1,8 @@
 .footer {
   padding: 4rem 1.5rem;
   text-align: center;
-  border-top: 1px solid var(--color-primary);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 60%, var(--color-surface));
+  background: var(--color-secondary);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -11,7 +12,7 @@
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 300;
-  color: var(--color-text);
+  color: var(--color-surface);
 }
 
 .footer__date,
@@ -19,7 +20,7 @@
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 300;
-  color: var(--color-muted);
+  color: color-mix(in srgb, var(--color-surface) 62%, var(--color-primary));
   letter-spacing: 0.06em;
 }
 
@@ -27,7 +28,7 @@
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 300;
-  color: var(--color-primary);
+  color: var(--color-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-top: 0.75rem;
