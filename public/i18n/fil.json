@@ -2,6 +2,11 @@
   "app": {
     "title": "Eleaz at Mead"
   },
+  "seo": {
+    "titleTemplate": "{0} at {1} - Kasal sa {2}",
+    "description": "Ikakasal sina {0} at {1} sa {2} sa Singapore. Tingnan ang detalye ng kasal, mag-RSVP, at marami pang iba.",
+    "keywords": "kasal nina {0} at {1}, wedding nina {0} at {1} sa Singapore, RSVP sa kasal"
+  },
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",
