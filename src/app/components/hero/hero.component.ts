@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { APP_CONFIG } from '../../config/app.config';
 import { GuestSearchService } from '../../shared/guest-search.service';
@@ -12,7 +12,8 @@ import { TranslationService } from '../../shared/translation.service';
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.scss',
 })
-export class HeroComponent implements OnInit {
+export class HeroComponent implements OnInit, AfterViewInit {
+  @ViewChild('backdropVideo') private backdropVideo!: ElementRef<HTMLVideoElement>;
   private readonly route = inject(ActivatedRoute);
   private readonly guestSearch = inject(GuestSearchService);
   private readonly ts = inject(TranslationService);
@@ -44,6 +45,12 @@ export class HeroComponent implements OnInit {
         this.guestNameLoading.set(false);
       },
     });
+  }
+
+  ngAfterViewInit(): void {
+    const video = this.backdropVideo.nativeElement;
+    video.muted = true;
+    video.play().catch(() => {});
   }
 
   scrollToRsvp(event: Event): void {
