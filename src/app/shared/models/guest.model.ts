@@ -12,6 +12,10 @@ export interface GuestRow {
   fullNameHashMd5: string;
   guest1FullNameHashMd5: string;
   guest2FullNameHashMd5: string;
+  letterAddress: string;
+  letterMessage: string;
+  letterShowForAll: string;
+  letterSignedBy: string;
 }
 
 export type MealChoice = 'beef' | 'fish';

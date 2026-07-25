@@ -129,15 +129,6 @@ img {
   color: var(--color-text);
   letter-spacing: 0.02em;
   margin-bottom: 1.5rem;
-
-  &::after {
-    content: '';
-    display: block;
-    width: 56px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
-    margin-top: 0.75rem;
-  }
 }
 
 // FadeUpDirective target classes — global because applied programmatically

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HeroComponent } from '../hero/hero.component';
+import { GuestLetterComponent } from '../guest-letter/guest-letter.component';
 import { OurStoryComponent } from '../our-story/our-story.component';
 import { VenuesComponent } from '../venues/venues.component';
 import { RsvpComponent } from '../rsvp/rsvp.component';
@@ -15,6 +16,7 @@ import { LanguageToggleComponent } from '../../shared/language-toggle/language-t
   standalone: true,
   imports: [
     HeroComponent,
+    GuestLetterComponent,
     OurStoryComponent,
     VenuesComponent,
     RsvpComponent,

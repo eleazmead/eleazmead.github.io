@@ -1,5 +1,5 @@
 .venues {
-  padding: 5.5rem 1.25rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(251, 247, 242, 0.76), rgba(255, 255, 255, 0.62)),
     linear-gradient(115deg, rgba(184, 149, 126, 0.12), transparent 48%);
@@ -16,7 +16,7 @@
 
 .venues__intro {
   max-width: 680px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.25rem;
   text-align: center;
 
   @media (min-width: 1024px) {
@@ -36,7 +36,12 @@
 .venues__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 3.5rem;
+  gap: 2.5rem;
+
+  @media (min-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
 }
 
 .venues__item {
@@ -44,30 +49,13 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
   align-items: center;
-
-  @media (min-width: 900px) {
-    grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
-    gap: 3rem;
-
-    &:nth-child(even) {
-      .venues__copy {
-        grid-column: 2;
-      }
-
-      .venues__photo,
-      .venues__photo-placeholder {
-        grid-column: 1;
-        grid-row: 1;
-      }
-    }
-  }
 }
 
 .venues__photo,
 .venues__photo-placeholder {
-  width: 100%;
+  width: min(70%, 420px);
   min-height: 0;
-  aspect-ratio: 16 / 10;
+  margin: 0 auto;
   border: 1px solid rgba(18, 18, 18, 0.12);
   border-radius: 0.45rem;
   box-shadow: 0 18px 38px rgba(18, 18, 18, 0.1);
@@ -75,12 +63,14 @@
 
 .venues__photo {
   display: block;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
 }
 
 .venues__photo-placeholder {
   display: grid;
   place-items: center;
+  aspect-ratio: 16 / 10;
   padding: 1.5rem;
   background:
     linear-gradient(135deg, rgba(184, 149, 126, 0.18), rgba(217, 160, 168, 0.2)),
@@ -105,6 +95,10 @@
   gap: 0.85rem;
   padding: 1.25rem 0 1.25rem 1.25rem;
   border-left: 1px solid color-mix(in srgb, var(--color-primary) 46%, transparent);
+
+  @media (min-width: 960px) {
+    align-self: start;
+  }
 }
 
 .venues__name {

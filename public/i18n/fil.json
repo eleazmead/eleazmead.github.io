@@ -13,9 +13,17 @@
   "hero": {
     "headline": "{0}, ikakasal na kami sa Lion City at lubos kaming matutuwa kung makakasama ka namin sa pagdiriwang ng aming pagmamahalan.",
     "loadingGreeting": "Kumusta",
+    "noInputGreeting": "Kumusta",
     "ceremonyLabel": "Misa ng Kasal",
+    "ceremonyTime": "2:00 PM",
     "receptionLabel": "Hapunan at Salu-salo",
+    "receptionTime": "6:00 PM",
     "cta": "Mag-RSVP"
+  },
+  "guestLetter": {
+    "dear": "Mahal naming",
+    "signatureLine": "Nagmamahal",
+    "coupleName": "Eleaz at Mead"
   },
   "ourStory": {
     "heading": "Ang Aming Kwento",
@@ -68,16 +76,16 @@
   "venues": {
     "heading": "Mga Venue",
     "body": "Dalawang magagandang lugar ang magiging tahanan ng pinakamahalagang bahagi ng aming araw: isang sagradong simula at isang pagdiriwang sa tabi ng bay.",
-    "photoPlaceholder": "Malapit nang ilagay ang venue photo",
+    "photoPlaceholder": "Malapit nang ilagay ang larawan ng lugar",
     "photoAlt": "Larawan ng wedding venue {0}",
     "items": {
       "church": {
         "name": "St. Joseph's Church (Victoria Street)",
-        "description": "Isang makasaysayang Catholic church sa puso ng Singapore, kung saan ang tahimik na ganda, tradisyon, at panalangin ang magiging tagpuan ng simula ng aming buhay mag-asawa.",
+        "description": "Isang makasaysayang simbahang Katoliko sa puso ng Singapore, kung saan ang tahimik na ganda, tradisyon, at panalangin ang magiging tagpuan ng simula ng aming buhay mag-asawa.",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
-        "name": "THE LIGHTHOUSE | The Fullerton Hotel Singapore",
+        "name": "The Lighthouse Fullerton Hotel Singapore",
         "description": "Isang eleganteng rooftop dining room na tanaw ang Marina Bay, kung saan ang hapunan, kwentuhan, at ilaw ng lungsod ang magpapatuloy ng pagdiriwang sa gabi.",
         "address": "1 Fullerton Square, Singapore 049178"
       }
@@ -87,40 +95,44 @@
     "heading": "RSVP",
     "deadline": {
       "prefix": "Mangyaring mag-RSVP bago ang",
-      "date": "31 Oktubre 2026."
+      "date": "31 Oktubre 2026.",
+      "closedMessage": "Sarado na ang mga pagbabago sa RSVP. Maraming salamat sa inyong pag-unawa."
     },
     "note": "Dahil ang pagdalo sa aming kasal ay mangangailangan ng pagbiyahe para sa ilan sa aming mga bisita, naiintindihan namin ang dagdag na oras, effort, at mga kailangang ayusin. Wala po kayong kailangang maramdaman na pressure, pero napakalaking bagay sa amin kung makakasama namin kayo sa pagdiriwang.",
     "yes": "Masayang dadalo",
     "no": "Ikinalulungkot na hindi makakadalo",
     "submit": "Ipadala ang RSVP",
-    "successMessage": "Salamat! Hindi na kami makapaghintay na makapagdiwang kasama ka.",
+    "successMessage": "Salamat! Matagumpay na naipadala ang iyong RSVP.",
+    "successNote": "Maaari mong gamitin muli ang iyong link ng imbitasyon upang baguhin ang iyong tugon bago ang takdang petsa ng RSVP.",
     "goBack": "Bumalik",
     "rsvpFor": "RSVP para kay",
     "confirmHeading": "Suriin ang iyong RSVP",
-    "confirmBody": "Pakisuri muna bago ipadala. Hindi na mababago ang tugon pagkatapos isumite.",
+    "confirmBody": "Pakisuri muna bago ipadala. Maaari mo pang baguhin ang iyong tugon bago ang takdang petsa ng RSVP.",
+    "reviewReminder": "Paalala lamang na may dalawang St. Joseph’s Church sa Singapore. Ang aming seremonya ng kasal ay gaganapin sa St. Joseph’s Church, Victoria Street. Pakisuyong tiyaking tama ang address bago pumunta sa simbahan upang maiwasan ang pagkalito.",
     "submitting": "Ipinapadala ang iyong RSVP...",
     "errorMessage": "May nangyaring mali. Pakisubukang muli o direktang makipag-ugnayan sa amin.",
     "inviteOnly": {
-      "message": "Mga imbitadong bisita lamang ang maaaring magpadala ng RSVP at dumalo sa event. Mangyaring gamitin ang invitation link na ibinigay ng couple."
+      "message": "Mga imbitadong bisita lamang ang maaaring magpadala ng RSVP at dumalo sa pagdiriwang. Mangyaring gamitin ang link ng imbitasyon na ibinigay ng magkasintahan."
     },
     "search": {
       "label": "Ilagay ang iyong pangalan para hanapin ang imbitasyon",
       "placeholder": "hal. Juan dela Cruz",
       "buttonLabel": "Hanapin Ako",
-      "notFound": "Hindi namin ma-verify ang invitation link na ito. Pakisuyo",
+      "notFound": "Hindi namin mapatunayan ang link ng imbitasyong ito. Pakisuyo",
       "notFoundContact": "mag-message sa amin sa WhatsApp",
       "searching": "Hinahanap..."
     },
     "related": {
       "promptHeading": "May nakita rin kaming ibang bisita sa iyong grupo",
-      "promptBody": "Gusto mo rin ba silang i-RSVP?",
+      "promptBody": "Gusto mo rin ba silang isama sa iyong RSVP?",
       "include": "Isama",
       "exclude": "Huwag isama",
       "alreadyResponded": "Nakatugon na"
     },
     "alreadyRsvped": {
       "message": "May naipadalang RSVP na para sa bisitang ito ni {initiator} noong {date}.",
-      "notEditable": "Hindi na mababago ang RSVP pagkatapos isumite. Mangyaring makipag-ugnayan sa amin kung kailangan ng pagbabago."
+      "editPrompt": "Maaari mong baguhin ang iyong tugon sa RSVP at pangunahing putahe sa ibaba bago ang takdang petsa ng RSVP.",
+      "notEditable": "Hindi na mababago ang RSVP dahil lumipas na ang takdang petsa ng RSVP."
     }
   },
   "mainCourse": {
@@ -129,83 +141,85 @@
     "options": {
       "beef": {
         "label": "Wagyu Beef Striploin",
-        "description": "Confit potato, chanterelle mushroom, seasonal vegetables, red wine reduction"
+        "description": "Confit na patatas, chanterelle mushroom, gulay na napapanahon, at red wine reduction"
       },
       "fish": {
         "label": "St John Temasek Seabass",
-        "description": "Fennel-potato puree, seasonal vegetables, chablis cream, truffle butter seared"
+        "description": "Fennel-potato puree, gulay na napapanahon, chablis cream, at niluto sa truffle butter"
       }
     }
   },
   "weddingTimeline": {
     "heading": "Timeline ng Kasal",
-    "body": "Isang unang silip sa daloy ng aming araw, mula sa ceremony hanggang sa pagdiriwang sa gabi.",
-    "note": "Magbabahagi pa kami ng mas detalyadong timeline habang papalapit ang big day, kaya manatiling nakaabang sa website na ito.",
+    "body": "Isang silip sa magiging daloy ng aming araw, mula sa seremonya hanggang sa pagdiriwang sa gabi. Gagawin namin ang aming makakaya upang masunod ang iskedyul, ngunit maaaring bahagyang magbago ang oras sa mismong araw.",
+    "note": "Magbabahagi pa kami ng mas detalyadong iskedyul habang papalapit ang malaking araw, kaya manatiling nakaabang sa website na ito.",
     "events": {
       "partyAssembles": {
         "time": "01:40 PM",
-        "title": "Mag-a-assemble ang Wedding Party",
-        "description": "Magkikita-kita at maghahanda ang wedding party bago magsimula ang ceremony."
+        "title": "Magkikita-kita ang Wedding Party",
+        "description": "Magkikita-kita at maghahanda ang malalapit na miyembro ng pamilya at wedding entourage bago magsimula ang seremonya."
       },
       "ceremonyBegins": {
         "time": "02:00 PM",
-        "title": "Magsisimula ang Ceremony",
-        "description": "Sisimulan namin ang wedding Mass kasama ang pamilya, mga kaibigan, at panalangin."
+        "title": "Magsisimula ang Seremonya",
+        "description": "Sisimulan namin ang Misa ng Kasal kasama ang pamilya, mga kaibigan, at panalangin."
       },
       "massConcludes": {
         "time": "03:15 PM",
-        "title": "Matatapos ang Wedding Mass",
-        "description": "Pagkatapos ng Mass, kukuha kami ng group photos kasama ang aming mga mahal sa buhay sa church."
-      },
-      "leaveChurch": {
-        "time": "03:40 PM",
-        "title": "Aalis sa Church",
-        "description": "Maaaring umalis ang guests mula sa church at magpahinga muna bago ang dinner."
+        "title": "Matatapos ang Misa ng Kasal",
+        "description": "Pagkatapos ng Misa, inaanyayahan namin kayong manatili para sa mga litrato ng grupo sa simbahan. Pagkatapos nito, magkikita-kita tayong muli sa gabi para sa handaan."
       },
       "break": {
-        "time": "03:40 PM to 06:00 PM",
-        "title": "Afternoon Break",
-        "description": "Isang maikling pagitan bago ang reception para makapagpahinga, makabiyahe, o magkape nearby."
+        "time": "",
+        "title": "",
+        "description": "Magkakaroon ng ilang oras na pahinga sa pagitan ng seremonya at handaan sa gabi. Maaari kayong magpahinga, mamasyal sa mga kalapit na lugar, o bumalik sa inyong tutuluyan upang makapaghanda para sa pagdiriwang sa gabi."
       },
       "guestArrival": {
         "time": "06:00 PM",
-        "title": "Guest Arrival sa The Lighthouse",
-        "description": "Darating ang guests sa The Lighthouse para sa evening reception."
+        "title": "Pagdating ng mga Bisita sa The Lighthouse Fullerton",
+        "description": "Magkikita-kita tayong muli upang ipagpatuloy ang pagdiriwang sa aming handaan sa gabi."
       },
       "dinnerBegins": {
         "time": "07:00 PM",
-        "title": "Magsisimula ang Dinner Reception",
-        "description": "Magsisimula ang hapunan, speeches, tawanan, at pagdiriwang habang nagniningning ang city lights."
+        "title": "Magsisimula ang Hapunan",
+        "description": "Magsisimula ang hapunan, mga mensahe, tawanan, at pagdiriwang habang unti-unting nagniningning ang mga ilaw ng lungsod."
+      },
+      "sde": {
+        "time": "",
+        "title": "Isang Natatanging Pelikula ng Kasal",
+        "description": "Naghanda kami ng pelikulang ipapalabas sa mismong araw na nagtatampok ng mga sandali mula sa aming kasal, at nais naming manatili kayo hanggang sa dulo ng programa upang mapanood ito kasama namin bago matapos ang gabi."
       },
       "receptionConcludes": {
         "time": "10:00 PM",
-        "title": "Matatapos ang Reception",
+        "title": "Matatapos ang Pagtitipon",
         "description": "Tatapusin namin ang gabi na puno ang puso at may pasasalamat."
       }
     }
   },
   "whatToWear": {
-    "heading": "What to Wear",
-    "lead": "Formal or cocktail attire.",
+    "heading": "Kasuotan",
+    "lead": "Pormal o kasuotang pang-cocktail.",
     "ladies": {
-      "heading": "For Ladies",
-      "body": "Malugod naming tinatanggap ang dresses, elegant jumpsuits, o dressy separates. Masaya kaming makita kayo sa soft pink o light brown. Hinihiling naming ipaubaya ang white dresses para sa bride!"
+      "heading": "Para sa Kababaihan",
+      "body": "Malugod naming tinatanggap ang mga bestida, eleganteng jumpsuit, o maayos na magkapares na kasuotan. Masaya kaming makita kayo sa banayad na rosas o mapusyaw na kayumanggi. Hinihiling naming ipaubaya ang mga puting bestida para sa bride!"
     },
     "gentlemen": {
-      "heading": "For Gentlemen",
-      "body": "Inirerekomenda ang suit, blazer na may tailored trousers, o long-sleeved dress shirt na may formal trousers. Iwasan po ang shorts, jeans, T-shirts, at slippers. Black, brown, gray, o white ay welcome."
+      "heading": "Para sa Kalalakihan",
+      "body": "Inirerekomenda ang suit, blazer na may maayos na pantalon, o long-sleeved dress shirt na may pormal na pantalon. Iwasan po ang shorts, jeans, T-shirt, at tsinelas. Malugod naming tinatanggap ang itim, kayumanggi, abo, puti, o banayad na rosas."
     },
-    "closing": "Inaanyayahan namin kayong manamit nang elegante at komportable para sa aming church ceremony at evening celebration.",
-    "imageAlt": "Wedding attire guide",
-    "imagePlaceholder": "Malapit nang ilagay ang attire guide"
+    "closing": "Inaanyayahan namin kayong manamit nang elegante at komportable para sa aming seremonya sa simbahan at pagdiriwang sa gabi.",
+    "colorGuide": "Gabay sa kulay",
+    "imageTitle": "Gabay sa Kasuotan",
+    "imageAlt": "Gabay sa kasuotan para sa kasal",
+    "imagePlaceholder": "Malapit nang ilagay ang gabay sa kasuotan"
   },
   "giftRegistry": {
-    "heading": "Gift Registry",
+    "heading": "Tungkol sa Regalo",
     "body": "Kung nais ninyo kaming pagpalain ng wedding gift, lubos naming pasasalamatan ang monetary contribution para sa aming magiging buhay na magkasama.",
     "closing": "Tunay kaming nasasabik na ipagdiwang ang espesyal na okasyong ito kasama kayo."
   },
   "questionsAndAnswers": {
-    "heading": "Questions & Answers",
+    "heading": "Mga Tanong at Sagot",
     "body": "Ilang mahahalagang paalala habang naghahanda kayong makipagdiwang kasama kami.",
     "items": {
       "rsvpDeadline": {
@@ -214,20 +228,20 @@
       },
       "plusOnes": {
         "question": "Pwede ba akong magsama ng plus one?",
-        "answer": "Pakitingnan ang mga pangalan na kasama sa inyong invitation link. Upang mapanatiling intimate ang pagdiriwang, maaari lamang naming tanggapin ang mga imbitadong bisita."
+        "answer": "Pakitingnan ang mga pangalan na kasama sa inyong link ng imbitasyon. Upang mapanatiling malapit at personal ang pagdiriwang, maaari lamang naming tanggapin ang mga imbitadong bisita."
       },
       "dressCode": {
         "question": "Ano ang dapat isuot?",
-        "answer": "Formal or cocktail attire po. Welcome ang soft pink, light brown, black, brown, gray, o white, habang ang white dresses ay para sa bride."
+        "answer": "Pormal o kasuotang pang-cocktail po. Malugod naming tinatanggap ang banayad na rosas, mapusyaw na kayumanggi, itim, kayumanggi, abo, o puti, habang ang puting bestida ay para sa bride."
       },
       "timelineDetails": {
         "question": "Magbabahagi pa ba ng mas detalyadong timeline?",
-        "answer": "Oo. Magbabahagi kami ng mas detalyadong impormasyon habang papalapit ang big day, kaya manatiling nakaabang sa website na ito."
+        "answer": "Oo. Magbabahagi kami ng mas detalyadong impormasyon habang papalapit ang malaking araw, kaya manatiling nakaabang sa website na ito."
       }
     }
   },
   "footer": {
-    "message": "Ginawa nang may pagmamahal"
+    "message": "Website na ginawa nang may pagmamahal ng Nobyo at Nobya."
   },
   "languageToggle": {
     "ariaLabel": "Palitan ang wika",
@@ -237,35 +251,42 @@
     }
   },
   "admin": {
-    "loginTitle": "Admin Access",
+    "loginTitle": "Access ng Admin",
     "passwordPlaceholder": "Ilagay ang password",
     "signIn": "Mag-sign in",
     "loginError": "Maling password.",
-    "title": "RSVP Dashboard",
+    "title": "Dashboard ng RSVP",
     "refresh": "I-refresh",
     "exportExcel": "I-export sa Excel",
     "lastRefreshed": "Huling na-refresh:",
-    "fetchError": "Hindi ma-load ang guest list. Suriin ang iyong Sheets API key.",
-    "loading": "Nilo-load ang guest list...",
+    "fetchError": "Hindi ma-load ang listahan ng mga bisita. Suriin ang iyong Sheets API key.",
+    "loading": "Nilo-load ang listahan ng mga bisita...",
     "summary": {
       "totalGuests": "Kabuuang Bisita",
       "attending": "Dadalo",
       "declined": "Hindi Dadalo",
       "pending": "Naghihintay",
-      "beef": "Beef",
-      "fish": "Fish"
+      "beef": "Baka",
+      "fish": "Isda"
     },
     "table": {
       "guestName": "Pangalan ng Bisita",
       "partyOf": "Kasama sa Grupo",
       "mealChoice": "Piniling Pagkain",
       "rsvp": "RSVP",
-      "dateSubmitted": "Petsa ng Pagsumite"
+      "dateSubmitted": "Petsa ng Pagsumite",
+      "copyInvitationLink": "Kopyahin ang Link ng Imbitasyon"
+    },
+    "copyInvitation": {
+      "copy": "Kopyahin",
+      "copied": "Nakopya",
+      "unavailable": "Walang Hash",
+      "error": "Hindi makopya ang link ng imbitasyon. Pakisubukang muli."
     },
     "rsvpStatus": {
       "yes": "Oo",
       "no": "Hindi",
-      "pending": "Pending"
+      "pending": "Naghihintay"
     },
     "noValue": "-",
     "exportSheetName": "RSVP",

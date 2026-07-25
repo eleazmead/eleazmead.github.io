@@ -8,6 +8,16 @@
         <div class="what-to-wear__group">
           <h3 class="what-to-wear__subheading">{{ 'whatToWear.ladies.heading' | translate }}</h3>
           <p>{{ 'whatToWear.ladies.body' | translate }}</p>
+          <div class="what-to-wear__colors" [attr.aria-label]="'whatToWear.colorGuide' | translate">
+            <span class="what-to-wear__colors-label">{{
+              'whatToWear.colorGuide' | translate
+            }}</span>
+            <div class="what-to-wear__swatches">
+              @for (color of ladiesColorGuide; track color) {
+                <span class="what-to-wear__swatch" [style.background-color]="color"></span>
+              }
+            </div>
+          </div>
         </div>
 
         <div class="what-to-wear__group">
@@ -15,6 +25,16 @@
             {{ 'whatToWear.gentlemen.heading' | translate }}
           </h3>
           <p>{{ 'whatToWear.gentlemen.body' | translate }}</p>
+          <div class="what-to-wear__colors" [attr.aria-label]="'whatToWear.colorGuide' | translate">
+            <span class="what-to-wear__colors-label">{{
+              'whatToWear.colorGuide' | translate
+            }}</span>
+            <div class="what-to-wear__swatches">
+              @for (color of gentlemenColorGuide; track color) {
+                <span class="what-to-wear__swatch" [style.background-color]="color"></span>
+              }
+            </div>
+          </div>
         </div>
       </div>
 
@@ -22,6 +42,7 @@
     </div>
 
     <div class="what-to-wear__image-wrap" appFadeUp>
+      <h3 class="what-to-wear__image-title">{{ 'whatToWear.imageTitle' | translate }}</h3>
       @if (shouldShowImage()) {
         <img
           class="what-to-wear__image"

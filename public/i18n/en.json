@@ -13,9 +13,17 @@
   "hero": {
     "headline": "{0}, we're getting married in the heart of the Lion City and we will be delighted to have you join us as we celebrate our love.",
     "loadingGreeting": "Hi there",
+    "noInputGreeting": "Hi",
     "ceremonyLabel": "Wedding Mass Ceremony",
+    "ceremonyTime": "2:00 PM",
     "receptionLabel": "Wedding Dinner Reception",
+    "receptionTime": "6:00 PM",
     "cta": "RSVP Now"
+  },
+  "guestLetter": {
+    "dear": "Dear",
+    "signatureLine": "With love",
+    "coupleName": "Eleaz & Mead"
   },
   "ourStory": {
     "heading": "Our Story",
@@ -72,13 +80,13 @@
     "photoAlt": "Wedding venue photo {0}",
     "items": {
       "church": {
-        "name": "St. Joseph's Church (Victoria Street)",
+        "name": "St. Joseph's Church (Victoria Street) 2:00 PM",
         "description": "A historic Catholic church in the heart of Singapore, where quiet beauty, tradition, and prayer will frame the beginning of our married life.",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
-        "name": "THE LIGHTHOUSE | The Fullerton Hotel Singapore",
-        "description": "An elegant rooftop dining room overlooking Marina Bay, where dinner, stories, and city lights will carry the celebration into the evening.",
+        "name": "The Lighthouse Fullerton 6:00 PM",
+        "description": "Perched atop The Fullerton Hotel Singapore on the 8th floor, an elegant rooftop dining overlooking Marina Bay, where dinner, heartfelt stories, and the glow of the city lights will carry the celebration into the evening.",
         "address": "1 Fullerton Square, Singapore 049178"
       }
     }
@@ -87,17 +95,20 @@
     "heading": "RSVP",
     "deadline": {
       "prefix": "Kindly RSVP by",
-      "date": "31 October 2026."
+      "date": "31 October 2026.",
+      "closedMessage": "RSVP updates are now closed. Thank you for your understanding."
     },
-    "note": "As attending our wedding will involve travelling for some of our guests, we understand the additional time, effort, and arrangements required. Please know that there is absolutely no pressure, though having you celebrate with us would mean so much.",
+    "note": "We understand that attending our wedding will involve travelling for some of you, and we truly appreciate the additional time, effort, and arrangements you will make. At the same time, please know that there is absolutely no pressure. While having you celebrate with us would make us very happy, your love and well wishes are equally cherished.",
     "yes": "Joyfully accepts",
     "no": "Regretfully declines",
     "submit": "Send RSVP",
-    "successMessage": "Thank you! We can't wait to celebrate with you.",
+    "successMessage": "Thank you! Your RSVP has been successfully submitted.",
+    "successNote": "You may use your invitation link again to update your response before the RSVP deadline.",
     "goBack": "Go back",
     "rsvpFor": "RSVP for",
     "confirmHeading": "Review your RSVP",
-    "confirmBody": "Please review before submitting. Responses cannot be edited after submission.",
+    "confirmBody": "Please review before submitting. You may update your response again before the RSVP deadline.",
+    "reviewReminder": "Please note that there are two St. Joseph’s Churches in Singapore. Our wedding ceremony will be held at St. Joseph’s Church, Victoria Street. Kindly double-check the address before making your way to the church to avoid any confusion.",
     "submitting": "Submitting your RSVP...",
     "errorMessage": "Something went wrong. Please try again or contact us directly.",
     "inviteOnly": {
@@ -120,7 +131,8 @@
     },
     "alreadyRsvped": {
       "message": "This guest has already RSVP-ed by {initiator} on {date}.",
-      "notEditable": "RSVP responses cannot be changed once submitted. Please contact us if you need to make an update."
+      "editPrompt": "You may update your RSVP response and main course below before the RSVP deadline.",
+      "notEditable": "RSVP responses can no longer be changed because the RSVP deadline has passed."
     }
   },
   "mainCourse": {
@@ -139,13 +151,13 @@
   },
   "weddingTimeline": {
     "heading": "Wedding Timeline",
-    "body": "A first look at how the day will unfold, from the ceremony to our evening celebration.",
+    "body": "A glimpse of how our day will unfold, from the ceremony to the evening celebration. While we will do our best to follow the schedule, timings may vary slightly on the day.",
     "note": "We will share more in-depth details of the timeline closer to the big day, so please stay tuned on this website.",
     "events": {
       "partyAssembles": {
         "time": "01:40 PM",
         "title": "Wedding Party Assembles",
-        "description": "Our wedding party gathers and prepares for the ceremony to begin."
+        "description": "Immediate family members and the wedding entourage gather and prepare for the ceremony to begin."
       },
       "ceremonyBegins": {
         "time": "02:00 PM",
@@ -155,32 +167,32 @@
       "massConcludes": {
         "time": "03:15 PM",
         "title": "Wedding Mass Concludes",
-        "description": "After the Mass, we will take group photos with our loved ones at the church."
-      },
-      "leaveChurch": {
-        "time": "03:40 PM",
-        "title": "Leave Church",
-        "description": "Guests may make their way from the church and enjoy the afternoon before dinner."
+        "description": "Following the Mass, we invite you to stay for group photographs at the church. We will then reunite later for an evening of celebration at the dinner reception."
       },
       "break": {
-        "time": "03:40 PM to 06:00 PM",
-        "title": "Afternoon Break",
-        "description": "A short gap between the ceremony and reception for rest, travel, or a quiet coffee nearby."
+        "time": "",
+        "title": "",
+        "description": "There will be a few hours of free time between the ceremony and dinner reception. Please feel free to relax, explore nearby attractions, or return to your accommodation to freshen up before the evening celebration."
       },
       "guestArrival": {
         "time": "06:00 PM",
-        "title": "Guest Arrival at The Lighthouse",
-        "description": "Guests arrive at The Lighthouse for the evening reception."
+        "title": "Guest Arrival at The Lighthouse Fullerton",
+        "description": "We gather once more to continue the celebration at our evening reception."
       },
       "dinnerBegins": {
         "time": "07:00 PM",
-        "title": "Dinner Reception Begins",
+        "title": "Dinner Begins",
         "description": "Dinner, speeches, laughter, and celebration begin as the city lights settle in."
+      },
+      "sde": {
+        "time": "",
+        "title": "A Special Wedding Film",
+        "description": "We have prepared a Same-Day Edit featuring moments from our wedding day, and we would love for you to stay until the end of the programme and watch it with us before the evening comes to a close."
       },
       "receptionConcludes": {
         "time": "10:00 PM",
         "title": "Reception Concludes",
-        "description": "We close the evening with full hearts and grateful goodbyes."
+        "description": "We close the evening with full hearts."
       }
     }
   },
@@ -193,16 +205,18 @@
     },
     "gentlemen": {
       "heading": "For Gentlemen",
-      "body": "A suit, blazer with tailored trousers, or a long-sleeved dress shirt with formal trousers is recommended. Please avoid shorts, jeans, T-shirts, and slippers. Black, brown, gray or white are welcome."
+      "body": "A suit, blazer with tailored trousers, or a long-sleeved dress shirt with formal trousers is recommended. Please avoid shorts, jeans, T-shirts, and slippers. Black, brown, gray, white or soft pink are welcome."
     },
     "closing": "We invite you to dress elegantly and comfortably for our church ceremony and evening celebration.",
+    "colorGuide": "Color guide",
+    "imageTitle": "Attire Guide",
     "imageAlt": "Wedding attire guide",
     "imagePlaceholder": "Attire guide coming soon"
   },
   "giftRegistry": {
-    "heading": "Gift Registry",
-    "body": "Should you wish to bless us with a wedding gift, a monetary contribution toward our future together would be sincerely appreciated.",
-    "closing": "We are truly looking forward to celebrating this special occasion with you."
+    "heading": "A note on gifts",
+    "body": "Should you wish to bless us with a wedding gift, ",
+    "closing": "a monetary contribution toward our future together would be sincerely appreciated."
   },
   "questionsAndAnswers": {
     "heading": "Questions & Answers",
@@ -210,24 +224,24 @@
     "items": {
       "rsvpDeadline": {
         "question": "When should I RSVP?",
-        "answer": "Kindly send your RSVP by 31 October 2026 so we can make the final arrangements with care."
+        "answer": "Kindly send your RSVP by 31 October 2026 so we can make the final arrangements in time."
       },
       "plusOnes": {
         "question": "Can I bring a plus one?",
-        "answer": "Please refer to the names included in your invitation link. To keep the celebration intimate, we can only accommodate invited guests."
+        "answer": "As we have reserved a specific number of seats, we can only accommodate the guests named on your invitation. If a plus one is included, their name will appear on your invitation's RSVP section. Unfortunately, we will not be able to accommodate unlisted guests. Thank you for understanding."
       },
       "dressCode": {
         "question": "What should I wear?",
-        "answer": "Formal or cocktail attire is requested. Soft pink, light brown, black, brown, gray, or white are welcome, while white dresses are reserved for the bride."
+        "answer": "Formal or cocktail attire is requested. For ladies, soft pink and light brown are welcome, while white dresses are reserved for the bride. For gentlemen, black, brown, gray, white or soft pink are welcome."
       },
       "timelineDetails": {
-        "question": "Will more timeline details be shared?",
+        "question": "Will you share a more detailed timeline?",
         "answer": "Yes. We will share more in-depth details closer to the big day, so please stay tuned on this website."
       }
     }
   },
   "footer": {
-    "message": "Made with love"
+    "message": "Website Made with Love by the Groom and the Bride."
   },
   "languageToggle": {
     "ariaLabel": "Switch language",
@@ -260,7 +274,14 @@
       "partyOf": "Party Of",
       "mealChoice": "Meal Choice",
       "rsvp": "RSVP",
-      "dateSubmitted": "Date Submitted"
+      "dateSubmitted": "Date Submitted",
+      "copyInvitationLink": "Copy Invitation Link"
+    },
+    "copyInvitation": {
+      "copy": "Copy Link",
+      "copied": "Copied",
+      "unavailable": "No Hash",
+      "error": "Could not copy invitation link. Please try again."
     },
     "rsvpStatus": {
       "yes": "Yes",

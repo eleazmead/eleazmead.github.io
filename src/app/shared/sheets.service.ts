@@ -72,6 +72,10 @@ export class SheetsService {
       fullNameHashMd5: row[cols.fullNameHashMd5] ?? '',
       guest1FullNameHashMd5: row[cols.guest1FullNameHashMd5] ?? '',
       guest2FullNameHashMd5: row[cols.guest2FullNameHashMd5] ?? '',
+      letterAddress: row[cols.letterAddress] ?? '',
+      letterMessage: row[cols.letterMessage] ?? '',
+      letterShowForAll: row[cols.letterShowForAll] ?? '',
+      letterSignedBy: row[cols.letterSignedBy] ?? '',
     };
   }
 }
