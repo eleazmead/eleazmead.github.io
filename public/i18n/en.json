@@ -2,6 +2,11 @@
   "app": {
     "title": "Eleaz & Mead"
   },
+  "seo": {
+    "titleTemplate": "{0} & {1} - Wedding on {2}",
+    "description": "{0} & {1} are getting married on {2} in Singapore. Find our wedding details, RSVP, and more.",
+    "keywords": "{0} and {1} wedding, {0} {1} wedding Singapore, wedding RSVP"
+  },
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",

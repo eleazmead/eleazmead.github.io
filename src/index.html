@@ -2,7 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title></title>
+
+    <!--
+      Static fallback SEO tags below.
+
+      This is a client-rendered Angular SPA with no server-side rendering, and
+      SeoService (src/app/shared/seo.service.ts) updates these tags dynamically
+      once the app boots. However, social link-preview crawlers (WhatsApp,
+      Facebook, X/Twitter, iMessage, Slack) do NOT execute JavaScript - they
+      only read this raw HTML. So the English defaults below must be kept in
+      sync by hand with public/i18n/en.json ("seo" and "couple" keys) and
+      src/app/config/app.config.ts ("seo" block) whenever wedding details,
+      the site URL, or the OG image change.
+    -->
+    <title>Eleaz &amp; Mead - Wedding on 16 January 2027, Saturday</title>
+    <meta
+      name="description"
+      content="Eleaz &amp; Mead are getting married on 16 January 2027, Saturday in Singapore. Find our wedding details, RSVP, and more."
+    />
+    <meta name="keywords" content="Eleaz and Mead wedding, Eleaz Mead wedding Singapore, wedding RSVP" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href="https://eleazmead.com/" />
+    <link rel="alternate" hreflang="en" href="https://eleazmead.com/" />
+    <link rel="alternate" hreflang="fil" href="https://eleazmead.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://eleazmead.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Eleaz &amp; Mead" />
+    <meta property="og:title" content="Eleaz &amp; Mead - Wedding on 16 January 2027, Saturday" />
+    <meta
+      property="og:description"
+      content="Eleaz &amp; Mead are getting married on 16 January 2027, Saturday in Singapore. Find our wedding details, RSVP, and more."
+    />
+    <meta property="og:url" content="https://eleazmead.com/" />
+    <meta property="og:image" content="https://eleazmead.com/og-image.jpg" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="fil_PH" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Eleaz &amp; Mead - Wedding on 16 January 2027, Saturday" />
+    <meta
+      name="twitter:description"
+      content="Eleaz &amp; Mead are getting married on 16 January 2027, Saturday in Singapore. Find our wedding details, RSVP, and more."
+    />
+    <meta name="twitter:image" content="https://eleazmead.com/og-image.jpg" />
+
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />

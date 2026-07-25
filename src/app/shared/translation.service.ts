@@ -1,6 +1,5 @@
 import { Injectable, signal, inject, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Title } from '@angular/platform-browser';
 import { APP_CONFIG } from '../config/app.config';
 
 type Locale = (typeof APP_CONFIG.i18n.supportedLocales)[number];
@@ -8,10 +7,10 @@ type Locale = (typeof APP_CONFIG.i18n.supportedLocales)[number];
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
   private http = inject(HttpClient);
-  private title = inject(Title);
 
   readonly locale = signal<Locale>('en');
   private readonly _translations = signal<Record<string, unknown>>({});
+  readonly translations = this._translations.asReadonly();
 
   constructor() {
     effect(() => {
@@ -49,7 +48,6 @@ export class TranslationService {
       next: (data) => {
         this._translations.set(data);
         if (locale === 'en') this._enFallback = data;
-        this.title.setTitle(this.t('app.title'));
       },
       error: () => {
         if (locale !== 'en') this.fetchTranslations('en');

@@ -10,7 +10,8 @@ export const APP_CONFIG = {
     fontBody: '"Jost", sans-serif',
   },
   assets: {
-    heroBackdropAvif: 'hero/EleazMead_hero_centered-4K-ezgif.com-video-to-avif-converter.avif',
+    heroBackdropWebm: 'hero/EleazMead_hero.webm',
+    heroBackdropMp4: 'hero/hero-backdrop.mp4',
     attireGuideImage: 'attire/wedding-attire-guide.jpg',
     venuePhotos: {
       church: 'venues/st-josephs-church.jpg',
@@ -38,5 +39,17 @@ export const APP_CONFIG = {
   i18n: {
     defaultLocale: 'en',
     supportedLocales: ['en', 'fil'] as const,
+  },
+  seo: {
+    // Canonical production origin - update if the custom domain changes.
+    siteUrl: 'https://eleazmead.com',
+    // 1200x630 recommended. JPG/PNG only - AVIF/WebP are not reliably
+    // rendered by social link-preview crawlers (WhatsApp, Facebook, X).
+    ogImage: 'og-image.jpg',
+    twitterCard: 'summary_large_image',
+    ogLocaleMap: {
+      en: 'en_US',
+      fil: 'fil_PH',
+    },
   },
 } as const;
