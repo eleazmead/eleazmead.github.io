@@ -5,7 +5,7 @@ export const SHEETS_CONFIG = {
   apiKey: environment.sheetsApiKey,
   gasWebAppUrl: environment.gasWebAppUrl,
   ranges: {
-    guestList: 'GuestList!A:L',
+    guestList: 'GuestList!A:P',
     log: 'Log!A:F',
   },
   guestListColumns: {
@@ -21,6 +21,10 @@ export const SHEETS_CONFIG = {
     fullNameHashMd5: 9, // J
     guest1FullNameHashMd5: 10, // K
     guest2FullNameHashMd5: 11, // L
+    letterAddress: 12, // M
+    letterMessage: 13, // N
+    letterShowForAll: 14, // O
+    letterSignedBy: 15, // P
   },
   logColumns: {
     id: 0,

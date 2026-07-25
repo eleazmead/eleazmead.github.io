@@ -6,6 +6,8 @@
   <div class="hero__veil" aria-hidden="true"></div>
 
   <div class="hero__content">
+    <p class="hero__date fade-in">{{ 'couple.weddingDate' | translate }}</p>
+
     <div class="hero__names fade-in">
       <span class="hero__name">{{ 'couple.name1' | translate }}</span>
       <span class="hero__ampersand">&amp;</span>
@@ -15,29 +17,34 @@
     <div class="hero__divider"></div>
 
     <p class="hero__headline fade-in fade-in--d1">
-      @if (guestFirstName()) {
-        {{ headlineTemplate().replace('{0}', guestFirstName()!) }}
+      @if (guestHeadlineName()) {
+        {{ headlineTemplate().replace('{0}', guestHeadlineName()!) }}
       } @else if (guestNameLoading()) {
         {{ loadingHeadline() }}
+      } @else if (!hasInvitationHash()) {
+        {{ noInputHeadline() }}
       } @else {
         {{ unpersonalizedHeadline() }}
       }
     </p>
     <div class="hero__details fade-in fade-in--d2">
-      <p class="hero__date">{{ 'couple.weddingDate' | translate }}</p>
       <div class="hero__events">
         <p>
           <span>{{ 'hero.ceremonyLabel' | translate }}</span>
-          {{ 'couple.ceremonyVenue' | translate }}
+          <em>{{ 'hero.ceremonyTime' | translate }}</em>
+          <strong>{{ 'couple.ceremonyVenue' | translate }}</strong>
         </p>
         <p>
           <span>{{ 'hero.receptionLabel' | translate }}</span>
-          {{ 'couple.receptionVenue' | translate }}
+          <em>{{ 'hero.receptionTime' | translate }}</em>
+          <strong>{{ 'couple.receptionVenue' | translate }}</strong>
         </p>
       </div>
     </div>
-    <a href="#rsvp" class="hero__cta fade-in fade-in--d4" (click)="scrollToRsvp($event)">
-      {{ 'hero.cta' | translate }}
-    </a>
+    @if (showHeroCta()) {
+      <a href="#rsvp" class="hero__cta fade-in fade-in--d4" (click)="scrollToRsvp($event)">
+        {{ 'hero.cta' | translate }}
+      </a>
+    }
   </div>
 </section>

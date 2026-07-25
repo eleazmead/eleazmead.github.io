@@ -1,5 +1,5 @@
 .wedding-timeline {
-  padding: 5.5rem 1.25rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(251, 247, 242, 0.78)),
     linear-gradient(145deg, rgba(184, 149, 126, 0.12), rgba(217, 160, 168, 0.1));
@@ -16,7 +16,7 @@
 
 .wedding-timeline__intro {
   max-width: 680px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.25rem;
   text-align: center;
 }
 
@@ -107,7 +107,7 @@
 }
 
 .wedding-timeline__note {
-  margin: 2.75rem auto 0;
+  margin: 2rem auto 0;
   max-width: 680px;
   padding: 1.2rem 1.25rem;
   border-top: 1px solid color-mix(in srgb, var(--color-primary) 56%, transparent);

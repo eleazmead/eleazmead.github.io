@@ -96,6 +96,7 @@
               <th>{{ 'admin.table.mealChoice' | translate }}</th>
               <th>{{ 'admin.table.rsvp' | translate }}</th>
               <th>{{ 'admin.table.dateSubmitted' | translate }}</th>
+              <th>{{ 'admin.table.copyInvitationLink' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -119,6 +120,16 @@
                   </span>
                 </td>
                 <td class="admin__td--muted">{{ row.dateSubmitted }}</td>
+                <td>
+                  <button
+                    class="admin__copy-btn"
+                    type="button"
+                    [disabled]="!row.invitationHash"
+                    (click)="copyInvitationLink(row)"
+                  >
+                    {{ copyInvitationLabel(row) }}
+                  </button>
+                </td>
               </tr>
             }
           </tbody>

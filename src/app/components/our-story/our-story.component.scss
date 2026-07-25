@@ -1,5 +1,5 @@
 .our-story {
-  padding: 5.5rem 1.25rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(251, 247, 242, 0.68)),
     linear-gradient(135deg, rgba(217, 160, 168, 0.08), transparent 42%);
@@ -16,7 +16,7 @@
 
 .our-story__intro {
   max-width: 660px;
-  margin: 0 auto 3.25rem;
+  margin: 0 auto 2.25rem;
   text-align: center;
 
   @media (min-width: 1024px) {
@@ -36,7 +36,7 @@
 .our-story__timeline {
   position: relative;
   display: grid;
-  gap: 2.75rem;
+  gap: 2.25rem;
 
   &::before {
     content: '';

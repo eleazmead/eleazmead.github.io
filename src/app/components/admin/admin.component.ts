@@ -9,6 +9,7 @@ import { TranslationService } from '../../shared/translation.service';
 interface AdminRow {
   guestName: string;
   partyOf: string;
+  invitationHash: string;
   meal: MealChoice | null;
   rsvp: 'yes' | 'no' | 'pending';
   dateSubmitted: string;
@@ -32,17 +33,23 @@ export class AdminComponent {
   readonly fetchError = signal('');
   readonly guestRows = signal<GuestRow[]>([]);
   readonly lastRefreshed = signal<Date | null>(null);
+  readonly copiedInvitationHash = signal('');
 
   readonly adminRows = computed((): AdminRow[] => {
     const rows: AdminRow[] = [];
     for (const g of this.guestRows()) {
-      const members = [g.fullName, g.guest1Name, g.guest2Name].filter((n) => n.trim());
+      const members = [
+        { name: g.fullName, hash: g.fullNameHashMd5 },
+        { name: g.guest1Name, hash: g.guest1FullNameHashMd5 },
+        { name: g.guest2Name, hash: g.guest2FullNameHashMd5 },
+      ].filter((member) => member.name.trim());
       const entries: RsvpEntry[] = g.rsvpRaw?.[g.fullName] ?? [];
       for (const member of members) {
-        const entry = entries.find((e) => e.Guest === member);
+        const entry = entries.find((e) => e.Guest === member.name);
         rows.push({
-          guestName: member,
+          guestName: member.name,
           partyOf: g.fullName,
+          invitationHash: member.hash.trim(),
           meal: entry?.MealChoice ?? null,
           rsvp: entry ? (entry.RSVP ? 'yes' : 'no') : 'pending',
           dateSubmitted: entry ? this.formatDate(entry.Date) : this.ts.t('admin.noValue'),
@@ -115,6 +122,54 @@ export class AdminComponent {
 
   rsvpLabel(status: AdminRow['rsvp']): string {
     return this.ts.t(`admin.rsvpStatus.${status}`);
+  }
+
+  copyInvitationLink(row: AdminRow): void {
+    const link = this.invitationLink(row);
+    if (!link) return;
+
+    this.copyToClipboard(link)
+      .then(() => {
+        this.copiedInvitationHash.set(row.invitationHash);
+        window.setTimeout(() => {
+          if (this.copiedInvitationHash() === row.invitationHash) {
+            this.copiedInvitationHash.set('');
+          }
+        }, 1800);
+      })
+      .catch(() => {
+        this.fetchError.set(this.ts.t('admin.copyInvitation.error'));
+      });
+  }
+
+  copyInvitationLabel(row: AdminRow): string {
+    if (!row.invitationHash) return this.ts.t('admin.copyInvitation.unavailable');
+    if (this.copiedInvitationHash() === row.invitationHash) {
+      return this.ts.t('admin.copyInvitation.copied');
+    }
+    return this.ts.t('admin.copyInvitation.copy');
+  }
+
+  private invitationLink(row: AdminRow): string {
+    return row.invitationHash ? `${window.location.origin}/${row.invitationHash}` : '';
+  }
+
+  private async copyToClipboard(text: string): Promise<void> {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    if (!copied) throw new Error('Clipboard copy failed');
   }
 
   private formatDate(iso: string): string {

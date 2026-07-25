@@ -1,5 +1,5 @@
 .gift-registry {
-  padding: 5.5rem 1.25rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(251, 247, 242, 0.8)),
     linear-gradient(140deg, rgba(184, 149, 126, 0.14), rgba(217, 160, 168, 0.1));
@@ -17,11 +17,6 @@
   border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 58%, transparent);
   text-align: center;
   background: rgba(255, 255, 255, 0.34);
-
-  .section-heading::after {
-    margin-right: auto;
-    margin-left: auto;
-  }
 }
 
 .gift-registry__message {

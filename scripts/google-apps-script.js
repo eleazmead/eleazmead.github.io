@@ -30,6 +30,10 @@
  *   J (10) — FullNameHash_MD5
  *   K (11) — Guest1FullName_MD5
  *   L (12) — Guest2FullName_MD5
+ *   M (13) — LetterAddress
+ *   N (14) — LetterMessage
+ *   O (15) — LetterShowForAll
+ *   P (16) — LetterSignedBy
  *
  * LOG COLUMN MAPPING (Log tab):
  *   A (1) — id

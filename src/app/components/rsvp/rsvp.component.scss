@@ -1,5 +1,5 @@
 .rsvp {
-  padding: 5rem 1.5rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(251, 247, 242, 0.78)),
     linear-gradient(135deg, rgba(217, 160, 168, 0.12), rgba(184, 149, 126, 0.1));
@@ -461,6 +461,18 @@
   margin-bottom: 0.5rem;
 }
 
+.rsvp__review-reminder {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border-left: 2px solid var(--color-primary);
+  background: rgba(255, 255, 255, 0.46);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
 .rsvp__already-responded {
   font-family: var(--font-body);
   font-size: 0.8rem;
@@ -469,7 +481,8 @@
   font-style: italic;
 }
 
-.rsvp__already-msg {
+.rsvp__already-msg,
+.rsvp__closed-msg {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -483,6 +496,10 @@
     color: var(--color-text);
     line-height: 1.6;
   }
+}
+
+.rsvp__closed-msg {
+  background: rgba(255, 255, 255, 0.46);
 }
 
 .rsvp__already-msg--muted {

@@ -12,6 +12,8 @@ import { TranslatePipe } from '../../shared/translate.pipe';
 })
 export class WhatToWearComponent {
   readonly attireGuideImage = APP_CONFIG.assets.attireGuideImage;
+  readonly ladiesColorGuide = APP_CONFIG.whatToWear.colorGuide.ladies;
+  readonly gentlemenColorGuide = APP_CONFIG.whatToWear.colorGuide.gentlemen;
   readonly imageFailed = signal(false);
 
   shouldShowImage(): boolean {

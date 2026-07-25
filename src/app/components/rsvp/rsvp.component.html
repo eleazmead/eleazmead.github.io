@@ -50,26 +50,35 @@
       }
 
       @case ('found') {
-        @if (initiatorAlreadyRsvped()) {
-          <!-- Initiator has already submitted their own response -->
+        @if (rsvpDeadlineClosed()) {
           <div class="rsvp__panel">
             <div class="rsvp__guest-card">
               <span class="rsvp__guest-name">{{ initiatorName() }}</span>
             </div>
-            <div class="rsvp__already-msg">
-              <p>{{ alreadyRsvpedMessage() }}</p>
-              <p class="rsvp__already-msg--muted">
-                {{ 'rsvp.alreadyRsvped.notEditable' | translate }}
-              </p>
+            <div class="rsvp__closed-msg">
+              <p>{{ 'rsvp.deadline.closedMessage' | translate }}</p>
             </div>
+            @if (initiatorAlreadyRsvped()) {
+              <div class="rsvp__already-msg">
+                <p>{{ alreadyRsvpedMessage() }}</p>
+              </div>
+            }
           </div>
         } @else {
-          <!-- Initiator has not yet responded -->
           <div class="rsvp__panel">
             <div class="rsvp__guest-card">
               <span class="rsvp__rsvp-for">{{ 'rsvp.rsvpFor' | translate }}</span>
               <span class="rsvp__guest-name">{{ initiatorName() }}</span>
             </div>
+
+            @if (initiatorAlreadyRsvped()) {
+              <div class="rsvp__already-msg">
+                <p>{{ alreadyRsvpedMessage() }}</p>
+                <p class="rsvp__already-msg--muted">
+                  {{ 'rsvp.alreadyRsvped.editPrompt' | translate }}
+                </p>
+              </div>
+            }
 
             <!-- Initiator attendance (always included) -->
             <div class="rsvp__person-row">
@@ -210,6 +219,7 @@
             @if (mealError()) {
               <p class="rsvp__meal-error">{{ mealError() }}</p>
             }
+            <p class="rsvp__review-reminder">{{ 'rsvp.reviewReminder' | translate }}</p>
             <button class="rsvp__submit" type="button" (click)="onReview()">
               {{ 'rsvp.confirmHeading' | translate }}
             </button>
@@ -258,7 +268,7 @@
       @case ('success') {
         <div class="rsvp__success">
           <p class="rsvp__success-message">{{ 'rsvp.successMessage' | translate }}</p>
-          <p class="rsvp__already-msg--muted">{{ 'rsvp.alreadyRsvped.notEditable' | translate }}</p>
+          <p class="rsvp__already-msg--muted">{{ 'rsvp.successNote' | translate }}</p>
         </div>
       }
 

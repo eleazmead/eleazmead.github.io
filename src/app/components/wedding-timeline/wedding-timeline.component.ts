@@ -6,10 +6,10 @@ const WEDDING_TIMELINE_EVENT_IDS = [
   'partyAssembles',
   'ceremonyBegins',
   'massConcludes',
-  'leaveChurch',
   'break',
   'guestArrival',
   'dinnerBegins',
+  'sde',
   'receptionConcludes',
 ] as const;
 

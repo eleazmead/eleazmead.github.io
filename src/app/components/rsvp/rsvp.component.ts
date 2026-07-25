@@ -22,6 +22,26 @@ export type RsvpFlowState =
 
 type Selection = { attending: boolean; included: boolean };
 
+export function getSgtDateKey(date: Date): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Singapore',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+
+  const year = parts.find((part) => part.type === 'year')?.value ?? '';
+  const month = parts.find((part) => part.type === 'month')?.value ?? '';
+  const day = parts.find((part) => part.type === 'day')?.value ?? '';
+  return `${year}-${month}-${day}`;
+}
+
+export function isOnOrAfterDate(currentDate: Date, deadlineDate: string): boolean {
+  const normalizedDeadline = deadlineDate.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDeadline)) return false;
+  return getSgtDateKey(currentDate) >= normalizedDeadline;
+}
+
 @Component({
   selector: 'app-rsvp',
   standalone: true,
@@ -47,16 +67,14 @@ export class RsvpComponent implements OnInit {
   readonly mealSelections = signal<Map<string, MealChoice>>(new Map());
   readonly mealError = signal('');
   readonly errorMessage = signal('');
+  readonly rsvpDeadlineClosed = signal(isOnOrAfterDate(new Date(), APP_CONFIG.rsvp.deadlineDate));
   readonly mainCourseOptions = APP_CONFIG.mealChoices.options;
 
-  /** True only when the current initiator already has an entry in the primary guest's entries array. */
   readonly initiatorAlreadyRsvped = computed(() => {
-    const row = this.matchedRow();
-    const initiator = this.initiatorName();
-    if (!row?.rsvpRaw || !initiator) return false;
-    const entries = row.rsvpRaw[row.fullName] ?? [];
-    return entries.some((e) => e.Guest === initiator);
+    return Boolean(this.initiatorExistingEntry());
   });
+
+  readonly initiatorExistingEntry = computed(() => this.existingEntryFor(this.initiatorName()));
 
   /** Map of guest name → RSVP boolean for related guests who already have an entry (excluding the current initiator). */
   readonly respondedNames = computed((): Map<string, boolean> => {
@@ -131,13 +149,20 @@ export class RsvpComponent implements OnInit {
     const related = allGroupNames.filter((n) => n !== matchedName);
     this.relatedNames.set(related);
 
+    const entries = row.rsvpRaw?.[row.fullName] ?? [];
+    const mealMap = new Map<string, MealChoice>();
+    for (const entry of entries) {
+      if (entry.MealChoice) mealMap.set(entry.Guest, entry.MealChoice);
+    }
+
+    const matchedEntry = entries.find((entry) => entry.Guest === matchedName);
     const map = new Map<string, Selection>();
-    map.set(matchedName, { attending: true, included: true });
+    map.set(matchedName, { attending: matchedEntry?.RSVP ?? true, included: true });
     for (const name of related) {
       map.set(name, { attending: true, included: false });
     }
     this.selections.set(map);
-    this.mealSelections.set(new Map());
+    this.mealSelections.set(mealMap);
     this.mealError.set('');
   }
 
@@ -146,6 +171,7 @@ export class RsvpComponent implements OnInit {
     const current = map.get(name);
     if (current) map.set(name, { ...current, included: !current.included });
     this.selections.set(map);
+    this.mealError.set('');
   }
 
   setAttending(name: string, attending: boolean): void {
@@ -153,6 +179,7 @@ export class RsvpComponent implements OnInit {
     const current = map.get(name);
     if (current) map.set(name, { ...current, attending });
     this.selections.set(map);
+    this.mealError.set('');
   }
 
   setMealChoice(name: string, choice: MealChoice): void {
@@ -167,6 +194,8 @@ export class RsvpComponent implements OnInit {
   }
 
   onReview(): void {
+    if (this.rsvpDeadlineClosed()) return;
+
     const hasIncluded = Array.from(this.selections().values()).some((v) => v.included);
     if (!hasIncluded) return;
 
@@ -188,6 +217,10 @@ export class RsvpComponent implements OnInit {
   onSubmit(): void {
     const row = this.matchedRow();
     if (!row) return;
+    if (this.rsvpDeadlineClosed()) {
+      this.state.set('found');
+      return;
+    }
     this.state.set('submitting');
 
     const timestamp = nowSGT();
@@ -265,5 +298,12 @@ export class RsvpComponent implements OnInit {
 
   mealDescription(choice: MealChoice): string {
     return this.ts.t(`mainCourse.options.${choice}.description`);
+  }
+
+  private existingEntryFor(name: string): RsvpEntry | undefined {
+    const row = this.matchedRow();
+    if (!row?.rsvpRaw || !name) return undefined;
+    const entries = row.rsvpRaw[row.fullName] ?? [];
+    return entries.find((entry) => entry.Guest === name);
   }
 }

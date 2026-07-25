@@ -1,5 +1,5 @@
 .questions-answers {
-  padding: 5.5rem 1.25rem;
+  padding: 3.75rem 1.25rem;
   background:
     linear-gradient(180deg, rgba(251, 247, 242, 0.8), rgba(255, 255, 255, 0.72)),
     linear-gradient(145deg, rgba(217, 160, 168, 0.12), rgba(184, 149, 126, 0.12));
@@ -16,13 +16,8 @@
 
 .questions-answers__intro {
   max-width: 680px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.25rem;
   text-align: center;
-
-  .section-heading::after {
-    margin-right: auto;
-    margin-left: auto;
-  }
 }
 
 .questions-answers__body {
