@@ -39,42 +39,58 @@
       "metAtWork": {
         "date": "Setyembre 2016",
         "title": "Dito Nagsimula",
-        "body": "Una kaming nagkakilala sa trabaho, hindi alam na ang simpleng pagpapakilala ay magiging unang pahina ng aming kwento."
+        "body": "Una kaming nagkakilala sa trabaho, hindi alam na ang simpleng pagpapakilala ay magiging unang pahina ng aming kwento.",
+        "photoCaption1": "Dito nagsimula ang lahat",
+        "photoCaption2": "Mga kasamahan pa lang noon"
       },
       "coffeeRuns": {
         "date": "Abril 2017",
         "title": "Kape, Takbo, at Kami",
-        "body": "Nagsimula ang aming relasyon sa kape, at lumalim ito sa cafe-hopping, mahahabang kwentuhan, at saya ng pagtakbo nang magkasama."
+        "body": "Nagsimula ang aming relasyon sa kape, at lumalim ito sa cafe-hopping, mahahabang kwentuhan, at saya ng pagtakbo nang magkasama.",
+        "photoCaption1": "Nagsimula sa kape",
+        "photoCaption2": "Dalawang tasa, isang kwento"
       },
       "longDistance": {
         "date": "Setyembre 2019",
         "title": "Sa Gitna ng Distansya",
-        "body": "Sa maikling panahon, nasubok ang pagmamahalan nang lumipat si Mead sa Singapore para simulan ang bagong yugto ng kanyang career."
+        "body": "Sa maikling panahon, nasubok ang pagmamahalan nang lumipat si Mead sa Singapore para simulan ang bagong yugto ng kanyang career.",
+        "photoCaption1": "Malayo man, magkasama ang puso",
+        "photoCaption2": "Hinihintay ang muling pagkikita"
       },
       "lionCity": {
         "date": "Pebrero 2020",
         "title": "Patungo sa Lion City",
-        "body": "Hindi nagtagal, sumunod si Eleaz sa love of her life sa Singapore, pinili ang trabaho, tahanan, at araw-araw na buhay kasama si Mead."
+        "body": "Hindi nagtagal, sumunod si Eleaz sa love of her life sa Singapore, pinili ang trabaho, tahanan, at araw-araw na buhay kasama si Mead.",
+        "photoCaption1": "Magkasama sa Lion City",
+        "photoCaption2": "Tahanan kahit saan, magkasama"
       },
       "fluffyEra": {
         "date": "Marso 2022",
         "title": "Ang Pinaka-Soft Naming Season",
-        "body": "Dahil sobrang saya at panatag namin sa isa't isa, naging chubbiest, fluffiest, at cutest version kami ng aming sarili."
+        "body": "Dahil sobrang saya at panatag namin sa isa't isa, naging chubbiest, fluffiest, at cutest version kami ng aming sarili.",
+        "photoCaption1": "Ang pinaka-masaya naming yugto",
+        "photoCaption2": "Chubby, fluffy, at umiibig"
       },
       "fitnessJourney": {
         "date": "Nobyembre 2024",
         "title": "Balik sa Daan",
-        "body": "Matapos pagdaanan ang taas at baba ng buhay nang magkasama, sinimulan namin ang fitness journey at binalikan ang isa sa una naming love languages: ang pagtakbo nang magkasama."
+        "body": "Matapos pagdaanan ang taas at baba ng buhay nang magkasama, sinimulan namin ang fitness journey at binalikan ang isa sa una naming love languages: ang pagtakbo nang magkasama.",
+        "photoCaption1": "Balik sa takbuhan, magkasama",
+        "photoCaption2": "Patungo sa habang-buhay"
       },
       "proposal": {
         "date": "Mayo 2025",
         "title": "Ang Matamis na Oo",
-        "body": "Nag-propose si Eleaz kay Mead, at ang pangakong unti-unti naming binuo araw-araw ay naging simula ng aming susunod na habang-buhay."
+        "body": "Nag-propose si Eleaz kay Mead, at ang pangakong unti-unti naming binuo araw-araw ay naging simula ng aming susunod na habang-buhay.",
+        "photoCaption1": "Ang tanong, at ang oo",
+        "photoCaption2": "Mayo 2025, bagong simula"
       },
       "bigDay": {
         "date": "Enero 2027",
         "title": "Ang Big Day",
-        "body": "Sisimulan namin ang aming buhay mag-asawa kasama ang mga taong nagmahal, nanalangin, at sumuporta sa amin."
+        "body": "Sisimulan namin ang aming buhay mag-asawa kasama ang mga taong nagmahal, nanalangin, at sumuporta sa amin.",
+        "photoCaption1": "Simula ng aming habambuhay",
+        "photoCaption2": "Kasama ang mga mahal namin"
       }
     }
   },

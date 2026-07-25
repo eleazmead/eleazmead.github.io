@@ -1,0 +1,319 @@
+:host {
+  display: block;
+}
+
+.polaroid-mount {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  cursor: zoom-in;
+  outline: none;
+}
+
+.polaroid {
+  /* --polaroid-rotate / --polaroid-offset are declared directly on this
+     element via template [style.*] bindings. --polaroid-parallax and
+     --polaroid-inertia-tilt are meant to be INHERITED from the host element
+     (<app-polaroid-photo>), which the scroll handler updates via JS - they
+     must NOT be declared here with a default value, since a value declared
+     directly on an element always wins over an inherited one, which would
+     permanently lock both at their default and silently break both effects. */
+
+  position: relative;
+  margin: 0;
+  width: 100%;
+  /* Thick paper mat around the photo, heaviest at the bottom - the
+     characteristic chunky border of real instant-film prints. */
+  padding: 1rem 1rem 1.7rem;
+  /* Paper-grain texture over the white mat, like real cardstock rather than a
+     flat digital white - a CSS-only noise pattern (SVG feTurbulence data
+     URI), so no image asset is needed. */
+  background-color: #fffdf9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 110px 110px;
+  border-radius: 2px;
+  box-shadow:
+    0 2px 4px rgba(18, 18, 18, 0.08),
+    0 18px 30px rgba(18, 18, 18, 0.18);
+
+  /* Individual transform properties (rotate/translate/scale) are transitioned
+     independently so scroll-linked parallax stays instant while the tilt
+     (hover + scroll-inertia) gets a springy ease-back.
+
+     transform-origin must land EXACTLY where the pin's needle tip sits (not
+     just "near the top"), or the photo visibly swings around the wrong point
+     and drifts away from the pin instead of hanging from it. The needle tip
+     sits at mount-relative Y ≈ 0.9rem: pin container top (-0.95rem) + needle
+     tip's ~90% fraction down the pin's own height (2.05rem). Since the figure
+     itself starts flush with the mount's top edge (the pin is absolutely
+     positioned and doesn't affect layout), that mount-relative Y is also the
+     figure's own local Y for transform-origin purposes. If the pin's size or
+     position ever changes, this value must be recomputed to match.
+
+     The X component is offset by --polaroid-pin-shift (see pinShiftPercent()
+     in the component) - a pin centered exactly above a card's own centroid
+     produces zero tilt under gravity, so any resting tilt must come from an
+     off-center pin. Shifting both the pin and this origin together keeps the
+     card's actual rest angle physically consistent with where the pin sits. */
+  transform-origin: calc(50% + var(--polaroid-pin-shift, 0%)) 0.9rem;
+  rotate: calc(var(--polaroid-rotate, 0deg) + var(--polaroid-inertia-tilt, 0deg));
+  translate: 0 calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px));
+  scale: 1;
+  transition:
+    rotate var(--polaroid-spring-duration, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 0.3s ease,
+    box-shadow 0.35s ease;
+  will-change: rotate, translate;
+
+  /* Fast, near-linear tracking while a scroll is actively in progress, so the
+     inertia tilt visibly snaps toward its target instead of perpetually being
+     chased by the slower spring transition above. Removed once scrolling
+     settles, letting the base spring transition ease it back to rest. */
+  &.polaroid--scrolling {
+    transition:
+      rotate 0.06s linear,
+      scale 0.3s ease,
+      box-shadow 0.35s ease;
+  }
+}
+
+.polaroid-mount:hover .polaroid,
+.polaroid-mount:focus-visible .polaroid {
+  rotate: 0deg;
+  scale: 1.03;
+  box-shadow:
+    0 4px 8px rgba(18, 18, 18, 0.1),
+    0 26px 42px rgba(18, 18, 18, 0.22);
+  z-index: 2;
+}
+
+.polaroid-mount:focus-visible .polaroid {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-accent) 55%, transparent),
+    0 26px 42px rgba(18, 18, 18, 0.22);
+}
+
+/* The pin is a sibling of the photo card, not a descendant, so it never
+   inherits the card's tilt/inertia transform - it stays visually fixed in
+   place, "pinning" the photo which swings independently beneath it.
+   Its horizontal position must match --polaroid-pin-shift exactly (same
+   value the figure's transform-origin uses above) so the needle tip and the
+   card's actual pivot point stay coincident. */
+.polaroid__pin {
+  position: absolute;
+  top: -0.95rem;
+  left: calc(50% + var(--polaroid-pin-shift, 0%));
+  width: 1.35rem;
+  height: 2.05rem;
+  translate: -50% 0;
+  rotate: 0deg;
+  scale: 1;
+  opacity: 1;
+  filter: drop-shadow(0 2px 2px rgba(18, 18, 18, 0.35));
+  /* Always above the card, including its hover/focus-visible z-index: 2. */
+  z-index: 3;
+  pointer-events: none;
+  transition:
+    translate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    rotate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
+
+  /* Plucked up and away while the photo is "picked up" into focus mode - eases
+     back with a slight overshoot bounce (as if being pressed back in) once
+     the lightbox closes. */
+  &--lifted {
+    translate: -30% -2.2rem;
+    rotate: -22deg;
+    scale: 0.35;
+    opacity: 0;
+  }
+}
+
+.polaroid__pin-shadow {
+  fill: rgba(18, 18, 18, 0.28);
+}
+
+.polaroid__pin-needle {
+  fill: #d6d2c9;
+  stroke: rgba(18, 18, 18, 0.25);
+  stroke-width: 0.2;
+}
+
+.polaroid__pin-needle-shine {
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 0.28;
+}
+
+.polaroid__pin-collar {
+  fill: rgba(18, 18, 18, 0.22);
+}
+
+.polaroid__pin-head {
+  /* fill is set via [attr.fill] in the template, bound to a unique gradient id */
+  stroke: rgba(18, 18, 18, 0.3);
+  stroke-width: 0.4;
+}
+
+.polaroid__pin-shade {
+  /* fill is set via [attr.fill] in the template - an off-center dark radial
+     that multiplies over the head for ambient-occlusion roundness, opposite
+     the highlight. */
+  mix-blend-mode: multiply;
+}
+
+.polaroid__pin-highlight {
+  fill: rgba(255, 255, 255, 0.75);
+
+  &--soft {
+    fill: rgba(255, 255, 255, 0.32);
+  }
+}
+
+.polaroid__frame {
+  /* No fixed aspect-ratio - the frame sizes itself to the photo's own
+     natural proportions (portrait, landscape, or square), like real
+     instant-film prints, which aren't all cropped to one uniform shape.
+
+     A few px of padding creates a visible gap between the card's white paper
+     and the photo, so they read as two distinct layers rather than fused
+     together. Giving that gap a slightly darker tone than the card (instead
+     of matching it exactly) reads as the wall of a shallow well the photo
+     sits down inside of, reinforcing the recessed feel from the photo's own
+     inset shadow below. */
+  overflow: hidden;
+  background: #ece4da;
+  padding: 3px;
+  line-height: 0;
+}
+
+.polaroid__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The print sits recessed BELOW the card's surface, like it's set into a
+     shallow well rather than glued on top - inset shadows (not outward ones)
+     are what sell "beneath": heaviest at the top (as if lit from above and
+     casting shadow down into the recess), lighter at the bottom, with a
+     crisp dark rim marking exactly where the well's edge is. */
+  box-shadow:
+    inset 0 0 0 1px rgba(18, 18, 18, 0.3),
+    inset 0 4px 9px rgba(18, 18, 18, 0.45),
+    inset 0 -2px 6px rgba(18, 18, 18, 0.22);
+}
+
+.polaroid__caption {
+  display: block;
+  margin-top: 0.55rem;
+  font-family: ui-monospace, Consolas, 'SFMono-Regular', 'Liberation Mono', Menlo, monospace;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--color-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.polaroid-overlay {
+  position: fixed;
+  inset: 0;
+  /* Must sit above the fixed language toggle (z-index: 1000) so the lightbox
+     fully covers the page, including its top-right corner, while open. */
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(18, 18, 18, 0.88);
+  cursor: pointer;
+  animation: polaroidOverlayFadeIn 0.2s ease;
+}
+
+.polaroid-overlay__close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--color-surface);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.polaroid-mount--focused {
+  cursor: default;
+  width: auto;
+  max-width: min(88vw, 420px);
+
+  .polaroid {
+    width: auto;
+    padding: 1.5rem 1.5rem 2.4rem;
+    rotate: 0deg;
+    translate: 0;
+    scale: 1;
+    box-shadow:
+      0 8px 16px rgba(18, 18, 18, 0.25),
+      0 32px 60px rgba(18, 18, 18, 0.4);
+    animation: polaroidFocusIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .polaroid__pin {
+    width: 1.5rem;
+    height: 2.3rem;
+    top: -1.05rem;
+  }
+
+  .polaroid__caption {
+    margin-top: 0.85rem;
+    font-size: 0.95rem;
+    white-space: normal;
+  }
+}
+
+@keyframes polaroidOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes polaroidFocusIn {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .polaroid {
+    transition: none;
+    rotate: var(--polaroid-rotate);
+    translate: 0;
+  }
+
+  .polaroid-mount:hover .polaroid,
+  .polaroid-mount:focus-visible .polaroid {
+    rotate: var(--polaroid-rotate);
+  }
+
+  .polaroid-overlay,
+  .polaroid-mount--focused .polaroid {
+    animation: none;
+  }
+}
