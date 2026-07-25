@@ -31,42 +31,58 @@
       "metAtWork": {
         "date": "September 2016",
         "title": "Where It Began",
-        "body": "We first met at work, not knowing that a simple introduction would quietly become the first page of our story."
+        "body": "We first met at work, not knowing that a simple introduction would quietly become the first page of our story.",
+        "photoCaption1": "Where it all began",
+        "photoCaption2": "Just colleagues, for now"
       },
       "coffeeRuns": {
         "date": "April 2017",
         "title": "Coffee, Runs, and Us",
-        "body": "Our relationship began over coffee, then grew through cafe-hopping, steady conversations, and the joy of running side by side."
+        "body": "Our relationship began over coffee, then grew through cafe-hopping, steady conversations, and the joy of running side by side.",
+        "photoCaption1": "Coffee runs turned into us",
+        "photoCaption2": "Two cups, one conversation"
       },
       "longDistance": {
         "date": "September 2019",
         "title": "Across the Miles",
-        "body": "For a short season, love stretched across distance when Mead moved to Singapore to begin a new chapter in her career."
+        "body": "For a short season, love stretched across distance when Mead moved to Singapore to begin a new chapter in her career.",
+        "photoCaption1": "Miles apart, hearts together",
+        "photoCaption2": "Waiting for reunion day"
       },
       "lionCity": {
         "date": "February 2020",
         "title": "To the Lion City",
-        "body": "Soon after, Eleaz followed the love of her life to Singapore, choosing work, home, and everyday life with Mead."
+        "body": "Soon after, Eleaz followed the love of her life to Singapore, choosing work, home, and everyday life with Mead.",
+        "photoCaption1": "Together in the Lion City",
+        "photoCaption2": "Home became wherever we were"
       },
       "fluffyEra": {
         "date": "March 2022",
         "title": "Our Softest Season",
-        "body": "We were so happy and settled together that we became the chubbiest, fluffiest, cutest version of ourselves."
+        "body": "We were so happy and settled together that we became the chubbiest, fluffiest, cutest version of ourselves.",
+        "photoCaption1": "Our softest, happiest season",
+        "photoCaption2": "Chubby, fluffy, and in love"
       },
       "fitnessJourney": {
         "date": "November 2024",
         "title": "Back to the Road",
-        "body": "After walking through life's highs and lows together, we began our fitness journey and returned to one of our first love languages: running together."
+        "body": "After walking through life's highs and lows together, we began our fitness journey and returned to one of our first love languages: running together.",
+        "photoCaption1": "Back on the road together",
+        "photoCaption2": "Running toward forever"
       },
       "proposal": {
         "date": "May 2025",
         "title": "The Yes",
-        "body": "Eleaz proposed to Mead, and a promise we had been building day by day became our next forever."
+        "body": "Eleaz proposed to Mead, and a promise we had been building day by day became our next forever.",
+        "photoCaption1": "The question, and the yes",
+        "photoCaption2": "May 2025, our new forever"
       },
       "bigDay": {
         "date": "January 2027",
         "title": "The Big Day",
-        "body": "We will begin our married life surrounded by the people who have loved, prayed for, and cheered us on."
+        "body": "We will begin our married life surrounded by the people who have loved, prayed for, and cheered us on.",
+        "photoCaption1": "The beginning of forever",
+        "photoCaption2": "Surrounded by those we love"
       }
     }
   },

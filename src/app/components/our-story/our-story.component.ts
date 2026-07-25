@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
+import { PolaroidPhotoComponent } from '../../shared/polaroid-photo/polaroid-photo.component';
 
 const STORY_TIMELINE_ITEMS = [
   { id: 'metAtWork', filePrefix: 'Sep_2016' },
@@ -20,7 +21,7 @@ type StoryTimelineItemId = StoryTimelineItem['id'];
 @Component({
   selector: 'app-our-story',
   standalone: true,
-  imports: [TranslatePipe, FadeUpDirective],
+  imports: [TranslatePipe, FadeUpDirective, PolaroidPhotoComponent],
   templateUrl: './our-story.component.html',
   styleUrl: './our-story.component.scss',
 })
@@ -62,6 +63,10 @@ export class OurStoryComponent implements OnInit {
 
   textKey(itemId: StoryTimelineItemId, field: 'date' | 'title' | 'body'): string {
     return `ourStory.timeline.${itemId}.${field}`;
+  }
+
+  captionKey(itemId: StoryTimelineItemId, photoIndex: number): string {
+    return `ourStory.timeline.${itemId}.photoCaption${photoIndex + 1}`;
   }
 
   isPhotoVisible(url: string): boolean {
