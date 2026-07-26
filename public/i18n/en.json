@@ -16,7 +16,7 @@
     "hashtag": "#EleazMead"
   },
   "hero": {
-    "headline": "{0}, we're getting married in the heart of the Lion City and we will be delighted to have you join us as we celebrate our love.",
+    "headline": "{0}, we’re getting married in the heart of the Lion City, and we would be delighted to celebrate with you. This page contains everything you need to know about our wedding day, so please take a moment to read through to the end.",
     "loadingGreeting": "Hi there",
     "noInputGreeting": "Hi",
     "ceremonyLabel": "Wedding Mass Ceremony",
@@ -232,7 +232,42 @@
     "colorGuide": "Color guide",
     "imageTitle": "Attire Guide",
     "imageAlt": "Wedding attire guide",
+    "imageButtonAriaLabel": "Open the attire guide in a larger view",
+    "lightboxAriaLabel": "Enlarged attire guide",
+    "closeAriaLabel": "Close attire guide",
     "imagePlaceholder": "Attire guide coming soon"
+  },
+  "whereToStay": {
+    "heading": "Where To Stay",
+    "recommendation": {
+      "prefix": "We recommend staying around ",
+      "locations": {
+        "bencoolen": "Bencoolen",
+        "bugis": "Bugis",
+        "cityHall": "City Hall"
+      },
+      "afterBencoolen": ", ",
+      "afterBugis": ", or ",
+      "suffix": ", as these areas are conveniently located between St. Joseph’s Church and our reception venue at The Fullerton Hotel. The following hotels are located in central, well-connected areas with easy access to public transportation, dining, and other amenities."
+    },
+    "hotelGroups": {
+      "budget": {
+        "heading": "For more budget-conscious stays",
+        "hotels": {
+          "hotelMi": "Hotel Mi Bencoolen",
+          "vHotel": "V Hotel Bencoolen",
+          "ibis": "ibis Singapore on Bencoolen"
+        }
+      },
+      "comfort": {
+        "heading": "For additional comfort and convenience",
+        "hotels": {
+          "lyfFunan": "lyf Funan Singapore",
+          "carlton": "Carlton Hotel Singapore"
+        }
+      }
+    },
+    "closing": "Accommodation will not be arranged by the couple, so we kindly encourage guests to compare rates and book early, as prices and availability may vary."
   },
   "giftRegistry": {
     "heading": "A note on gifts",
@@ -258,6 +293,18 @@
       "timelineDetails": {
         "question": "Will you share a more detailed timeline?",
         "answer": "Yes. We will share more in-depth details closer to the big day, so please stay tuned on this website."
+      },
+      "kids": {
+        "question": "Are kids allowed at the wedding?",
+        "answer": "To keep our celebration intimate, we kindly ask that our wedding remain an adults-only occasion. The only exceptions are children who are part of the couple's immediate family or wedding entourage. Thank you for your understanding."
+      },
+      "flightAccom": {
+        "question": "Will flight tickets and accommodation be provided?",
+        "answer": "Guests are kindly asked to arrange and cover their own flights and accommodation, unless we have personally advised you otherwise. We truly appreciate the time, effort, and planning involved in joining us for our special day. For suggested places to stay, please visit the “Where to Stay” section of this website."
+      },
+      "AccomRecommendations": {
+        "question": "Where can you suggest we stay?",
+        "answer": "We recommend staying around Bencoolen, Bugis, or City Hall, as these areas are conveniently located between St. Joseph’s Church and our reception venue at The Fullerton Hotel. Some suitable options include Hotel Mi Bencoolen, V Hotel Bencoolen, and ibis Singapore on Bencoolen for more budget-conscious stays, as well as lyf Funan Singapore and Carlton Hotel Singapore for guests who prefer additional comfort and convenience. These hotels are located in central, well-connected areas with easy access to public transportation, dining, and other amenities. Accommodation will not be arranged by the couple, so we kindly encourage guests to compare rates and book early, as prices and availability may vary."
       }
     }
   },

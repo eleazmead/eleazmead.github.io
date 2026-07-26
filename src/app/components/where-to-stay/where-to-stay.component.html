@@ -1,0 +1,33 @@
+<section class="where-to-stay" id="where-to-stay">
+  <div class="where-to-stay__container" appFadeUp>
+    <div class="where-to-stay__intro">
+      <h2 class="section-heading">{{ 'whereToStay.heading' | translate }}</h2>
+      <p class="where-to-stay__recommendation">
+        {{ 'whereToStay.recommendation.prefix' | translate
+        }}<strong>{{ 'whereToStay.recommendation.locations.bencoolen' | translate }}</strong
+        >{{ 'whereToStay.recommendation.afterBencoolen' | translate
+        }}<strong>{{ 'whereToStay.recommendation.locations.bugis' | translate }}</strong
+        >{{ 'whereToStay.recommendation.afterBugis' | translate
+        }}<strong>{{ 'whereToStay.recommendation.locations.cityHall' | translate }}</strong
+        >{{ 'whereToStay.recommendation.suffix' | translate }}
+      </p>
+    </div>
+
+    <div class="where-to-stay__groups">
+      @for (group of hotelGroups; track group.id) {
+        <section class="where-to-stay__group" [attr.aria-labelledby]="'where-to-stay-' + group.id">
+          <h3 class="where-to-stay__subheading" [id]="'where-to-stay-' + group.id">
+            {{ hotelGroupHeadingKey(group.id) | translate }}
+          </h3>
+          <ul class="where-to-stay__hotels">
+            @for (hotel of group.hotels; track hotel) {
+              <li>{{ hotelNameKey(group.id, hotel) | translate }}</li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+
+    <p class="where-to-stay__closing">{{ 'whereToStay.closing' | translate }}</p>
+  </div>
+</section>

@@ -132,6 +132,7 @@
 }
 
 .what-to-wear__image,
+.what-to-wear__image-button,
 .what-to-wear__placeholder {
   width: 70%;
   min-height: 0;
@@ -145,15 +146,43 @@
 
 @media (min-width: 960px) {
   .what-to-wear__image,
+  .what-to-wear__image-button,
   .what-to-wear__placeholder {
     width: 100%;
   }
 }
 
+.what-to-wear__image-button {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  cursor: zoom-in;
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+
+  &:hover {
+    transform: translateY(-0.16rem);
+    box-shadow:
+      0 22px 44px rgba(18, 18, 18, 0.14),
+      0 0 0 1px rgba(18, 18, 18, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-accent) 70%, white);
+    outline-offset: 0.25rem;
+  }
+}
+
 .what-to-wear__image {
   display: block;
+  width: 100%;
   height: auto;
   aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   object-fit: contain;
 }
 
@@ -177,4 +206,83 @@
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
+}
+
+.what-to-wear__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4.5rem 1rem 2rem;
+  background: rgba(18, 18, 18, 0.88);
+  cursor: pointer;
+  animation: attireOverlayFadeIn 0.2s ease;
+}
+
+.what-to-wear__overlay-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-surface);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.9;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-accent) 70%, white);
+    outline-offset: 0.2rem;
+  }
+}
+
+.what-to-wear__overlay-content {
+  max-width: min(92vw, 900px);
+  max-height: 86vh;
+  cursor: default;
+}
+
+.what-to-wear__overlay-image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 86vh;
+  margin: 0 auto;
+  border: 0.75rem solid rgba(255, 255, 255, 0.96);
+  border-radius: 0.45rem;
+  object-fit: contain;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+}
+
+@keyframes attireOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .what-to-wear__image-button {
+    transition: none;
+  }
+
+  .what-to-wear__overlay {
+    animation: none;
+  }
 }

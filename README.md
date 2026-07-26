@@ -52,13 +52,15 @@ The RSVP note and deadline are configurable in the i18n JSON files. The deadline
 
 The RSVP form shows the configurable `rsvp.reviewReminder` venue reminder immediately above the "Review your RSVP" button.
 
+After a successful "Review your RSVP" click, the RSVP component realigns the RSVP content container so mobile viewports stay on the review panel instead of drifting into the next section.
+
 The main-course required message is cleared when a guest changes attendance or is excluded, so it only stays visible while an included attending guest still needs to choose a meal.
 
 Guests who have already RSVP-ed can use their invitation link before the deadline to update their own attendance and main course. Existing responses are prefilled from the sheet. `APP_CONFIG.rsvp.deadlineDate` stores the machine-readable cutoff date, and the site blocks new submissions and updates once the current Singapore date is later than or equal to that date.
 
 ## Hero and event details
 
-The first section uses `APP_CONFIG.assets.heroBackdropAvif` as the animated AVIF backdrop path, and personalizes `public/i18n/en.json` `hero.headline` by replacing `{0}` with the matched guest's first name. If the Guest Letter section is shown, the headline uses `LetterAddress` instead. If no RSVP hash is present, it uses `hero.noInputGreeting`. All display text, including couple names, event date, venues, RSVP copy, meal labels, footer copy, language toggle labels, and admin labels, lives in `public/i18n/en.json` and `public/i18n/fil.json`.
+The first section uses `APP_CONFIG.assets.heroBackdropAvif` as the animated AVIF backdrop path, and personalizes `public/i18n/en.json` `hero.headline` by replacing `{0}` with the matched guest's first name. If the Guest Letter section is shown, the headline uses `LetterAddress` instead. If no RSVP hash is present, it uses `hero.noInputGreeting`. All display text, including couple names, event date, venues, RSVP copy, meal labels, Where To Stay copy, footer copy, language toggle labels, and admin labels, lives in `public/i18n/en.json` and `public/i18n/fil.json`.
 
 While the matched guest name is loading, the hero shows `Hi there,` instead of generic guest text.
 
@@ -66,7 +68,7 @@ The hero shows the wedding date above the couple names. Ceremony and reception d
 
 Section headings are plain display text without decorative `::after` underline elements.
 
-The hero RSVP CTA scrolls to the RSVP section with an explicit click handler while keeping the `#rsvp` anchor href. When the Guest Letter section is shown, the CTA is hidden in the hero and appears centered at the bottom of the letter instead.
+The hero RSVP CTA scrolls directly to the RSVP content container with an explicit click handler while keeping the `#rsvp` anchor href. It also performs a short follow-up alignment to stay accurate when media above RSVP finishes laying out. When the Guest Letter section is shown, the CTA is hidden in the hero and appears centered at the bottom of the letter instead.
 
 When the matched RSVP sheet row has both `LetterAddress` and `LetterMessage`, a handwritten-style Guest Letter section appears after the hero if the URL RSVP hash matches `FullNameHash_MD5`, or if it matches `Guest1FullName_MD5` / `Guest2FullName_MD5` and `LetterShowForAll` is `1`. The letter is styled as white stationery with subtle burnt edges. The closing signature name uses `LetterSignedBy` from the sheet when present, otherwise it falls back to `guestLetter.coupleName` from the i18n JSON files.
 
@@ -90,11 +92,15 @@ The section after RSVP shows the wedding day sequence. Event times, titles, desc
 
 ## What to Wear
 
-The What to Wear section appears after the Wedding Timeline. Attire wording, the color-guide label, and the attire guide title live in the i18n JSON files. The attire guide image path is configured in `APP_CONFIG.assets.attireGuideImage`, and the ladies/gentlemen swatch colors are configured in `APP_CONFIG.whatToWear.colorGuide`. Put the image under `public/attire/`, for example `public/attire/wedding-attire-guide.jpg`. The attire guide image is centered at 70% width with a white border on stacked layouts, and appears in a second desktop column beside the attire copy.
+The What to Wear section appears after the Wedding Timeline. Attire wording, the color-guide label, and the attire guide title live in the i18n JSON files. The attire guide image path is configured in `APP_CONFIG.assets.attireGuideImage`, and the ladies/gentlemen swatch colors are configured in `APP_CONFIG.whatToWear.colorGuide`. Put the image under `public/attire/`, for example `public/attire/wedding-attire-guide.jpg`. The attire guide image is centered at 70% width with a white border on stacked layouts, appears in a second desktop column beside the attire copy, and opens an enlarged lightbox view when clicked.
+
+## Where To Stay
+
+The Where To Stay section appears after What to Wear. Its recommendation copy, bolded location labels, hotel group headings, hotel names, and closing copy live in the i18n JSON files. The ordered hotel group and hotel IDs are configured in `APP_CONFIG.whereToStay.hotelGroups`.
 
 ## Gift Registry
 
-The Gift Registry section appears after What to Wear. Its wording lives in the i18n JSON files.
+The Gift Registry section appears after Where To Stay. Its wording lives in the i18n JSON files.
 
 ## Questions & Answers
 

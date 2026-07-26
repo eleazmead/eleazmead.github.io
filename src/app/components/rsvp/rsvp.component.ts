@@ -208,6 +208,7 @@ export class RsvpComponent implements OnInit {
     }
 
     this.state.set('confirming');
+    this.scrollRsvpContainerIntoView();
   }
 
   onBackToFound(): void {
@@ -305,5 +306,13 @@ export class RsvpComponent implements OnInit {
     if (!row?.rsvpRaw || !name) return undefined;
     const entries = row.rsvpRaw[row.fullName] ?? [];
     return entries.find((entry) => entry.Guest === name);
+  }
+
+  private scrollRsvpContainerIntoView(): void {
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>('#rsvp .rsvp__container')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 }
