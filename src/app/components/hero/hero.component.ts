@@ -73,6 +73,11 @@ export class HeroComponent implements OnInit, AfterViewInit {
 
   scrollToRsvp(event: Event): void {
     event.preventDefault();
-    document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const rsvpContainer = document.querySelector<HTMLElement>('#rsvp .rsvp__container');
+    rsvpContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    window.setTimeout(() => {
+      rsvpContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 450);
   }
 }

@@ -6,6 +6,7 @@ import { VenuesComponent } from '../venues/venues.component';
 import { RsvpComponent } from '../rsvp/rsvp.component';
 import { WeddingTimelineComponent } from '../wedding-timeline/wedding-timeline.component';
 import { WhatToWearComponent } from '../what-to-wear/what-to-wear.component';
+import { WhereToStayComponent } from '../where-to-stay/where-to-stay.component';
 import { GiftRegistryComponent } from '../gift-registry/gift-registry.component';
 import { QuestionsAnswersComponent } from '../questions-answers/questions-answers.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -22,6 +23,7 @@ import { LanguageToggleComponent } from '../../shared/language-toggle/language-t
     RsvpComponent,
     WeddingTimelineComponent,
     WhatToWearComponent,
+    WhereToStayComponent,
     GiftRegistryComponent,
     QuestionsAnswersComponent,
     FooterComponent,

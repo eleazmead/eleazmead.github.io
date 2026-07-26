@@ -1,0 +1,102 @@
+.where-to-stay {
+  padding: 3.75rem 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(251, 247, 242, 0.82)),
+    linear-gradient(140deg, rgba(184, 149, 126, 0.12), rgba(217, 160, 168, 0.1));
+
+  @media (min-width: 1024px) {
+    padding: 7.5rem 4rem;
+  }
+}
+
+.where-to-stay__container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.where-to-stay__intro {
+  max-width: 780px;
+  margin: 0 auto 2.25rem;
+  text-align: center;
+}
+
+.where-to-stay__recommendation,
+.where-to-stay__closing {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.08rem);
+  font-weight: 300;
+  line-height: 1.85;
+}
+
+.where-to-stay__recommendation {
+  strong {
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+}
+
+.where-to-stay__groups {
+  display: grid;
+  gap: 1.2rem;
+  margin: 0 auto 2rem;
+
+  @media (min-width: 760px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.where-to-stay__group {
+  padding: 0.2rem 0 0.2rem 1.25rem;
+  border-left: 1px solid color-mix(in srgb, var(--color-primary) 52%, transparent);
+}
+
+.where-to-stay__subheading {
+  margin: 0 0 0.9rem;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.where-to-stay__hotels {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.where-to-stay__hotels li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 400;
+  line-height: 1.6;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.75em;
+    left: 0;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    transform: translateY(-50%);
+  }
+}
+
+.where-to-stay__closing {
+  max-width: 820px;
+  margin: 0 auto;
+  color: var(--color-muted);
+  text-align: center;
+}

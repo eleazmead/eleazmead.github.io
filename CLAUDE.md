@@ -82,17 +82,18 @@ Prettier with `singleQuote: true`, `printWidth: 100`, and the `angular` HTML par
 - `/:rsvpHash` → `HomeComponent` (`src/app/components/home/`) - public wedding website with an RSVP invitation hash from the URL path
 - `/admin` → `AdminComponent` (`src/app/components/admin/`) - password-protected RSVP dashboard
 
-The public site renders nine standard sections in order: Hero → Our Story → Venues → RSVP → Wedding Timeline → What to Wear → Gift Registry → Questions & Answers → Footer, all inside `HomeComponent`. A conditional Guest Letter section appears after Hero when the matched RSVP sheet row has both `LetterAddress` and `LetterMessage` and the URL RSVP hash either matches `FullNameHash_MD5` or matches a related guest hash with `LetterShowForAll` set to `1`.
+The public site renders ten standard sections in order: Hero → Our Story → Venues → RSVP → Wedding Timeline → What to Wear → Where To Stay → Gift Registry → Questions & Answers → Footer, all inside `HomeComponent`. A conditional Guest Letter section appears after Hero when the matched RSVP sheet row has both `LetterAddress` and `LetterMessage` and the URL RSVP hash either matches `FullNameHash_MD5` or matches a related guest hash with `LetterShowForAll` set to `1`.
 
 **Config layer** - `src/app/config/app.config.ts` exports `APP_CONFIG` (`as const`), a typed constant holding non-copy configuration such as theme tokens, asset paths, stable option IDs, locale settings, and contact URLs. Do not put display text in `APP_CONFIG`; all user-facing text belongs in i18n JSON.
 
 Notable `APP_CONFIG` fields:
 
 - `assets.heroBackdropAvif` — animated AVIF backdrop path for the first section; placeholder target is `public/hero/eleaz-mead-backdrop-placeholder.avif`
-- `assets.attireGuideImage` — wedding attire guide image path under `public/`; blank or failed paths render a visible placeholder. The attire guide title lives in `whatToWear.imageTitle`; the image is centered at 70% width with a white border on stacked layouts, and sits in a second desktop column beside the attire copy.
+- `assets.attireGuideImage` — wedding attire guide image path under `public/`; blank or failed paths render a visible placeholder. The attire guide title lives in `whatToWear.imageTitle`; the image is centered at 70% width with a white border on stacked layouts, sits in a second desktop column beside the attire copy, and opens an enlarged lightbox view when clicked.
 - `assets.venuePhotos` — ceremony/reception venue photo paths under `public/`; blank or failed paths render visible placeholders. Real venue photos preserve their natural aspect ratio, are centered at 70% width within each venue item, and must not be cropped. Venue items render in two columns on desktop.
 - `mealChoices.options` — stable meal choice IDs (`beef` / `fish`); labels and descriptions live in i18n JSON
 - `whatToWear.colorGuide` — configurable attire color swatches for ladies and gentlemen. The visible "Color guide" label lives in i18n JSON.
+- `whereToStay.hotelGroups` — ordered stable hotel group and hotel IDs for the Where To Stay section; headings, hotel names, and descriptions live in i18n JSON
 - `rsvp.deadlineDate` — machine-readable RSVP cutoff date in `YYYY-MM-DD` format. The displayed deadline copy still lives in i18n JSON.
 - `questionsAndAnswers.items` — ordered stable Q&A IDs; matching `questionsAndAnswers.items.<id>.question` and `.answer` text must exist in i18n JSON
 - `contacts.whatsappUrl` — WhatsApp CTA link used in the RSVP not-found state
@@ -108,9 +109,9 @@ Notable `APP_CONFIG` fields:
 - While the matched guest name is loading, the hero renders `Hi there,` at the start of the headline rather than showing fallback guest text.
 - The hero places the wedding date above the couple names, and the ceremony/reception details render as two glow-backed text columns on desktop, collapsing to one column with extra spacing on mobile. Avoid box-like containers for these date and venue details. Ceremony/reception times live in `hero.ceremonyTime` and `hero.receptionTime` in i18n JSON.
 - Section headings use plain display text without decorative `::after` underline elements.
-- The hero RSVP CTA keeps `href="#rsvp"` for semantics but also calls `HeroComponent.scrollToRsvp()` so scrolling works reliably on path-param invitation URLs. When the Guest Letter section is shown, the CTA is hidden in Hero and rendered centered at the bottom of the letter instead.
+- The hero RSVP CTA keeps `href="#rsvp"` for semantics but also calls `HeroComponent.scrollToRsvp()` so scrolling targets `.rsvp__container` reliably on path-param invitation URLs. It performs a short follow-up alignment to absorb layout shifts from media above RSVP. When the Guest Letter section is shown, the CTA is hidden in Hero and rendered centered at the bottom of the letter instead.
 - The conditional Guest Letter section uses the matched `/:rsvpHash` row. It renders only when both `letterAddress` and `letterMessage` are non-empty and the hash source is either `FullNameHash_MD5` or a related guest hash (`Guest1FullName_MD5` / `Guest2FullName_MD5`) with `letterShowForAll` set to `1`. It formats the message like a handwritten white letter with subtle burnt edges and uses `guestLetter.signatureLine` for the closing. The signature name uses `LetterSignedBy` from the sheet when present, otherwise falls back to `guestLetter.coupleName` from i18n.
-- Couple names, event date, venue names/descriptions/addresses, Our Story timeline dates/titles/body copy, RSVP copy, meal labels/descriptions, Wedding Timeline event times/titles/descriptions, What to Wear copy and color-guide label, Gift Registry copy, Questions & Answers copy, footer copy, language toggle labels, and admin/export labels all live in i18n JSON.
+- Couple names, event date, venue names/descriptions/addresses, Our Story timeline dates/titles/body copy, RSVP copy, meal labels/descriptions, Wedding Timeline event times/titles/descriptions, What to Wear copy and color-guide label, Where To Stay copy and hotel labels, Gift Registry copy, Questions & Answers copy, footer copy, language toggle labels, and admin/export labels all live in i18n JSON.
 
 **Animations** - Hero uses CSS `@keyframes` fade-in with staggered delays. Section headings use `FadeUpDirective` (`src/app/shared/fade-up.directive.ts`) which attaches an `IntersectionObserver` and adds `.fade-up--visible` when the element enters the viewport. The `.fade-up` / `.fade-up--visible` classes are defined globally in `src/styles.scss` (they can't be scoped because they're applied programmatically).
 
@@ -131,6 +132,7 @@ Notable `APP_CONFIG` fields:
 - **RSVP note**: when an invitation hash is present, the RSVP section renders a configurable note from i18n, with `rsvp.deadline.date` emphasized separately from the surrounding copy. The bare `/` invite-only state does not show this note.
 - **RSVP deadline gate**: `APP_CONFIG.rsvp.deadlineDate` is compared against the current Singapore date. If the current date is later than or equal to the deadline date, new RSVP submissions and updates are blocked and the RSVP section shows `rsvp.deadline.closedMessage`.
 - **RSVP review reminder**: the found-state form shows `rsvp.reviewReminder` immediately above the "Review your RSVP" button. Keep this venue reminder in i18n JSON.
+- **RSVP review scroll**: after a successful "Review your RSVP" click, `RsvpComponent` realigns `.rsvp__container` after the confirming panel renders so the viewport does not drift into the Wedding Timeline section on mobile.
 - **rsvpTotal** counts only `RSVP: true` entries across the merged array (not just the current submission). Computed from `mergedEntries.filter(e => e.RSVP).length` before submitting.
 - **Related guests** default to `included: false` - users must explicitly include them.
 - **Already-responded check** is per-guest (looks for the initiator's name in the entries array), not per-row. A related guest excluded by the initiator can still search and respond separately; they'll see other group members' responses as read-only.

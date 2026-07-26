@@ -216,7 +216,42 @@
     "colorGuide": "Gabay sa kulay",
     "imageTitle": "Gabay sa Kasuotan",
     "imageAlt": "Gabay sa kasuotan para sa kasal",
+    "imageButtonAriaLabel": "Buksan ang gabay sa kasuotan sa mas malaking view",
+    "lightboxAriaLabel": "Pinalaking gabay sa kasuotan",
+    "closeAriaLabel": "Isara ang gabay sa kasuotan",
     "imagePlaceholder": "Malapit nang ilagay ang gabay sa kasuotan"
+  },
+  "whereToStay": {
+    "heading": "Saan Mananatili",
+    "recommendation": {
+      "prefix": "Inirerekomenda naming manatili sa paligid ng ",
+      "locations": {
+        "bencoolen": "Bencoolen",
+        "bugis": "Bugis",
+        "cityHall": "City Hall"
+      },
+      "afterBencoolen": ", ",
+      "afterBugis": ", o ",
+      "suffix": ", dahil maginhawang matatagpuan ang mga lugar na ito sa pagitan ng St. Joseph’s Church at ng aming reception venue sa The Fullerton Hotel."
+    },
+    "hotelGroups": {
+      "budget": {
+        "heading": "Para sa mas budget-conscious na pananatili",
+        "hotels": {
+          "hotelMi": "Hotel Mi Bencoolen",
+          "vHotel": "V Hotel Bencoolen",
+          "ibis": "ibis Singapore on Bencoolen"
+        }
+      },
+      "comfort": {
+        "heading": "Para sa dagdag na ginhawa at convenience",
+        "hotels": {
+          "lyfFunan": "lyf Funan Singapore",
+          "carlton": "Carlton Hotel Singapore"
+        }
+      }
+    },
+    "closing": "Ang mga hotel na ito ay nasa sentrong lokasyon at madaling puntahan, may maginhawang access sa pampublikong transportasyon, kainan, at iba pang amenities. Hindi kami ang mag-aayos ng tutuluyan, kaya hinihikayat namin kayong magkumpara ng presyo at mag-book nang maaga dahil maaaring magbago ang presyo at availability."
   },
   "giftRegistry": {
     "heading": "Tungkol sa Regalo",
@@ -242,6 +277,18 @@
       "timelineDetails": {
         "question": "Magbabahagi pa ba ng mas detalyadong timeline?",
         "answer": "Oo. Magbabahagi kami ng mas detalyadong impormasyon habang papalapit ang malaking araw, kaya manatiling nakaabang sa website na ito."
+      },
+      "kids": {
+        "question": "Pwede bang magsama ng mga bata sa kasal?",
+        "answer": "Upang mapanatiling malapit at personal ang aming pagdiriwang, hinihiling naming maging para lamang sa matatanda ang kasal. Ang tanging exceptions ay mga batang bahagi ng immediate family ng couple o wedding entourage. Maraming salamat sa inyong pag-unawa."
+      },
+      "flightAccom": {
+        "question": "May ibibigay bang flight tickets at tutuluyan?",
+        "answer": "Hinihiling namin sa mga bisita na sila ang mag-ayos at sumagot ng kanilang sariling pamasahe sa eroplano at tutuluyan, maliban na lamang kung personal namin kayong nasabihan ng iba. Lubos naming pinahahalagahan ang oras, effort, at mga kailangang ayusin upang makapagdiwang kasama namin."
+      },
+      "AccomRecommendations": {
+        "question": "Saan ninyo iminumungkahing manatili?",
+        "answer": "Inirerekomenda naming manatili sa paligid ng Bencoolen, Bugis, o City Hall dahil maginhawang matatagpuan ang mga lugar na ito sa pagitan ng St. Joseph’s Church at ng aming reception venue sa The Fullerton Hotel. Ilan sa maaaring pagpilian ay Hotel Mi Bencoolen, V Hotel Bencoolen, at ibis Singapore on Bencoolen para sa mas budget-conscious na pananatili, pati na rin lyf Funan Singapore at Carlton Hotel Singapore para sa mga bisitang nais ng dagdag na ginhawa at convenience. Ang mga hotel na ito ay nasa sentrong lokasyon at madaling puntahan, may maginhawang access sa pampublikong transportasyon, kainan, at iba pang amenities. Hindi kami ang mag-aayos ng tutuluyan, kaya hinihikayat namin kayong magkumpara ng presyo at mag-book nang maaga dahil maaaring magbago ang presyo at availability."
       }
     }
   },

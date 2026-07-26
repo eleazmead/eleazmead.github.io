@@ -44,13 +44,20 @@
     <div class="what-to-wear__image-wrap" appFadeUp>
       <h3 class="what-to-wear__image-title">{{ 'whatToWear.imageTitle' | translate }}</h3>
       @if (shouldShowImage()) {
-        <img
-          class="what-to-wear__image"
-          [src]="attireGuideImage"
-          [alt]="'whatToWear.imageAlt' | translate"
-          loading="lazy"
-          (error)="markImageFailed()"
-        />
+        <button
+          class="what-to-wear__image-button"
+          type="button"
+          (click)="open()"
+          [attr.aria-label]="'whatToWear.imageButtonAriaLabel' | translate"
+        >
+          <img
+            class="what-to-wear__image"
+            [src]="attireGuideImage"
+            [alt]="'whatToWear.imageAlt' | translate"
+            loading="lazy"
+            (error)="markImageFailed()"
+          />
+        </button>
       } @else {
         <div
           class="what-to-wear__placeholder"
@@ -62,4 +69,31 @@
       }
     </div>
   </div>
+
+  @if (isImageOpen()) {
+    <div
+      class="what-to-wear__overlay"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'whatToWear.lightboxAriaLabel' | translate"
+      (click)="close()"
+    >
+      <button
+        class="what-to-wear__overlay-close"
+        type="button"
+        (click)="close()"
+        [attr.aria-label]="'whatToWear.closeAriaLabel' | translate"
+      >
+        &#215;
+      </button>
+      <div class="what-to-wear__overlay-content" (click)="stopPropagation($event)">
+        <img
+          class="what-to-wear__overlay-image"
+          [src]="attireGuideImage"
+          [alt]="'whatToWear.imageAlt' | translate"
+          (error)="markImageFailed()"
+        />
+      </div>
+    </div>
+  }
 </section>
