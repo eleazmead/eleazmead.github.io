@@ -62,14 +62,14 @@ export class SeoService {
     // Guest-hash and admin routes carry personal data - always canonicalize to the homepage.
     const canonicalUrl = `${seo.siteUrl}/`;
     this.setLinkTag('canonical', canonicalUrl);
-    this.setLinkTag('alternate', canonicalUrl, 'en');
-    this.setLinkTag('alternate', canonicalUrl, 'fil');
+    for (const supportedLocale of APP_CONFIG.i18n.supportedLocales) {
+      this.setLinkTag('alternate', canonicalUrl, this.hreflangFor(supportedLocale));
+    }
     this.setLinkTag('alternate', canonicalUrl, 'x-default');
 
     const ogImageUrl = `${seo.siteUrl}/${seo.ogImage}`;
-    const ogLocale = (seo.ogLocaleMap as Record<string, string>)[locale] ?? 'en_US';
-    const ogLocaleAlternate =
-      locale === 'en' ? seo.ogLocaleMap.fil : seo.ogLocaleMap.en;
+    const ogLocaleMap = seo.ogLocaleMap as Record<string, string>;
+    const ogLocale = ogLocaleMap[locale] ?? 'en_US';
 
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: `${name1} & ${name2}` });
@@ -78,7 +78,17 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:url', content: canonicalUrl });
     this.meta.updateTag({ property: 'og:image', content: ogImageUrl });
     this.meta.updateTag({ property: 'og:locale', content: ogLocale });
-    this.meta.updateTag({ property: 'og:locale:alternate', content: ogLocaleAlternate });
+
+    // og:locale:alternate is meant to appear once per OTHER supported locale
+    // (unlike the other og:* tags above, which are each singular) - a plain
+    // updateTag() call would just keep overwriting the same one tag, so the
+    // full set is rebuilt from scratch on every locale change instead.
+    this.meta.removeTag('property="og:locale:alternate"');
+    for (const supportedLocale of APP_CONFIG.i18n.supportedLocales) {
+      if (supportedLocale === locale) continue;
+      const alternate = ogLocaleMap[supportedLocale];
+      if (alternate) this.meta.addTag({ property: 'og:locale:alternate', content: alternate });
+    }
 
     this.meta.updateTag({ name: 'twitter:card', content: seo.twitterCard });
     this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
@@ -86,8 +96,19 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: ogImageUrl });
   }
 
+  // hreflang expects a full BCP47 language tag, not the short internal
+  // locale code used elsewhere in the app (query params, TranslationService,
+  // etc.) - 'zh' maps to the more precise 'zh-Hans-SG' (Simplified Han,
+  // Singapore) rather than the bare 'zh'.
+  private hreflangFor(locale: string): string {
+    return locale === 'zh' ? 'zh-Hans-SG' : locale;
+  }
+
   private fill(template: string, values: string[]): string {
-    return values.reduce((acc: string, value, index) => acc.replaceAll(`{${index}}`, value), template);
+    return values.reduce(
+      (acc: string, value, index) => acc.replaceAll(`{${index}}`, value),
+      template,
+    );
   }
 
   private setLinkTag(rel: string, href: string, hreflang?: string): void {

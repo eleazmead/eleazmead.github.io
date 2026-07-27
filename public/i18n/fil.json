@@ -309,13 +309,16 @@
     }
   },
   "footer": {
-    "message": "Website na ginawa nang may pagmamahal ng Nobyo at Nobya."
+    "message": "Website na ginawa nang may pagmamahal ng Nobyo at Nobya.",
+    "buildPrefix": "Build"
   },
   "languageToggle": {
     "ariaLabel": "Palitan ang wika",
+    "menuAriaLabel": "Pumili ng wika",
     "labels": {
       "en": "EN",
-      "fil": "FIL"
+      "fil": "FIL",
+      "zh": "中文"
     }
   },
   "admin": {

@@ -4,7 +4,7 @@ import { join } from 'path';
 const galleryDir = 'public/gallery';
 const ourStoryDir = 'public/our-story';
 const IMAGE_EXTS = /\.(jpg|jpeg|png|webp|gif|avif)$/i;
-const STORY_IMAGE_EXTS = /\.(jpg|jpeg|png)$/i;
+const STORY_IMAGE_EXTS = /\.(jpg|jpeg|png|webp)$/i;
 
 if (!existsSync(galleryDir)) mkdirSync(galleryDir, { recursive: true });
 if (!existsSync(ourStoryDir)) mkdirSync(ourStoryDir, { recursive: true });

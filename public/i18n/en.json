@@ -309,13 +309,16 @@
     }
   },
   "footer": {
-    "message": "Website Made with Love by the Groom and the Bride."
+    "message": "Website Made with Love by the Groom and the Bride.",
+    "buildPrefix": "Build"
   },
   "languageToggle": {
     "ariaLabel": "Switch language",
+    "menuAriaLabel": "Select language",
     "labels": {
       "en": "EN",
-      "fil": "FIL"
+      "fil": "FIL",
+      "zh": "中文"
     }
   },
   "admin": {

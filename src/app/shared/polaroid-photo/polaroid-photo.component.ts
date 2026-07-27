@@ -22,7 +22,11 @@ import {
   PolaroidScrollPhysicsService,
 } from './polaroid-scroll-physics.service';
 
-const MAX_CAPTION_LENGTH = 50;
+// A generous safety cap, not the primary truncation mechanism - the
+// caption now wraps onto up to 2 lines and is visually clamped with an
+// ellipsis via CSS (-webkit-line-clamp: 2 on .polaroid__caption), so this
+// only guards against a genuinely runaway-long string slipping through.
+const MAX_CAPTION_LENGTH = 110;
 const MAX_REST_TILT_DEG = 7;
 const MAX_STATIC_OFFSET_PX = 8;
 

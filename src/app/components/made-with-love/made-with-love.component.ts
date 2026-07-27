@@ -2,11 +2,11 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, inject, signal } from 
 import { TranslatePipe } from '../../shared/translate.pipe';
 
 const FRAME_COUNT = 3;
-const FRAME_INTERVAL_MS = 550;
-const LOOP_COUNT = 5;
+const FRAME_INTERVAL_MS = 400;
+const LOOP_COUNT = 6;
 const SCROLL_TOP_RESET_PX = 4;
 
-type Phase = 'pending' | 'playing' | 'scattered';
+type Phase = 'pending' | 'playing' | 'frozen';
 
 @Component({
   selector: 'app-made-with-love',
@@ -25,24 +25,13 @@ export class MadeWithLoveComponent implements AfterViewInit, OnDestroy {
   private frameTimer?: ReturnType<typeof setInterval>;
   private readonly onScroll = () => this.handleScroll();
 
-  private eleazFrame(index: number): string {
-    return `made-with-love/eleaz${index + 1}.webp`;
-  }
-
-  private meadFrame(index: number): string {
-    return `made-with-love/mead${index + 1}.webp`;
-  }
-
   get eleazImageUrl(): string {
-    return this.eleazFrame(this.frameIndex());
+    return `made-with-love/eleaz${this.frameIndex() + 1}.webp`;
   }
 
   get meadImageUrl(): string {
-    return this.meadFrame(this.frameIndex());
+    return `made-with-love/mead${this.frameIndex() + 1}.webp`;
   }
-
-  readonly eleazScatteredUrls = [0, 1, 2].map((index) => this.eleazFrame(index));
-  readonly meadScatteredUrls = [0, 1, 2].map((index) => this.meadFrame(index));
 
   ngAfterViewInit(): void {
     this.intersectionObserver = new IntersectionObserver(
@@ -76,14 +65,16 @@ export class MadeWithLoveComponent implements AfterViewInit, OnDestroy {
         completedLoops += 1;
         if (completedLoops >= LOOP_COUNT) {
           if (this.frameTimer) clearInterval(this.frameTimer);
-          this.phase.set('scattered');
+          // Lands back on frame 0 (eleaz1/mead1) and stays there - the
+          // caption stays on screen throughout instead of being hidden.
+          this.phase.set('frozen');
         }
       }
     }, FRAME_INTERVAL_MS);
   }
 
   private handleScroll(): void {
-    if (window.scrollY <= SCROLL_TOP_RESET_PX && this.phase() === 'scattered') {
+    if (window.scrollY <= SCROLL_TOP_RESET_PX && this.phase() === 'frozen') {
       this.phase.set('pending');
       this.intersectionObserver?.observe(this.el.nativeElement);
     }

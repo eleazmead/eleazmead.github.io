@@ -12,35 +12,46 @@
 
 .made-with-love__stage {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1.25rem;
+  /* Below 640px the two figures sit side by side (touching, filling most of
+     the width) with the caption on its own full-width line above them -
+     matching a reference "two people holding stuff" promo layout - rather
+     than the 3-row stacked arrangement (figure / caption / figure) used at
+     wider breakpoints. flex-wrap lets the 100%-basis caption below force
+     the two auto-basis figures onto the next line. */
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
   max-width: 1100px;
   margin: 0 auto;
 
   @media (min-width: 640px) {
-    flex-direction: row;
-    align-items: flex-end;
+    flex-wrap: nowrap;
     gap: 2rem;
   }
 }
 
 .made-with-love__frame {
-  width: 9rem;
-  height: 9rem;
+  /* clamp() keeps the two figures large enough to nearly touch across a
+     narrow phone width without a hardcoded px size overflowing a wider
+     one. */
+  width: clamp(8rem, 46vw, 12rem);
+  height: clamp(8rem, 46vw, 12rem);
   object-fit: contain;
   object-position: bottom;
   flex-shrink: 0;
   filter: var(--made-with-love-sticker-shadow);
   /* Anchors the figure to the section's bottom edge and crops into it
-     (via the section's own overflow: hidden) instead of floating free. */
-  margin-bottom: -0.5rem;
+     (via the section's own overflow: hidden) instead of floating free. A
+     small negative horizontal margin lets the pair touch/slightly overlap
+     at the center, same as the "two figures holding stuff" reference. */
+  margin: 0 -0.15rem -0.5rem;
 
   @media (min-width: 640px) {
     width: 13rem;
     height: 13rem;
-    margin-bottom: -0.75rem;
+    margin: 0 0 -0.75rem;
   }
 
   @media (min-width: 1024px) {
@@ -51,8 +62,13 @@
 }
 
 .made-with-love__text {
+  /* Pulled to its own full-width line above the figures on mobile (see the
+     flex-wrap note above); reverts to sitting inline between them, centered
+     vertically, from 640px up. */
+  order: -1;
+  flex: 1 1 100%;
   align-self: center;
-  margin: 0;
+  margin: 0 0 1.25rem;
   font-family: var(--font-display);
   font-weight: 400;
   font-size: 1.35rem;
@@ -60,83 +76,13 @@
   color: var(--color-text);
 
   @media (min-width: 640px) {
+    order: 0;
+    flex: 1 1 auto;
+    margin: 0;
     font-size: 1.65rem;
   }
 
   @media (min-width: 1024px) {
     font-size: 1.9rem;
-  }
-}
-
-.made-with-love__scattered {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.5rem 0;
-  max-width: 1400px;
-  margin: 0 auto;
-  animation: madeWithLoveScatterIn 0.6s ease both;
-}
-
-.made-with-love__card {
-  width: 6.5rem;
-  height: 6.5rem;
-  object-fit: contain;
-  object-position: bottom;
-  margin: 0 -0.75rem;
-  filter: var(--made-with-love-sticker-shadow);
-  /* Anchors each card to the section's bottom edge and crops into it
-     (via the section's own overflow: hidden) instead of floating free. */
-  margin-bottom: -0.5rem;
-
-  @media (min-width: 640px) {
-    width: 9.5rem;
-    height: 9.5rem;
-    margin: 0 -1rem;
-    margin-bottom: -0.75rem;
-  }
-
-  @media (min-width: 1024px) {
-    width: 12rem;
-    height: 12rem;
-    margin: 0 -1.25rem;
-    margin-bottom: -1rem;
-  }
-}
-
-.made-with-love__card:nth-child(1) {
-  transform: rotate(-9deg);
-}
-.made-with-love__card:nth-child(2) {
-  transform: rotate(-4deg);
-}
-.made-with-love__card:nth-child(3) {
-  transform: rotate(2deg);
-}
-.made-with-love__card:nth-child(4) {
-  transform: rotate(-2deg);
-}
-.made-with-love__card:nth-child(5) {
-  transform: rotate(5deg);
-}
-.made-with-love__card:nth-child(6) {
-  transform: rotate(9deg);
-}
-
-@keyframes madeWithLoveScatterIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .made-with-love__scattered {
-    animation: none;
   }
 }

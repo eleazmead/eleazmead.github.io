@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { TranslatePipe } from '../../shared/translate.pipe';
 
 @Component({
@@ -8,4 +9,6 @@ import { TranslatePipe } from '../../shared/translate.pipe';
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })
-export class FooterComponent {}
+export class FooterComponent {
+  readonly buildNumber = environment.buildNumber;
+}
