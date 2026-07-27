@@ -1,28 +1,17 @@
 <section class="made-with-love">
-  @if (phase() !== 'scattered') {
-    <div class="made-with-love__stage">
-      <img
-        class="made-with-love__frame"
-        [src]="eleazImageUrl"
-        alt="Eleaz animated illustration"
-        aria-hidden="true"
-      />
-      <p class="made-with-love__text">{{ 'footer.message' | translate }}</p>
-      <img
-        class="made-with-love__frame"
-        [src]="meadImageUrl"
-        alt="Mead animated illustration"
-        aria-hidden="true"
-      />
-    </div>
-  } @else {
-    <div class="made-with-love__scattered">
-      @for (url of eleazScatteredUrls; track url) {
-        <img class="made-with-love__card" [src]="url" alt="Eleaz illustration" />
-      }
-      @for (url of meadScatteredUrls; track url) {
-        <img class="made-with-love__card" [src]="url" alt="Mead illustration" />
-      }
-    </div>
-  }
+  <div class="made-with-love__stage">
+    <img
+      class="made-with-love__frame"
+      [src]="eleazImageUrl"
+      alt="Eleaz animated illustration"
+      aria-hidden="true"
+    />
+    <p class="made-with-love__text">{{ 'footer.message' | translate }}</p>
+    <img
+      class="made-with-love__frame"
+      [src]="meadImageUrl"
+      alt="Mead animated illustration"
+      aria-hidden="true"
+    />
+  </div>
 </section>

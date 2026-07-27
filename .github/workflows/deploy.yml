@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
 
-permissions: 
+permissions:
   contents: read
   pages: write
   id-token: write
@@ -51,6 +51,15 @@ jobs:
           cp src/environments/environment.ts.example src/environments/environment.ts
           cp src/environments/environment.staging.ts.example src/environments/environment.staging.ts
 
+      - name: Compute build number
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        id: build_number
+        # YYYY.DD.MM-<run number> using the actual build time (UTC). The run
+        # number is GitHub Actions' own auto-incrementing counter for this
+        # workflow, so it doubles as the "iteration" for that day without
+        # needing to track/query past builds ourselves.
+        run: echo "value=$(date -u +'%Y.%d.%m')-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
       - name: Inject secrets
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
@@ -58,6 +67,7 @@ jobs:
           SHEETS_SPREADSHEET_ID: ${{ secrets.SHEETS_SPREADSHEET_ID }}
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
           GAS_WEB_APP_URL: ${{ secrets.GAS_WEB_APP_URL }}
+          BUILD_NUMBER: ${{ steps.build_number.outputs.value }}
         run: |
           node -e "
             const fs = require('fs');
@@ -66,6 +76,7 @@ jobs:
             c = c.replace('REPLACE_SHEETS_SPREADSHEET_ID', process.env.SHEETS_SPREADSHEET_ID || '');
             c = c.replace('REPLACE_SHEETS_API_KEY', process.env.SHEETS_API_KEY || '');
             c = c.replace('REPLACE_GAS_WEB_APP_URL', process.env.GAS_WEB_APP_URL || '');
+            c = c.replace('REPLACE_BUILD_NUMBER', process.env.BUILD_NUMBER || '');
             fs.writeFileSync('src/environments/environment.production.ts', c);
           "
 

@@ -1,7 +1,43 @@
-<button
-  class="lang-toggle"
-  (click)="toggle()"
-  [attr.aria-label]="'languageToggle.ariaLabel' | translate"
->
-  {{ currentLabel() }}
-</button>
+<div class="lang-toggle">
+  <button
+    class="lang-toggle__trigger"
+    type="button"
+    (click)="toggleOpen()"
+    [attr.aria-label]="'languageToggle.ariaLabel' | translate"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen()"
+  >
+    <span class="lang-toggle__current">{{ currentLabel() }}</span>
+    <svg
+      class="lang-toggle__chevron"
+      [class.lang-toggle__chevron--open]="isOpen()"
+      viewBox="0 0 12 8"
+      aria-hidden="true"
+    >
+      <path d="M1 1.5L6 6.5L11 1.5" fill="none" stroke="currentColor" stroke-width="1.4" />
+    </svg>
+  </button>
+
+  @if (isOpen()) {
+    <ul
+      class="lang-toggle__menu"
+      role="listbox"
+      [attr.aria-label]="'languageToggle.menuAriaLabel' | translate"
+    >
+      @for (locale of locales; track locale) {
+        <li role="presentation">
+          <button
+            type="button"
+            role="option"
+            class="lang-toggle__option"
+            [class.lang-toggle__option--active]="locale === currentLocale()"
+            [attr.aria-selected]="locale === currentLocale()"
+            (click)="select(locale)"
+          >
+            {{ labelFor(locale) }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

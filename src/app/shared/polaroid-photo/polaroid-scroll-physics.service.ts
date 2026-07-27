@@ -1,13 +1,35 @@
 import { Injectable } from '@angular/core';
 
 const PARALLAX_RANGE_PX = 10;
-const MAX_INERTIA_TILT_DEG = 18;
-const INERTIA_SENSITIVITY = 4;
+const MAX_INERTIA_TILT_DEG = 10;
 const INERTIA_SETTLE_MS = 120;
 // Velocity is smoothed over this recent window instead of a single ~16ms
 // frame delta, since real scroll/trackpad input moves in small per-frame
 // increments that are too noisy to read a meaningful "flick speed" from.
 const VELOCITY_WINDOW_MS = 120;
+
+// At/above this scroll speed (px/ms), a gesture reads as a deliberate flick
+// rather than casual scrolling - only then does the near-instant tracking
+// transition kick in (see .polaroid--scrolling in the stylesheet); below it,
+// the tilt still moves (see TILT_RESPONSE_K below) but eases via the slower,
+// smoother spring transition instead of snapping. This is purely a choice of
+// *transition style*, not a gate on whether any tilt is applied at all - see
+// the note on inertiaTilt below for why that distinction matters.
+const FLICK_VELOCITY_THRESHOLD = 0.5;
+
+// How quickly tilt ramps toward MAX_INERTIA_TILT_DEG as scroll speed climbs.
+// This is a saturating (not linear+hard-clamped) curve computed for EVERY
+// speed, including slow ones - there is deliberately no minimum-speed cutoff
+// below which tilt is zero. An earlier version gated tilt behind
+// FLICK_VELOCITY_THRESHOLD entirely (0 below it, curve above it) with too
+// steep a K - since real scroll gestures cross a low threshold almost
+// immediately, that made the swing effectively jump straight to a large,
+// near-constant value the instant ANY scrolling started, regardless of how
+// fast or slow it actually was - not the "swing scales with scroll speed"
+// physics this is supposed to simulate. A low K applied continuously from
+// zero means a slow, deliberate scroll produces a barely-there sway while a
+// fast flick ramps up toward the cap, with no discontinuity in between.
+const TILT_RESPONSE_K = 1.1;
 
 export interface PolaroidPhysicsHandle {
   hostElement: HTMLElement;
@@ -98,6 +120,17 @@ export class PolaroidScrollPhysicsService {
       reads.push({ handle, top: rect.top, height: rect.height });
     }
 
+    const speed = Math.abs(velocity);
+    // Only genuine flicks (speed at/above the threshold) get the near-instant
+    // tracking transition - slower scrolling still tilts (see inertiaTilt
+    // below), just eased via the smoother spring transition so it doesn't
+    // snap. This was the actual cause of the original "sharp/hanging" swing
+    // during slow scrolling: previously EVERY scroll tick (however small)
+    // added .polaroid--scrolling and kept re-arming its settle timer, so a
+    // slow multi-second scroll gesture spent the whole time in the snappy
+    // 0.06s-linear tracking transition instead of the smooth spring one.
+    const isFlick = speed >= FLICK_VELOCITY_THRESHOLD;
+
     // Write phase: all style/class mutations happen after every read above.
     for (const { handle, top, height } of reads) {
       const elementCenter = top + height / 2;
@@ -105,14 +138,27 @@ export class PolaroidScrollPhysicsService {
       const parallax = Math.max(-1, Math.min(1, distanceFromCenter)) * PARALLAX_RANGE_PX;
       handle.hostElement.style.setProperty('--polaroid-parallax', `${parallax}px`);
 
-      const sensitivity = INERTIA_SENSITIVITY * handle.sensitivityMultiplier();
-      const inertiaTilt = Math.max(
-        -MAX_INERTIA_TILT_DEG,
-        Math.min(MAX_INERTIA_TILT_DEG, -velocity * sensitivity),
-      );
+      // sensitivityMultiplier's own sign is what makes roughly half the
+      // photos swing opposite the rest for the exact same scroll gesture
+      // (see the doc comment on that computed() in the component) - it has
+      // to be factored into the tilt's sign here, not just its magnitude.
+      const multiplier = handle.sensitivityMultiplier();
+      const sign = (velocity > 0 ? -1 : 1) * Math.sign(multiplier || 1);
+      // Saturating curve (1 - e^-kx), computed for every speed including
+      // slow ones - see TILT_RESPONSE_K above for why there's no minimum-
+      // speed cutoff. It ramps up smoothly and only asymptotically
+      // approaches the cap, so there's no visible kink where a hard clamp
+      // would otherwise "catch" the tilt at high scroll speeds.
+      const inertiaTilt =
+        sign *
+        MAX_INERTIA_TILT_DEG *
+        (1 - Math.exp(-TILT_RESPONSE_K * speed * Math.abs(multiplier)));
       handle.hostElement.style.setProperty('--polaroid-inertia-tilt', `${inertiaTilt}deg`);
-      handle.cardElement.classList.add('polaroid--scrolling');
+      handle.cardElement.classList.toggle('polaroid--scrolling', isFlick);
 
+      // Scheduled on every tick (not just flicks) so tilt eases back to 0
+      // shortly after ANY scrolling stops, slow or fast - once the last
+      // 'scroll' event fires, nothing else drives this loop.
       const existingTimer = this.settleTimers.get(handle);
       if (existingTimer) clearTimeout(existingTimer);
       const timer = setTimeout(() => {

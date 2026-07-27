@@ -4,5 +4,7 @@
   </p>
   <p class="footer__date">{{ 'couple.weddingDate' | translate }}</p>
   <p class="footer__hashtag">{{ 'couple.hashtag' | translate }}</p>
-  <p class="footer__message">{{ 'footer.message' | translate }}</p>
+  @if (buildNumber) {
+    <p class="footer__build">{{ 'footer.buildPrefix' | translate }}: {{ buildNumber }}</p>
+  }
 </footer>

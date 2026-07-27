@@ -35,7 +35,7 @@ export class OurStoryComponent implements OnInit {
     const grouped = new Map<string, string[]>();
 
     for (const filename of this.photoManifest()) {
-      const match = filename.match(/^([a-z]{3}_\d{4})_([12])\.(jpe?g|png)$/i);
+      const match = filename.match(/^([a-z]{3}_\d{4})_([12])\.(jpe?g|png|webp)$/i);
       if (!match) continue;
 
       const prefix = match[1].toLowerCase();

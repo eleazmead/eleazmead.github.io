@@ -226,7 +226,15 @@
 }
 
 .polaroid__caption {
-  display: block;
+  /* Wraps onto up to 2 lines before clamping with an ellipsis, instead of
+     truncating to a single line - most captions comfortably fit in two
+     short lines, so this reads more naturally than cutting off mid-word
+     after the first line even though a caption is still long enough that
+     the JS-side MAX_CAPTION_LENGTH cap is unlikely to ever kick in. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   margin-top: 0.55rem;
   font-family: ui-monospace, Consolas, 'SFMono-Regular', 'Liberation Mono', Menlo, monospace;
   font-size: 0.7rem;
@@ -235,7 +243,7 @@
   line-height: 1.3;
   text-align: center;
   color: var(--color-secondary);
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
 }
