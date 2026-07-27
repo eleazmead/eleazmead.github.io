@@ -1,0 +1,142 @@
+.made-with-love {
+  padding: 2.5rem 1rem 0;
+  text-align: center;
+  overflow: hidden;
+  // A single soft-blurred drop-shadow (follows the PNG's alpha silhouette,
+  // unlike box-shadow which is confined to the rectangular box) reads as a
+  // gentle lift off the page rather than a hard sticker outline.
+  --made-with-love-sticker-shadow: drop-shadow(
+    0 4px 6px color-mix(in srgb, var(--color-secondary) 30%, transparent)
+  );
+}
+
+.made-with-love__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+}
+
+.made-with-love__frame {
+  width: 9rem;
+  height: 9rem;
+  object-fit: contain;
+  object-position: bottom;
+  flex-shrink: 0;
+  filter: var(--made-with-love-sticker-shadow);
+  /* Anchors the figure to the section's bottom edge and crops into it
+     (via the section's own overflow: hidden) instead of floating free. */
+  margin-bottom: -0.5rem;
+
+  @media (min-width: 640px) {
+    width: 13rem;
+    height: 13rem;
+    margin-bottom: -0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    width: 17rem;
+    height: 17rem;
+    margin-bottom: -1rem;
+  }
+}
+
+.made-with-love__text {
+  align-self: center;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: var(--color-text);
+
+  @media (min-width: 640px) {
+    font-size: 1.65rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.9rem;
+  }
+}
+
+.made-with-love__scattered {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.5rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: madeWithLoveScatterIn 0.6s ease both;
+}
+
+.made-with-love__card {
+  width: 6.5rem;
+  height: 6.5rem;
+  object-fit: contain;
+  object-position: bottom;
+  margin: 0 -0.75rem;
+  filter: var(--made-with-love-sticker-shadow);
+  /* Anchors each card to the section's bottom edge and crops into it
+     (via the section's own overflow: hidden) instead of floating free. */
+  margin-bottom: -0.5rem;
+
+  @media (min-width: 640px) {
+    width: 9.5rem;
+    height: 9.5rem;
+    margin: 0 -1rem;
+    margin-bottom: -0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    width: 12rem;
+    height: 12rem;
+    margin: 0 -1.25rem;
+    margin-bottom: -1rem;
+  }
+}
+
+.made-with-love__card:nth-child(1) {
+  transform: rotate(-9deg);
+}
+.made-with-love__card:nth-child(2) {
+  transform: rotate(-4deg);
+}
+.made-with-love__card:nth-child(3) {
+  transform: rotate(2deg);
+}
+.made-with-love__card:nth-child(4) {
+  transform: rotate(-2deg);
+}
+.made-with-love__card:nth-child(5) {
+  transform: rotate(5deg);
+}
+.made-with-love__card:nth-child(6) {
+  transform: rotate(9deg);
+}
+
+@keyframes madeWithLoveScatterIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .made-with-love__scattered {
+    animation: none;
+  }
+}

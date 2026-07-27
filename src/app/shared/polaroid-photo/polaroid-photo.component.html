@@ -1,5 +1,6 @@
 <div
   class="polaroid-mount"
+  [class.polaroid-mount--concealed]="focused()"
   tabindex="0"
   role="button"
   [attr.aria-label]="alt()"
@@ -10,7 +11,7 @@
   <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: true }"></ng-container>
 </div>
 
-@if (showOverlay()) {
+@if (overlayVisible()) {
   <div
     #overlayRoot
     class="polaroid-overlay"
