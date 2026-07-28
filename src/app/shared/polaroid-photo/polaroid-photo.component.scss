@@ -52,9 +52,19 @@
     0 2px 4px rgba(18, 18, 18, 0.08),
     0 18px 30px rgba(18, 18, 18, 0.18);
 
-  /* Individual transform properties (rotate/translate/scale) are transitioned
-     independently so scroll-linked parallax stays instant while the tilt
-     (hover + scroll-inertia) gets a springy ease-back.
+  /* A single combined `transform` (translate3d + rotate + scale) rather than
+     the individual rotate/translate/scale CSS properties this used to use.
+     Those individual properties (CSS Transforms Level 2) don't have as
+     mature/consistent GPU-compositing support across browsers - notably
+     Safari/WebKit - as the long-standing `transform` shorthand does, which
+     is exactly why the FLIP focus-mode transition uses the combined form
+     (see flipTransform() in the component). This scroll-driven tilt/parallax
+     runs on every scroll frame - far more often than FLIP, which only runs
+     once per open/close - so it's actually the more performance-critical
+     path, and was reported as laggy specifically on iOS Safari while smooth
+     on desktop, matching this exact class of bug. translate3d's explicit Z
+     component is the classic cross-browser trick to force a hardware-
+     accelerated compositor layer.
 
      transform-origin must land EXACTLY where the pin's needle tip sits (not
      just "near the top"), or the photo visibly swings around the wrong point
@@ -72,12 +82,16 @@
      off-center pin. Shifting both the pin and this origin together keeps the
      card's actual rest angle physically consistent with where the pin sits. */
   transform-origin: calc(50% + var(--polaroid-pin-shift, 0%)) 0.9rem;
-  rotate: calc(var(--polaroid-rotate, 0deg) + var(--polaroid-inertia-tilt, 0deg));
-  translate: 0 calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px));
-  scale: 1;
+  transform: translate3d(0, calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px)), 0)
+    rotate(calc(var(--polaroid-rotate, 0deg) + var(--polaroid-inertia-tilt, 0deg))) scale(1);
+  /* rotate/translate/scale previously transitioned independently (rotate on
+     a springy duration, scale on a quick 0.3s ease) - merged into one
+     `transform` property they necessarily share a single timing now. The
+     spring duration is used throughout, including for hover's scale, which
+     is a minor, deliberate trade of hover's previous snappier 0.3s zoom for
+     the much bigger win of GPU-friendly compositing during scroll. */
   transition:
-    rotate var(--polaroid-spring-duration, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1),
-    scale 0.3s ease,
+    transform var(--polaroid-spring-duration, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 0.35s ease;
 
   /* Fast, near-linear tracking while a scroll is actively in progress, so the
@@ -92,22 +106,21 @@
      photos on Our Story. */
   &.polaroid--scrolling {
     transition:
-      rotate 0.06s linear,
-      scale 0.3s ease,
+      transform 0.06s linear,
       box-shadow 0.35s ease;
-    will-change: rotate, translate;
+    will-change: transform;
   }
 }
 
 .polaroid-mount:hover .polaroid,
 .polaroid-mount:focus-visible .polaroid {
-  rotate: 0deg;
-  scale: 1.03;
+  transform: translate3d(0, calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px)), 0)
+    rotate(0deg) scale(1.03);
   box-shadow:
     0 4px 8px rgba(18, 18, 18, 0.1),
     0 26px 42px rgba(18, 18, 18, 0.22);
   z-index: 2;
-  will-change: rotate, scale;
+  will-change: transform;
 }
 
 .polaroid-mount:focus-visible .polaroid {

@@ -103,8 +103,11 @@
         #photoImg
         class="polaroid__photo"
         [src]="imageUrl()"
+        [attr.width]="imageWidth()"
+        [attr.height]="imageHeight()"
         [alt]="alt()"
         loading="lazy"
+        decoding="async"
         (error)="imageError.emit()"
       />
     </div>

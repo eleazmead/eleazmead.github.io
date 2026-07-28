@@ -1,12 +1,52 @@
 [
-  "Apr_2017_1.webp",
-  "Apr_2017_2.webp",
-  "Feb_2020_1.webp",
-  "Feb_2020_2.webp",
-  "Mar_2022_1.webp",
-  "May_2025_1.webp",
-  "Nov_2024_1.webp",
-  "Sep_2016_1.webp",
-  "Sep_2019_1.webp",
-  "Sep_2019_2.webp"
+  {
+    "file": "Apr_2017_1.webp",
+    "width": 3024,
+    "height": 4032
+  },
+  {
+    "file": "Apr_2017_2.webp",
+    "width": 4284,
+    "height": 5712
+  },
+  {
+    "file": "Feb_2020_1.webp",
+    "width": 3088,
+    "height": 2320
+  },
+  {
+    "file": "Feb_2020_2.webp",
+    "width": 2268,
+    "height": 3024
+  },
+  {
+    "file": "Mar_2022_1.webp",
+    "width": 1904,
+    "height": 2539
+  },
+  {
+    "file": "May_2025_1.webp",
+    "width": 1536,
+    "height": 2048
+  },
+  {
+    "file": "Nov_2024_1.webp",
+    "width": 556,
+    "height": 742
+  },
+  {
+    "file": "Sep_2016_1.webp",
+    "width": 1772,
+    "height": 1064
+  },
+  {
+    "file": "Sep_2019_1.webp",
+    "width": 1536,
+    "height": 2048
+  },
+  {
+    "file": "Sep_2019_2.webp",
+    "width": 1728,
+    "height": 1280
+  }
 ]
