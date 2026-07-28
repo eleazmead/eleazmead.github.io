@@ -86,6 +86,15 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   @ViewChild('overlayRoot') private overlayRootRef?: ElementRef<HTMLElement>;
 
   readonly imageUrl = input.required<string>();
+  // Intrinsic pixel dimensions, when known - rendered as native width/height
+  // attributes on the <img> so the browser can reserve the correct
+  // aspect-ratio box before it loads instead of collapsing to 0 height and
+  // shifting the page once it does (Lighthouse's "unsized images" audit).
+  // Purely a layout-shift hint: CSS still controls the actual rendered size
+  // (see .polaroid__photo - width: 100%; height: auto), so a photo's real
+  // natural aspect ratio is never overridden by these.
+  readonly imageWidth = input<number>();
+  readonly imageHeight = input<number>();
   readonly alt = input.required<string>();
   readonly caption = input<string>('');
   readonly imageError = output<void>();

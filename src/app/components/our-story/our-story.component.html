@@ -17,6 +17,8 @@
               @if (isPhotoVisible(url)) {
                 <app-polaroid-photo
                   [imageUrl]="url"
+                  [imageWidth]="photoWidth(url)"
+                  [imageHeight]="photoHeight(url)"
                   [alt]="
                     ('ourStory.imageAlt' | translate)
                       .replace('{0}', (i + 1).toString())

@@ -31,6 +31,32 @@ const FLICK_VELOCITY_THRESHOLD = 0.5;
 // fast flick ramps up toward the cap, with no discontinuity in between.
 const TILT_RESPONSE_K = 1.1;
 
+// Viewport-proximity culling: photos are only read/written by updateAll()
+// while they're within one of these two IntersectionObserver "bands" around
+// the viewport - far off-screen photos (Our Story can have well over a
+// dozen) are skipped entirely, both the getBoundingClientRect() read AND
+// the style writes/class toggles/timer scheduling, since their physics are
+// invisible anyway. rootMargin percentages resolve against the viewport
+// itself (root: null), so both bands scale automatically with viewport
+// height - no separate mobile/desktop tuning needed.
+//
+// Two bands, not one, so the buffer can react to how fast the user is
+// scrolling without ever recreating an IntersectionObserver (expensive/
+// thrashy to do every frame): NEAR_ROOT_MARGIN is enough headroom for
+// idle/slow scrolling, where a tight buffer wastes the least work. Once
+// scroll speed crosses FAR_TIER_SPEED_THRESHOLD, updateAll() switches to
+// consulting the wider FAR_ROOT_MARGIN band instead - both observers run
+// continuously in the background at effectively zero cost (native,
+// off-main-thread-eligible), so "switching" is just choosing which
+// precomputed active set to read that frame, not recreating anything.
+const NEAR_ROOT_MARGIN = '60% 0px';
+const FAR_ROOT_MARGIN = '200% 0px';
+// Deliberately lower than FLICK_VELOCITY_THRESHOLD, so the wider culling
+// buffer engages slightly BEFORE the snappy tracking transition does - by
+// the time a flick is fast enough to visibly snap-track, photos it's about
+// to reach should already be "resumed" rather than popping in cold.
+const FAR_TIER_SPEED_THRESHOLD = 0.3;
+
 export interface PolaroidPhysicsHandle {
   hostElement: HTMLElement;
   cardElement: HTMLElement;
@@ -57,6 +83,13 @@ export interface PolaroidPhysicsHandle {
  * computed ONCE per frame here and shared across every photo, rather than
  * each one independently re-deriving the same value from the same
  * `window.scrollY`.
+ *
+ * On top of that batching, updateAll() only processes photos currently
+ * within one of two IntersectionObserver-tracked bands around the viewport
+ * (see NEAR_ROOT_MARGIN/FAR_ROOT_MARGIN above) - photos further away are
+ * skipped entirely rather than computed and immediately overwritten with a
+ * value nobody can see, cutting real per-frame work (not just avoiding
+ * thrashing) on pages with many photos.
  */
 @Injectable({ providedIn: 'root' })
 export class PolaroidScrollPhysicsService {
@@ -65,6 +98,11 @@ export class PolaroidScrollPhysicsService {
     PolaroidPhysicsHandle,
     ReturnType<typeof setTimeout>
   >();
+  private readonly elementToHandle = new WeakMap<Element, PolaroidPhysicsHandle>();
+  private readonly nearActive = new Set<PolaroidPhysicsHandle>();
+  private readonly farActive = new Set<PolaroidPhysicsHandle>();
+  private nearObserver?: IntersectionObserver;
+  private farObserver?: IntersectionObserver;
   private scrollSamples: { time: number; y: number }[] = [];
   private listenerAttached = false;
   private ticking = false;
@@ -72,14 +110,55 @@ export class PolaroidScrollPhysicsService {
   register(handle: PolaroidPhysicsHandle): void {
     this.instances.add(handle);
     this.ensureListener();
+
+    if (typeof IntersectionObserver === 'undefined') {
+      // No IO support: fall back to always-active so physics still works,
+      // just without the culling optimization.
+      this.nearActive.add(handle);
+      this.farActive.add(handle);
+    } else {
+      this.ensureObservers();
+      this.elementToHandle.set(handle.hostElement, handle);
+      this.nearObserver?.observe(handle.hostElement);
+      this.farObserver?.observe(handle.hostElement);
+    }
+
     this.updateAll();
   }
 
   unregister(handle: PolaroidPhysicsHandle): void {
     this.instances.delete(handle);
+    this.nearActive.delete(handle);
+    this.farActive.delete(handle);
+    this.elementToHandle.delete(handle.hostElement);
+    this.nearObserver?.unobserve(handle.hostElement);
+    this.farObserver?.unobserve(handle.hostElement);
+
     const timer = this.settleTimers.get(handle);
     if (timer) clearTimeout(timer);
     this.settleTimers.delete(handle);
+  }
+
+  private ensureObservers(): void {
+    if (this.nearObserver && this.farObserver) return;
+
+    const makeCallback = (activeSet: Set<PolaroidPhysicsHandle>) => {
+      return (entries: IntersectionObserverEntry[]) => {
+        for (const entry of entries) {
+          const handle = this.elementToHandle.get(entry.target);
+          if (!handle) continue;
+          if (entry.isIntersecting) activeSet.add(handle);
+          else activeSet.delete(handle);
+        }
+      };
+    };
+
+    this.nearObserver = new IntersectionObserver(makeCallback(this.nearActive), {
+      rootMargin: NEAR_ROOT_MARGIN,
+    });
+    this.farObserver = new IntersectionObserver(makeCallback(this.farActive), {
+      rootMargin: FAR_ROOT_MARGIN,
+    });
   }
 
   private ensureListener(): void {
@@ -111,16 +190,8 @@ export class PolaroidScrollPhysicsService {
     const deltaTime = Math.max(now - oldest.time, 1);
     const velocity = (scrollY - oldest.y) / deltaTime;
     const viewportCenter = window.innerHeight / 2;
-
-    // Read phase: every layout-forcing getBoundingClientRect happens first,
-    // before any style is written, so none of them trigger a forced reflow.
-    const reads: { handle: PolaroidPhysicsHandle; top: number; height: number }[] = [];
-    for (const handle of this.instances) {
-      const rect = handle.hostElement.getBoundingClientRect();
-      reads.push({ handle, top: rect.top, height: rect.height });
-    }
-
     const speed = Math.abs(velocity);
+
     // Only genuine flicks (speed at/above the threshold) get the near-instant
     // tracking transition - slower scrolling still tilts (see inertiaTilt
     // below), just eased via the smoother spring transition so it doesn't
@@ -130,6 +201,20 @@ export class PolaroidScrollPhysicsService {
     // slow multi-second scroll gesture spent the whole time in the snappy
     // 0.06s-linear tracking transition instead of the smooth spring one.
     const isFlick = speed >= FLICK_VELOCITY_THRESHOLD;
+
+    // Which culling band to consult this frame - see the constants' doc
+    // comment above for why this is a choice between two always-running
+    // observers rather than resizing either one.
+    const activeSet = speed >= FAR_TIER_SPEED_THRESHOLD ? this.farActive : this.nearActive;
+
+    // Read phase: every layout-forcing getBoundingClientRect happens first,
+    // before any style is written, so none of them trigger a forced reflow.
+    // Skips anything outside the current culling band entirely.
+    const reads: { handle: PolaroidPhysicsHandle; top: number; height: number }[] = [];
+    for (const handle of activeSet) {
+      const rect = handle.hostElement.getBoundingClientRect();
+      reads.push({ handle, top: rect.top, height: rect.height });
+    }
 
     // Write phase: all style/class mutations happen after every read above.
     for (const { handle, top, height } of reads) {
