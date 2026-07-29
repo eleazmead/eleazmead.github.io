@@ -8,7 +8,7 @@
   (keydown.enter)="open()"
   (keydown.space)="open(); $event.preventDefault()"
 >
-  <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: true }"></ng-container>
+  <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: true, rotDeg: rotationDeg(), offsetPx: staticOffsetPx() }"></ng-container>
 </div>
 
 @if (overlayVisible()) {
@@ -24,12 +24,19 @@
       &#215;
     </button>
     <div class="polaroid-mount polaroid-mount--focused" (click)="stopPropagation($event)">
-      <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: false }"></ng-container>
+      <!-- rotDeg: 0 so the overlay card always renders untilted regardless of
+           the inline card's resting rotation - the resting tilt (--polaroid-rotate)
+           is an inline style on the shared figure element, which would otherwise
+           be applied to both inline and overlay instances of the template.
+           offsetPx: 0 for the same reason - --polaroid-offset is a per-card
+           random vertical shift; in focus mode the card must be centered with
+           no vertical displacement or it drifts after the FLIP animation ends. -->
+      <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: false, rotDeg: 0, offsetPx: 0 }"></ng-container>
     </div>
   </div>
 }
 
-<ng-template #polaroidVisual let-showPin="showPin">
+<ng-template #polaroidVisual let-showPin="showPin" let-rotDeg="rotDeg" let-offsetPx="offsetPx">
   @if (showPin) {
     <!-- Lifts off and fades when the photo is "picked up" into focus mode,
          then eases back into place - with a slight overshoot bounce, like it's
@@ -94,8 +101,8 @@
   <figure
     #card
     class="polaroid"
-    [style.--polaroid-rotate]="rotationDeg() + 'deg'"
-    [style.--polaroid-offset]="staticOffsetPx() + 'px'"
+    [style.--polaroid-rotate]="rotDeg + 'deg'"
+    [style.--polaroid-offset]="offsetPx + 'px'"
     [style.--polaroid-spring-duration]="springDurationS() + 's'"
   >
     <div class="polaroid__frame">

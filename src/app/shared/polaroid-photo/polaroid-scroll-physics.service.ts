@@ -2,20 +2,34 @@ import { Injectable } from '@angular/core';
 
 const PARALLAX_RANGE_PX = 10;
 const MAX_INERTIA_TILT_DEG = 10;
-const INERTIA_SETTLE_MS = 120;
-// Velocity is smoothed over this recent window instead of a single ~16ms
-// frame delta, since real scroll/trackpad input moves in small per-frame
-// increments that are too noisy to read a meaningful "flick speed" from.
-const VELOCITY_WINDOW_MS = 120;
+// Settle delay before spring-back to rest. Must be comfortably longer than
+// the typical inter-event gap for mouse wheel input (~150-250ms on Windows)
+// so the settle timer never fires between two consecutive wheel events mid-
+// scroll. With 120ms, the card was visibly oscillating on Windows: tilt
+// applied, settle fires at 120ms, spring starts back, next wheel event at
+// 200ms re-applies tilt - choppy. 250ms keeps the tilt stable throughout a
+// continuous wheel scroll and only springs back after the user actually stops.
+// On Mac/iOS trackpad (events every ~16ms) the difference is imperceptible.
+const INERTIA_SETTLE_MS = 250;
+// Smoothed-velocity window. Must be wide enough to always capture the
+// previous sample for infrequent-event inputs (mouse wheel on Windows fires
+// ~150-250ms apart). With 120ms, those samples aged out before the next
+// event arrived, leaving only one entry in the window - making velocity = 0
+// on every wheel event and effectively disabling the tilt entirely. 300ms
+// ensures the previous wheel event's sample is always in range.
+// On Mac/iOS trackpad (events every ~16ms) this just averages over ~18
+// samples instead of ~7; velocity estimation stays accurate.
+const VELOCITY_WINDOW_MS = 300;
 
-// At/above this scroll speed (px/ms), a gesture reads as a deliberate flick
-// rather than casual scrolling - only then does the near-instant tracking
-// transition kick in (see .polaroid--scrolling in the stylesheet); below it,
-// the tilt still moves (see TILT_RESPONSE_K below) but eases via the slower,
-// smoother spring transition instead of snapping. This is purely a choice of
-// *transition style*, not a gate on whether any tilt is applied at all - see
-// the note on inertiaTilt below for why that distinction matters.
-const FLICK_VELOCITY_THRESHOLD = 0.5;
+// At/above this scroll speed (px/ms), a gesture gets the near-instant
+// tracking transition (.polaroid--scrolling class) instead of the base
+// spring. Set at 1.5 so only genuine fast flicks trigger it - this prevents
+// the class from toggling rapidly on mobile during normal mixed-speed touch
+// scrolling (which oscillates around lower speeds), which would cause the
+// card to "shake" from mismatched spring/snap transitions firing alternately.
+// Windows mouse wheel (~0.5 px/ms) stays BELOW this threshold and uses the
+// smooth spring instead, which is the right feel for that input device.
+const FLICK_VELOCITY_THRESHOLD = 1.5;
 
 // How quickly tilt ramps toward MAX_INERTIA_TILT_DEG as scroll speed climbs.
 // This is a saturating (not linear+hard-clamped) curve computed for EVERY
@@ -106,6 +120,12 @@ export class PolaroidScrollPhysicsService {
   private scrollSamples: { time: number; y: number }[] = [];
   private listenerAttached = false;
   private ticking = false;
+  // True while the last scroll input was a notched (non-smooth) mouse wheel.
+  // Set in the `wheel` listener, cleared after NOTCHED_WHEEL_RESET_MS of
+  // silence. When true, updateAll() skips the inertia tilt entirely so the
+  // cards don't jerk on discrete wheel steps that have no smooth equivalent.
+  private notchedWheelActive = false;
+  private notchedWheelTimer?: ReturnType<typeof setTimeout>;
 
   register(handle: PolaroidPhysicsHandle): void {
     this.instances.add(handle);
@@ -166,6 +186,29 @@ export class PolaroidScrollPhysicsService {
     this.listenerAttached = true;
     this.scrollSamples = [{ time: performance.now(), y: window.scrollY }];
     window.addEventListener('scroll', () => this.requestTick(), { passive: true });
+    // Detect notched (non-smooth) mouse wheels via the `wheel` event, which
+    // carries device-level delta info that `scroll` does not expose:
+    //   deltaMode 1 (DOM_DELTA_LINE) - notched wheel, always
+    //   deltaMode 0 (DOM_DELTA_PIXEL) + |deltaY| >= 100 - notched wheel
+    //     normalised to pixels by Windows/Chrome (Mac trackpad is always < 10px
+    //     per event; a mouse notch is typically 100-360px after normalisation)
+    // When active, tilt is suppressed - discrete wheel steps have no smooth
+    // physical equivalent so any swing just looks like jitter. The flag clears
+    // after 500ms of silence so switching to a trackpad re-enables animation
+    // immediately.
+    window.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        if (e.deltaMode > 0 || Math.abs(e.deltaY) >= 100) {
+          this.notchedWheelActive = true;
+          clearTimeout(this.notchedWheelTimer);
+          this.notchedWheelTimer = setTimeout(() => {
+            this.notchedWheelActive = false;
+          }, 500);
+        }
+      },
+      { passive: true },
+    );
   }
 
   private requestTick(): void {
@@ -222,6 +265,22 @@ export class PolaroidScrollPhysicsService {
       const distanceFromCenter = (elementCenter - viewportCenter) / viewportCenter;
       const parallax = Math.max(-1, Math.min(1, distanceFromCenter)) * PARALLAX_RANGE_PX;
       handle.hostElement.style.setProperty('--polaroid-parallax', `${parallax}px`);
+
+      // Skip inertia tilt entirely for notched mouse wheels - discrete steps
+      // have no smooth physical equivalent and produce visible jitter. Parallax
+      // is kept since it's a subtle positional shift that isn't noticeable at
+      // the coarse granularity of a notch.
+      if (this.notchedWheelActive) {
+        handle.hostElement.style.setProperty('--polaroid-inertia-tilt', '0deg');
+        handle.cardElement.classList.remove('polaroid--scrolling');
+        // Clear any pending settle timer - tilt is already 0.
+        const t = this.settleTimers.get(handle);
+        if (t) {
+          clearTimeout(t);
+          this.settleTimers.delete(handle);
+        }
+        continue;
+      }
 
       // sensitivityMultiplier's own sign is what makes roughly half the
       // photos swing opposite the rest for the exact same scroll gesture
