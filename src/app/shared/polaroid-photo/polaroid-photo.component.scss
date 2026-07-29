@@ -1,5 +1,11 @@
 :host {
   display: block;
+  /* Parallax applied at the host level so pin and card move as one assembly.
+     Everything inside the host (pin, card) translates together. The overlay
+     is reparented to <body> so it is NOT a descendant of :host and is
+     unaffected - --polaroid-parallax defaults to 0px there. No transition
+     here; the physics rAF at ~60fps provides smooth interpolation. */
+  transform: translateY(var(--polaroid-parallax, 0px));
 }
 
 .polaroid-mount {
@@ -9,15 +15,18 @@
   cursor: zoom-in;
   outline: none;
 
-  /* Hidden while the lightbox is open, so there's no visible duplicate of
-     the same photo (one small inline, one large in the overlay) - the FLIP
-     transition on the overlay card (see playFlipTransition in the component)
-     starts from this card's exact position, so hiding it here reads as the
-     photo itself growing into focus rather than a second copy appearing. */
+  /* The card is hidden while the lightbox is open (no visible duplicate),
+     but the pin is NOT hidden - it needs to be visible so users see it
+     pluck off the board as the photo lifts into focus. Only .polaroid is
+     concealed here; the pin handles its own opacity via --lifted below.
+     The card's fade is driven by opacity 0.2s ease in .polaroid's own
+     transition list further down. */
   &--concealed {
-    opacity: 0;
     pointer-events: none;
-    transition: opacity 0.15s ease;
+
+    .polaroid {
+      opacity: 0;
+    }
   }
 }
 
@@ -82,7 +91,9 @@
      off-center pin. Shifting both the pin and this origin together keeps the
      card's actual rest angle physically consistent with where the pin sits. */
   transform-origin: calc(50% + var(--polaroid-pin-shift, 0%)) 0.9rem;
-  transform: translate3d(0, calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px)), 0)
+  /* Parallax is now on .polaroid-mount (moves pin + card together).
+     This transform only handles per-card static offset and inertia tilt. */
+  transform: translate3d(0, var(--polaroid-offset, 0px), 0)
     rotate(calc(var(--polaroid-rotate, 0deg) + var(--polaroid-inertia-tilt, 0deg))) scale(1);
   /* rotate/translate/scale previously transitioned independently (rotate on
      a springy duration, scale on a quick 0.3s ease) - merged into one
@@ -92,7 +103,13 @@
      the much bigger win of GPU-friendly compositing during scroll. */
   transition:
     transform var(--polaroid-spring-duration, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.35s ease;
+    box-shadow 0.35s ease,
+    /* Fades the card in/out smoothly when focus mode opens and closes
+       (polaroid-mount--concealed sets opacity: 0 on this element). The
+       opacity 0.2s ease is intentionally on .polaroid itself rather than
+       the mount so the pin sibling is NOT hidden by this transition and
+       can be seen lifting off when the photo enters focus mode. */
+    opacity 0.2s ease;
 
   /* Fast, near-linear tracking while a scroll is actively in progress, so the
      inertia tilt visibly snaps toward its target instead of perpetually being
@@ -114,7 +131,7 @@
 
 .polaroid-mount:hover .polaroid,
 .polaroid-mount:focus-visible .polaroid {
-  transform: translate3d(0, calc(var(--polaroid-offset, 0px) + var(--polaroid-parallax, 0px)), 0)
+  transform: translate3d(0, var(--polaroid-offset, 0px), 0)
     rotate(0deg) scale(1.03);
   box-shadow:
     0 4px 8px rgba(18, 18, 18, 0.1),
@@ -141,27 +158,26 @@
   left: calc(50% + var(--polaroid-pin-shift, 0%));
   width: 1.35rem;
   height: 2.05rem;
-  translate: -50% 0;
-  rotate: 0deg;
-  scale: 1;
+  /* Single combined `transform` instead of the individual translate/rotate/scale
+     CSS properties - same reasoning as the card: the transform shorthand has
+     better GPU-compositing support across browsers (notably Windows Chrome)
+     than CSS Transforms Level 2 individual properties, which was causing the
+     pin lift/settle animation to appear missing or choppy on Windows. */
+  transform: translate(-50%, 0) rotate(0deg) scale(1);
   opacity: 1;
   filter: drop-shadow(0 2px 2px rgba(18, 18, 18, 0.35));
   /* Always above the card, including its hover/focus-visible z-index: 2. */
   z-index: 3;
   pointer-events: none;
   transition:
-    translate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    rotate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    scale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.3s ease;
 
   /* Plucked up and away while the photo is "picked up" into focus mode - eases
      back with a slight overshoot bounce (as if being pressed back in) once
      the lightbox closes. */
   &--lifted {
-    translate: -30% -2.2rem;
-    rotate: -22deg;
-    scale: 0.35;
+    transform: translate(-30%, -2.2rem) rotate(-22deg) scale(0.35);
     opacity: 0;
   }
 }
@@ -344,10 +360,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .polaroid-mount {
+    transition: none;
+  }
+
   .polaroid {
     transition: none;
     rotate: var(--polaroid-rotate);
     translate: 0;
+  }
+
+  .polaroid__pin {
+    transition: none;
   }
 
   .polaroid-mount:hover .polaroid,

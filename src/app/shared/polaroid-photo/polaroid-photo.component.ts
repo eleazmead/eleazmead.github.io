@@ -27,17 +27,22 @@ import {
 // ellipsis via CSS (-webkit-line-clamp: 2 on .polaroid__caption), so this
 // only guards against a genuinely runaway-long string slipping through.
 const MAX_CAPTION_LENGTH = 110;
-const MAX_REST_TILT_DEG = 7;
+const MAX_REST_TILT_DEG = 5;
 const MAX_STATIC_OFFSET_PX = 8;
 
 // Duration of the FLIP grow-into-focus transition (see playFlipTransition).
 const FLIP_TRANSITION_MS = 450;
+// Close uses a longer duration - the card is shrinking AND tilting back to
+// its resting angle, and a longer arc reads as more graceful than the fast
+// snap of the open. 580ms gives the landing enough time to feel deliberate.
+const FLIP_CLOSE_TRANSITION_MS = 580;
 // Growing into focus: fast start, long smooth deceleration into rest.
 const FLIP_OPEN_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)';
-// Landing back on the page: same spring feel as the pin's own re-pin
-// animation, so the whole close sequence (card lands, then pin snaps back)
-// reads as one consistent, slightly tactile "settle" rather than a flat stop.
-const FLIP_CLOSE_EASING = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+// Landing back on the page: spring curve, but with a smaller overshoot
+// (1.2 vs the open easing's none) - just enough tactile settle to feel like
+// the card is being pressed back onto the board, without the harder bounce
+// that a large overshoot produces at landing.
+const FLIP_CLOSE_EASING = 'cubic-bezier(0.34, 1.2, 0.64, 1)';
 
 // The pin's needle tip sits at this fixed distance from the card's top edge,
 // regardless of the card's own height - see .polaroid__pin in the stylesheet
@@ -107,7 +112,7 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   readonly pinGradientId = `polaroid-pin-${nextPinGradientId++}`;
   readonly pinShadeId = `polaroid-pin-shade-${nextPinGradientId++}`;
 
-  private flipOrigin?: { rect: DOMRect; rotate: string };
+  private flipOrigin?: { rect: DOMRect; rotate: string; offsetWidth: number; offsetHeight: number };
   private flipCleanupTimer?: ReturnType<typeof setTimeout>;
 
   readonly displayCaption = computed(() => {
@@ -216,7 +221,21 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
     // appearance (no motion) if the card isn't measurable for some reason.
     const card = this.cardRef?.nativeElement;
     this.flipOrigin = card
-      ? { rect: card.getBoundingClientRect(), rotate: getComputedStyle(card).rotate }
+      ? {
+          rect: card.getBoundingClientRect(),
+          // The inline card's rotation comes from the CSS `transform` shorthand
+          // (var(--polaroid-rotate) + var(--polaroid-inertia-tilt)), NOT the
+          // individual `rotate` CSS property, so getComputedStyle().rotate always
+          // returns 'none'. Read the component's own resting tilt directly so the
+          // overlay starts from the correct visual angle when animating open.
+          rotate: `${this.rotationDeg()}deg`,
+          // Store unrotated layout dimensions for the FLIP scale calculation.
+          // getBoundingClientRect() on a rotated element returns the axis-aligned
+          // bounding box, which is larger than the actual card - using it for
+          // scale would make the overlay appear slightly too large at landing.
+          offsetWidth: card.offsetWidth,
+          offsetHeight: card.offsetHeight,
+        }
       : undefined;
 
     // The pin lifts off and the overlay appears together - the card itself
@@ -275,7 +294,14 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const lastRect = overlayCard.getBoundingClientRect();
-    const { deltaX, deltaY, scaleX, scaleY } = this.flipDelta(origin.rect, lastRect);
+    const { deltaX, deltaY } = this.flipCenter(origin.rect, lastRect);
+    // Use unrotated offsetWidth/Height for scale, not getBoundingClientRect widths.
+    // The inline card is rotated; its getBoundingClientRect returns the axis-aligned
+    // bounding box (expanded by the rotation), which would make scaleX/scaleY
+    // slightly too large - the overlay starts slightly too big and the animation
+    // eases in from a visibly wrong size.
+    const scaleX = origin.offsetWidth / overlayCard.offsetWidth;
+    const scaleY = origin.offsetHeight / overlayCard.offsetHeight;
     const startRotate = origin.rotate === 'none' ? '0deg' : origin.rotate;
 
     this.renderer.setStyle(overlayCard, 'will-change', 'transform');
@@ -318,13 +344,32 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   // re-pinning it at the same moment the shrunk overlay is removed.
   private playCloseFlip(card: HTMLElement, overlayCard: HTMLElement): void {
     const targetRect = card.getBoundingClientRect();
-    const targetRotate = getComputedStyle(card).rotate;
     const currentRect = overlayCard.getBoundingClientRect();
-    const { deltaX, deltaY, scaleX, scaleY } = this.flipDelta(targetRect, currentRect);
-    const endRotate = targetRotate === 'none' ? '0deg' : targetRotate;
+    const { deltaX, deltaY } = this.flipCenter(targetRect, currentRect);
+    // Use unrotated offsetWidth/Height for scale - same reason as playOpenFlip:
+    // getBoundingClientRect on a rotated element returns the axis-aligned bbox,
+    // which is larger than the card's actual dimensions. Using it for scale makes
+    // the overlay land slightly too large, creating a visible size discrepancy
+    // right before the swap to the inline card.
+    const scaleX = card.offsetWidth / overlayCard.offsetWidth;
+    const scaleY = card.offsetHeight / overlayCard.offsetHeight;
+    // The inline card's rotation comes from the CSS `transform` shorthand using
+    // var(--polaroid-rotate), NOT the individual `rotate` CSS property, so
+    // getComputedStyle(card).rotate always returns 'none'. Using rotationDeg()
+    // directly makes the overlay land at the correct tilt so when it's removed
+    // and the inline card reappears they match - no tilt pop at the end.
+    const endRotate = `${this.rotationDeg()}deg`;
+    // Snap the box-shadow immediately to the inline card's value (no transition).
+    // box-shadow is not GPU-compositable - animating it forces a CPU repaint
+    // every frame (see CLAUDE.md). Setting it instantly here means the shadow
+    // already matches the inline card when the overlay is removed at landing,
+    // with no per-frame CPU cost during the animation.
+    const endBoxShadow = getComputedStyle(card).boxShadow;
 
     this.renderer.setStyle(overlayCard, 'will-change', 'transform');
-    this.renderer.setStyle(overlayCard, 'transition', this.flipTransitionCss(FLIP_CLOSE_EASING));
+    // Only transform in the transition - box-shadow is excluded intentionally.
+    this.renderer.setStyle(overlayCard, 'transition', this.flipTransitionCss(FLIP_CLOSE_EASING, FLIP_CLOSE_TRANSITION_MS));
+    this.renderer.setStyle(overlayCard, 'box-shadow', endBoxShadow);
     this.renderer.setStyle(
       overlayCard,
       'transform',
@@ -351,9 +396,22 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
       if (finished) return;
       finished = true;
       clearTimeout(this.flipCleanupTimer);
+      // Crossfade at landing: fade the overlay card out while the inline card
+      // fades in simultaneously. Both are at the same position/size at this
+      // point (FLIP landed), so they composite as a clean dissolve rather than
+      // a sudden swap. 150ms is short enough to feel snappy but long enough to
+      // mask any sub-pixel size/position mismatch between the two cards.
+      this.renderer.setStyle(overlayCard, 'transition', 'opacity 0.15s ease');
+      this.renderer.setStyle(overlayCard, 'opacity', '0');
+      // Reveals the inline card and starts its own opacity 0→1 transition
+      // (defined on .polaroid: opacity 0.2s ease).
       this.focused.set(false);
-      this.overlayVisible.set(false);
       this.document.body.style.overflow = '';
+      // Remove the overlay once the fade is done. Slightly longer than the
+      // 150ms transition to ensure it's truly gone before DOM removal.
+      this.flipCleanupTimer = setTimeout(() => {
+        this.overlayVisible.set(false);
+      }, 180);
     };
 
     // A fixed setTimeout isn't frame-accurate against the actual CSS
@@ -371,22 +429,20 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
     );
 
     clearTimeout(this.flipCleanupTimer);
-    this.flipCleanupTimer = setTimeout(finish, FLIP_TRANSITION_MS + 120);
+    this.flipCleanupTimer = setTimeout(finish, FLIP_CLOSE_TRANSITION_MS + 120);
   }
 
-  // Shared delta math for both directions: the transform (translate + scale)
-  // that would make an element currently occupying `fromRect` visually
-  // appear at `toRect` instead - see playOpenFlip/playCloseFlip for how the
-  // two directions each use this.
-  private flipDelta(
+  // Computes the translate delta between two rects' centers. Used by both FLIP
+  // directions for the position component; scale is computed separately using
+  // offsetWidth/offsetHeight to avoid getBoundingClientRect's axis-aligned bbox
+  // expansion from rotation inflating the scale factor.
+  private flipCenter(
     toRect: DOMRect,
     fromRect: DOMRect,
-  ): { deltaX: number; deltaY: number; scaleX: number; scaleY: number } {
+  ): { deltaX: number; deltaY: number } {
     return {
       deltaX: toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2),
       deltaY: toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2),
-      scaleX: toRect.width / fromRect.width,
-      scaleY: toRect.height / fromRect.height,
     };
   }
 
@@ -415,8 +471,8 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   // frame, stacked right on top of the transform animation. The shadow just
   // snaps to its new value instantly, which is far less noticeable than the
   // frame drops caused by animating it would be.
-  private flipTransitionCss(easing: string): string {
-    return `transform ${FLIP_TRANSITION_MS}ms ${easing}`;
+  private flipTransitionCss(easing: string, durationMs: number = FLIP_TRANSITION_MS): string {
+    return `transform ${durationMs}ms ${easing}`;
   }
 
   private clearFlipStyles(overlayCard: HTMLElement): void {
