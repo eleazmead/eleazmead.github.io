@@ -1,0 +1,88 @@
+.made-with-love {
+  padding: 2.5rem 1rem 0;
+  text-align: center;
+  overflow: hidden;
+  // A single soft-blurred drop-shadow (follows the PNG's alpha silhouette,
+  // unlike box-shadow which is confined to the rectangular box) reads as a
+  // gentle lift off the page rather than a hard sticker outline.
+  --made-with-love-sticker-shadow: drop-shadow(
+    0 4px 6px color-mix(in srgb, var(--color-secondary) 30%, transparent)
+  );
+}
+
+.made-with-love__stage {
+  display: flex;
+  /* Below 640px the two figures sit side by side (touching, filling most of
+     the width) with the caption on its own full-width line above them -
+     matching a reference "two people holding stuff" promo layout - rather
+     than the 3-row stacked arrangement (figure / caption / figure) used at
+     wider breakpoints. flex-wrap lets the 100%-basis caption below force
+     the two auto-basis figures onto the next line. */
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  @media (min-width: 640px) {
+    flex-wrap: nowrap;
+    gap: 2rem;
+  }
+}
+
+.made-with-love__frame {
+  /* clamp() keeps the two figures large enough to nearly touch across a
+     narrow phone width without a hardcoded px size overflowing a wider
+     one. */
+  width: clamp(8rem, 46vw, 12rem);
+  height: clamp(8rem, 46vw, 12rem);
+  object-fit: contain;
+  object-position: bottom;
+  flex-shrink: 0;
+  filter: var(--made-with-love-sticker-shadow);
+  /* Anchors the figure to the section's bottom edge and crops into it
+     (via the section's own overflow: hidden) instead of floating free. A
+     small negative horizontal margin lets the pair touch/slightly overlap
+     at the center, same as the "two figures holding stuff" reference. */
+  margin: 0 -0.15rem -0.5rem;
+
+  @media (min-width: 640px) {
+    width: 13rem;
+    height: 13rem;
+    margin: 0 0 -0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    width: 17rem;
+    height: 17rem;
+    margin-bottom: -1rem;
+  }
+}
+
+.made-with-love__text {
+  /* Pulled to its own full-width line above the figures on mobile (see the
+     flex-wrap note above); reverts to sitting inline between them, centered
+     vertically, from 640px up. */
+  order: -1;
+  flex: 1 1 100%;
+  align-self: center;
+  margin: 0 0 1.25rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-text);
+
+  @media (min-width: 640px) {
+    order: 0;
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.25rem;
+  }
+}

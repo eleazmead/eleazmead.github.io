@@ -84,7 +84,7 @@ The Our Story section renders a timeline. Timeline dates, titles, and narratives
 
 The third section highlights the ceremony and reception venues. Venue names, descriptions, addresses, and placeholder text live in the i18n JSON files. On desktop, the two venue items render in two columns.
 
-Venue photo paths are configured in `APP_CONFIG.assets.venuePhotos`. Put the files under `public/venues/`, for example `public/venues/st-josephs-church.jpg` and `public/venues/the-lighthouse-fullerton.jpg`. Real venue photos preserve their natural aspect ratio, are centered at 70% width within each venue item, and are not cropped.
+Venue photo paths are configured in `APP_CONFIG.assets.venuePhotos`. Put the files under `public/venues/`, for example `public/venues/st-josephs-church.jpg` and `public/venues/the-lighthouse-fullerton.jpg`. Real venue photos preserve their natural aspect ratio, are centered at 70% width within each venue item, have a white border, and are not cropped.
 
 ## Wedding Timeline
 

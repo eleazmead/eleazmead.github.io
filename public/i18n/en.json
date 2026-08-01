@@ -16,13 +16,13 @@
     "hashtag": "#EleazMead"
   },
   "hero": {
-    "headline": "{0}, we’re getting married in the heart of the Lion City, and we would be delighted to celebrate with you. This page contains everything you need to know about our wedding day, so please take a moment to read through to the end.",
+    "headline": "{0}, we’re getting married in the heart of the Lion City, and we would love to have you there! Read on to discover all the details of our special day.",
     "loadingGreeting": "Hi there",
     "noInputGreeting": "Hi",
-    "ceremonyLabel": "Wedding Mass Ceremony",
-    "ceremonyTime": "2:00 PM",
-    "receptionLabel": "Wedding Dinner Reception",
-    "receptionTime": "6:00 PM",
+    "ceremonyLabel": "Wedding Mass Ceremony 2:00 PM",
+    "ceremonyTime": "",
+    "receptionLabel": "Wedding Dinner Reception 6:00 PM",
+    "receptionTime": "",
     "cta": "RSVP Now"
   },
   "guestLetter": {
@@ -32,49 +32,63 @@
   },
   "ourStory": {
     "heading": "Our Story",
-    "body": "A little timeline of the ordinary days, brave choices, shared miles, and cups of coffee that brought us here.",
+    "body": "",
     "imageAlt": "Our story moment {0}, photo {1}",
     "photoPlaceholder": "Photo coming soon",
     "timeline": {
       "metAtWork": {
         "date": "September 2016",
-        "title": "Where It Began",
-        "body": "We first met at work, not knowing that a simple introduction would quietly become the first page of our story."
+        "title": "Where It All Began",
+        "body": "We first met at work, crossing paths in meetings, not knowing it was the beginning of something extraordinary.",
+        "photoCaption1": "Just friends, for now",
+        "photoCaption2": "Work became something more"
       },
       "coffeeRuns": {
         "date": "April 2017",
-        "title": "Coffee, Runs, and Us",
-        "body": "Our relationship began over coffee, then grew through cafe-hopping, steady conversations, and the joy of running side by side."
+        "title": "Coffee, Runs and Us",
+        "body": "In April 2017, while having our coffee, we made it official. Our relationship grew through café-hopping, steady conversations, and running.",
+        "photoCaption1": "Coffee runs turned into us",
+        "photoCaption2": "Running toward forever"
       },
       "longDistance": {
         "date": "September 2019",
-        "title": "Across the Miles",
-        "body": "For a short season, love stretched across distance when Mead moved to Singapore to begin a new chapter in her career."
+        "title": "Long Distance Love",
+        "body": "For a short season, love stretched across distance when Mead moved to Singapore to begin a new chapter in her career.",
+        "photoCaption1": "Dreams carried us apart",
+        "photoCaption2": "Miles away, hearts together"
       },
       "lionCity": {
         "date": "February 2020",
         "title": "To the Lion City",
-        "body": "Soon after, Eleaz followed the love of her life to Singapore, choosing work, home, and everyday life with Mead."
+        "body": "Five months later, Eleaz followed the love of her life to Singapore.",
+        "photoCaption1": "Love brought us together",
+        "photoCaption2": "Home became wherever we were"
       },
       "fluffyEra": {
         "date": "March 2022",
         "title": "Our Softest Season",
-        "body": "We were so happy and settled together that we became the chubbiest, fluffiest, cutest version of ourselves."
+        "body": "We were so happy together that we became the chubbiest, fluffiest, cutest version of ourselves.",
+        "photoCaption1": "Chubby, fluffy, and in love"      
       },
       "fitnessJourney": {
         "date": "November 2024",
         "title": "Back to the Road",
-        "body": "After walking through life's highs and lows together, we began our fitness journey and returned to one of our first love languages: running together."
+        "body": "After walking through life's highs and lows together, we returned to one of our first love languages: running together.",
+        "photoCaption1": "Back on the road together",
+        "photoCaption2": "Caring through every stride"
       },
       "proposal": {
         "date": "May 2025",
-        "title": "The Yes",
-        "body": "Eleaz proposed to Mead, and a promise we had been building day by day became our next forever."
+        "title": "The question of a lifetime",
+        "body": "Eleaz asked for forever, and Mead said yes.",
+        "photoCaption1": "A promise made beneath Taiwan’s skies",
+        "photoCaption2": "May 2025, our new forever"
       },
       "bigDay": {
         "date": "January 2027",
-        "title": "The Big Day",
-        "body": "We will begin our married life surrounded by the people who have loved, prayed for, and cheered us on."
+        "title": "The Wedding Day",
+        "body": "We will begin our married life surrounded by people who have loved, prayed for, and cheered us on.",
+        "photoCaption1": "16.01.2027"
       }
     }
   },
@@ -85,7 +99,7 @@
     "photoAlt": "Wedding venue photo {0}",
     "items": {
       "church": {
-        "name": "St. Joseph's Church (Victoria Street) 2:00 PM",
+        "name": "St. Joseph's Church Victoria Street 2:00 PM",
         "description": "A historic Catholic church in the heart of Singapore, where quiet beauty, tradition, and prayer will frame the beginning of our married life.",
         "address": "143 Victoria Street, Singapore 188020"
       },
@@ -157,12 +171,12 @@
   "weddingTimeline": {
     "heading": "Wedding Timeline",
     "body": "A glimpse of how our day will unfold, from the ceremony to the evening celebration. While we will do our best to follow the schedule, timings may vary slightly on the day.",
-    "note": "We will share more in-depth details of the timeline closer to the big day, so please stay tuned on this website.",
+    "note": "We will share more in-depth details of the timeline closer to the big day, so please stay tuned for updates on this website.",
     "events": {
       "partyAssembles": {
         "time": "01:40 PM",
         "title": "Wedding Party Assembles",
-        "description": "Immediate family members and the wedding entourage gather and prepare for the ceremony to begin."
+        "description": "Immediate family members and the wedding entourage gather and prepare for the ceremony."
       },
       "ceremonyBegins": {
         "time": "02:00 PM",
@@ -176,18 +190,18 @@
       },
       "break": {
         "time": "",
-        "title": "",
+        "title": "An Important Note",
         "description": "There will be a few hours of free time between the ceremony and dinner reception. Please feel free to relax, explore nearby attractions, or return to your accommodation to freshen up before the evening celebration."
       },
       "guestArrival": {
-        "time": "06:00 PM",
+        "time": "6:00 PM",
         "title": "Guest Arrival at The Lighthouse Fullerton",
         "description": "We gather once more to continue the celebration at our evening reception."
       },
       "dinnerBegins": {
-        "time": "07:00 PM",
-        "title": "Dinner Begins",
-        "description": "Dinner, speeches, laughter, and celebration begin as the city lights settle in."
+        "time": "",
+        "title": "Dinner and Celebration Begins",
+        "description": "Dinner, speeches, laughter, and celebration begin as the city lights come alive."
       },
       "sde": {
         "time": "",
@@ -195,7 +209,7 @@
         "description": "We have prepared a Same-Day Edit featuring moments from our wedding day, and we would love for you to stay until the end of the programme and watch it with us before the evening comes to a close."
       },
       "receptionConcludes": {
-        "time": "10:00 PM",
+        "time": "9 ~ 10 PM",
         "title": "Reception Concludes",
         "description": "We close the evening with full hearts."
       }
@@ -210,7 +224,7 @@
     },
     "gentlemen": {
       "heading": "For Gentlemen",
-      "body": "A suit, blazer with tailored trousers, or a long-sleeved dress shirt with formal trousers is recommended. Please avoid shorts, jeans, T-shirts, and slippers. Black, brown, gray, white or soft pink are welcome."
+      "body": "A suit, blazer with tailored trousers, or a long-sleeved dress shirt with formal trousers is recommended. Please avoid shorts, jeans, T-shirts, and slippers. Gray, brown, white or soft pink are welcome."
     },
     "closing": "We invite you to dress elegantly and comfortably for our church ceremony and evening celebration.",
     "colorGuide": "Color guide",
@@ -232,7 +246,7 @@
       },
       "afterBencoolen": ", ",
       "afterBugis": ", or ",
-      "suffix": ", as these areas are conveniently located between St. Joseph’s Church and our reception venue at The Fullerton Hotel. The following hotels are located in central, well-connected areas with easy access to public transportation, dining, and other amenities."
+      "suffix": ", as these areas are conveniently located between our two venues -  St. Joseph’s Church and The Fullerton Hotel. The following hotels are located in central, well-connected areas with easy access to public transportation, dining, and other amenities."
     },
     "hotelGroups": {
       "budget": {

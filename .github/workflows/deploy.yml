@@ -51,6 +51,18 @@ jobs:
           cp src/environments/environment.ts.example src/environments/environment.ts
           cp src/environments/environment.staging.ts.example src/environments/environment.staging.ts
 
+<<<<<<< Updated upstream
+=======
+      - name: Compute build number
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        id: build_number
+        # YYYY.DD.MM-<run number> using the actual build time (UTC). The run
+        # number is GitHub Actions' own auto-incrementing counter for this
+        # workflow, so it doubles as the "iteration" for that day without
+        # needing to track/query past builds ourselves.
+        run: echo "value=$(date -u +'%y%d%m')-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+>>>>>>> Stashed changes
       - name: Inject secrets
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:

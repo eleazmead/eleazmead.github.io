@@ -24,7 +24,7 @@ export const APP_CONFIG = {
   whatToWear: {
     colorGuide: {
       ladies: ['#b69883', '#d8a3a2'] as const,
-      gentlemen: ['#b69883', '#d8a3a2', '#1e1e1e', '#f6f5f5'] as const,
+      gentlemen: ['#A9A9A9','#b69883','#f6f5f5', '#d8a3a2'] as const,
     },
   },
   whereToStay: {
