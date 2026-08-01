@@ -71,7 +71,7 @@
   margin: 0 0 1.25rem;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 1.35rem;
+  font-size: 0.875rem;
   line-height: 1.4;
   color: var(--color-text);
 
@@ -79,10 +79,10 @@
     order: 0;
     flex: 1 1 auto;
     margin: 0;
-    font-size: 1.65rem;
+    font-size: 1rem;
   }
 
   @media (min-width: 1024px) {
-    font-size: 1.9rem;
+    font-size: 1.25rem;
   }
 }

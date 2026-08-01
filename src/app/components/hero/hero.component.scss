@@ -38,13 +38,12 @@
     linear-gradient(179deg, rgba(251, 247, 242, 0.46), rgba(251, 247, 242, 0));
 
   @media (max-width: 640px) {
-    background:
-      linear-gradient(
-        180deg,
-        rgba(251, 247, 242, 0.8) 0%,
-        rgba(251, 247, 242, 0.72) 40%,
-        rgba(251, 247, 242, 0.41) 100%
-      );
+    background: linear-gradient(
+      180deg,
+      rgba(251, 247, 242, 0.8) 0%,
+      rgba(251, 247, 242, 0.72) 40%,
+      rgba(251, 247, 242, 0.41) 100%
+    );
   }
 }
 
@@ -73,6 +72,7 @@
 }
 
 .hero__names {
+  margin-bottom: clamp(1.25rem, 3.5vw, 2.5rem);
   font-family: var(--font-display);
   font-weight: 300;
   font-size: clamp(3.25rem, 11vw, 7.25rem);
@@ -114,7 +114,7 @@
 
 .hero__headline {
   max-width: 680px;
-  margin: 0 auto clamp(0.75rem, 2vw, 1.75rem);
+  margin: 0 auto clamp(1.35rem, 3vw, 2.65rem);
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 3.1vw, 2rem);
   font-weight: 400;
@@ -127,7 +127,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
   margin-bottom: clamp(1rem, 3vw, 2.35rem);
 }
 
@@ -305,7 +305,8 @@
   }
 
   .hero__details {
-    margin-bottom: 1.25rem;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 }
 

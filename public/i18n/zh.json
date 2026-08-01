@@ -3,256 +3,254 @@
     "title": "Eleaz & Mead"
   },
   "seo": {
-    "titleTemplate": "{0} & {1} - {2}婚礼",
-    "description": "{0}与{1}将于{2}在新加坡举行婚礼。欢迎浏览婚礼详情、回复出席与更多信息。",
-    "keywords": "{0}{1}婚礼, {0}{1}新加坡婚礼, 婚礼出席回复"
+    "titleTemplate": "{0} & {1} - {2}婚禮",
+    "description": "{0}與{1}將於{2}在新加坡舉行婚禮。歡迎查看我們的婚禮詳情、回覆出席，以及更多資訊。",
+    "keywords": "{0}和{1}婚禮, {0}{1}新加坡婚禮, 婚禮出席回覆"
   },
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",
     "weddingDate": "2027年1月16日，星期六",
-    "ceremonyVenue": "圣约瑟堂（维多利亚街）",
-    "receptionVenue": "新加坡富丽敦酒店灯塔餐厅",
+    "ceremonyVenue": "聖若瑟堂維多利亞街",
+    "receptionVenue": "新加坡富麗敦酒店 The Lighthouse",
     "hashtag": "#EleazMead"
   },
   "hero": {
-    "headline": "{0}，我们即将在狮城的心脏地带举行婚礼，非常期待能与您一同庆祝。本页面包含婚礼当天您需要知道的所有信息，请花些时间仔细阅读至最后。",
+    "headline": "{0}，我們即將在獅城的心臟地帶步入婚姻，衷心希望您能與我們同在！請繼續閱讀，了解我們特別日子的所有詳情。",
     "loadingGreeting": "您好",
     "noInputGreeting": "您好",
-    "ceremonyLabel": "婚礼弥撒仪式",
-    "ceremonyTime": "下午2:00",
-    "receptionLabel": "婚宴晚餐",
-    "receptionTime": "下午6:00",
-    "cta": "立即回复"
+    "ceremonyLabel": "婚禮彌撒儀式 下午2:00",
+    "ceremonyTime": "",
+    "receptionLabel": "婚宴晚餐 晚上6:00",
+    "receptionTime": "",
+    "cta": "立即回覆"
   },
   "guestLetter": {
-    "dear": "亲爱的",
-    "signatureLine": "爱您的",
+    "dear": "親愛的",
+    "signatureLine": "愛您的",
     "coupleName": "Eleaz & Mead"
   },
   "ourStory": {
-    "heading": "我们的故事",
-    "body": "这是一段平凡日子、勇敢抉择、共同走过的路，以及一杯杯咖啡，带我们走到今天的小小时间线。",
-    "imageAlt": "我们的故事时刻{0}，照片{1}",
-    "photoPlaceholder": "照片即将上传",
+    "heading": "我們的故事",
+    "body": "",
+    "imageAlt": "我們的故事時刻 {0}，照片 {1}",
+    "photoPlaceholder": "照片即將上傳",
     "timeline": {
       "metAtWork": {
         "date": "2016年9月",
-        "title": "故事的起点",
-        "body": "我们在工作中初次相遇，当时并不知道一次简单的介绍，会悄悄成为我们故事的第一页。",
-        "photoCaption1": "一切开始的地方",
-        "photoCaption2": "那时，还只是同事"
+        "title": "一切開始的地方",
+        "body": "我們初次相遇於工作場合，在一次次會議中擦肩而過，當時並不知道那會是一段非凡故事的開始。",
+        "photoCaption1": "暫時只是朋友",
+        "photoCaption2": "工作變成了更多"
       },
       "coffeeRuns": {
         "date": "2017年4月",
-        "title": "咖啡、跑步与我们",
-        "body": "我们的感情从一杯咖啡开始，在探访各家咖啡馆、真诚的交谈，以及并肩跑步的快乐中逐渐成长。",
-        "photoCaption1": "咖啡之约，成就了我们",
-        "photoCaption2": "两杯咖啡，一场对话"
+        "title": "咖啡、跑步與我們",
+        "body": "2017年4月，在喝咖啡的時候，我們正式在一起了。這段關係在探訪咖啡館、穩穩的談話，以及跑步之間慢慢成長。",
+        "photoCaption1": "Coffee runs 變成了我們",
+        "photoCaption2": "一起跑向永遠"
       },
       "longDistance": {
         "date": "2019年9月",
-        "title": "跨越千里",
-        "body": "有一段时间，当Mead为了开启事业新篇章而搬到新加坡时，我们的爱情跨越了千里之遥。",
-        "photoCaption1": "身隔千里，心在一起",
-        "photoCaption2": "静待重逢的那一天"
+        "title": "遠距離的愛",
+        "body": "有一段短短的時光，當 Mead 搬到新加坡開啟事業的新篇章時，我們的愛也跨越了距離。",
+        "photoCaption1": "夢想暫時把我們帶往不同方向",
+        "photoCaption2": "相隔千里，心仍相依"
       },
       "lionCity": {
         "date": "2020年2月",
-        "title": "奔赴狮城",
-        "body": "不久后，Eleaz追随此生所爱来到新加坡，与Mead一同选择了工作、家和日常生活。",
-        "photoCaption1": "相聚狮城",
-        "photoCaption2": "有你的地方，就是家"
+        "title": "前往獅城",
+        "body": "五個月後，Eleaz 也跟隨一生所愛來到了新加坡。",
+        "photoCaption1": "愛讓我們相聚",
+        "photoCaption2": "只要在一起，哪裡都是家"
       },
       "fluffyEra": {
         "date": "2022年3月",
-        "title": "最柔软的时光",
-        "body": "我们幸福安定地生活在一起，成了最圆润、最柔软、最可爱的自己。",
-        "photoCaption1": "最柔软、最幸福的时光",
-        "photoCaption2": "圆润、软萌，坠入爱河"
+        "title": "我們最柔軟的季節",
+        "body": "我們在一起太幸福了，成了自己最圓潤、最蓬鬆、最可愛的版本。",
+        "photoCaption1": "圓潤、蓬鬆，深深相愛"
       },
       "fitnessJourney": {
         "date": "2024年11月",
-        "title": "重新上路",
-        "body": "在一起走过人生的高低起伏后，我们开启了健身之旅，重拾最初的爱语之一：一起跑步。",
-        "photoCaption1": "重新一起上路",
-        "photoCaption2": "向着永远奔跑"
+        "title": "重返路上",
+        "body": "一起走過人生的高低起伏後，我們重新回到最初的愛語之一：一起跑步。",
+        "photoCaption1": "再次一起上路",
+        "photoCaption2": "每一步都彼此照顧"
       },
       "proposal": {
         "date": "2025年5月",
-        "title": "那一声愿意",
-        "body": "Eleaz向Mead求婚，我们一天天累积的承诺，成为了下一个永远。",
-        "photoCaption1": "求婚，与那声愿意",
-        "photoCaption2": "2025年5月，全新的永远"
+        "title": "一生一次的提問",
+        "body": "Eleaz 問了關於永遠的問題，而 Mead 說了願意。",
+        "photoCaption1": "在台灣天空下許下的承諾",
+        "photoCaption2": "2025年5月，我們新的永遠"
       },
       "bigDay": {
         "date": "2027年1月",
-        "title": "大喜之日",
-        "body": "我们将在所有爱着我们、为我们祈祷、为我们加油的人的围绕下，开启婚姻生活。",
-        "photoCaption1": "永远的开始",
-        "photoCaption2": "被所爱的人围绕"
+        "title": "婚禮這一天",
+        "body": "我們將在那些愛著我們、為我們祈禱、一路為我們加油的人圍繞下，開始我們的婚姻生活。",
+        "photoCaption1": "16.01.2027"
       }
     }
   },
   "venues": {
-    "heading": "婚礼场地",
-    "body": "两个美丽的地方，将承载这一天最重要的时刻：神圣的开始，以及海湾边的庆典。",
-    "photoPlaceholder": "场地照片即将上传",
-    "photoAlt": "婚礼场地照片{0}",
+    "heading": "婚禮場地",
+    "body": "兩個美麗的地方，將承載我們這一天最有意義的部分：神聖的開始，以及海灣旁的慶祝。",
+    "photoPlaceholder": "場地照片即將上傳",
+    "photoAlt": "婚禮場地照片 {0}",
     "items": {
       "church": {
-        "name": "圣约瑟堂（维多利亚街）下午2:00",
-        "description": "位于新加坡市中心的一座历史悠久的天主教堂，宁静之美、传统与祈祷，将见证我们婚姻生活的开始。",
+        "name": "St. Joseph's Church Victoria Street 下午2:00",
+        "description": "位於新加坡市中心的一座歷史悠久的天主教堂，寧靜之美、傳統與祈禱，將見證我們婚姻生活的開始。",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
-        "name": "富丽敦灯塔餐厅 下午6:00",
-        "description": "坐落于新加坡富丽敦酒店8楼，俯瞰滨海湾的优雅屋顶餐厅。晚宴、真挚的故事，以及城市璀璨灯光，将陪伴庆典延续至夜晚。",
+        "name": "The Lighthouse Fullerton 晚上6:00",
+        "description": "坐落於新加坡富麗敦酒店8樓，這是一處俯瞰濱海灣的優雅屋頂餐廳。晚宴、真摯的故事，以及城市燈光的微光，將陪伴這場慶祝延續到夜晚。",
         "address": "1 Fullerton Square, Singapore 049178"
       }
     }
   },
   "rsvp": {
-    "heading": "出席回复",
+    "heading": "出席回覆",
     "deadline": {
-      "prefix": "敬请于此日期前回复",
+      "prefix": "敬請於以下日期前回覆：",
       "date": "2026年10月31日。",
-      "closedMessage": "出席回复现已截止，感谢您的理解。"
+      "closedMessage": "出席回覆現已截止。感謝您的理解。"
     },
-    "note": "我们理解出席婚礼对部分宾客而言需要长途跋涉，非常感激您为此付出额外的时间、精力与安排。同时，请放心完全没有任何压力。若能与您一同庆祝，我们会非常开心；但您的祝福与心意，我们同样珍惜。",
+    "note": "我們明白，出席我們的婚禮對部分賓客而言需要特地遠行，也衷心感謝您願意付出的額外時間、心力與安排。同時，也請您知道，這絕對沒有任何壓力。若能與您一同慶祝，我們會非常開心；而您的愛與祝福，對我們同樣珍貴。",
     "yes": "欣然接受",
-    "no": "遗憾婉拒",
-    "submit": "提交回复",
-    "successMessage": "谢谢您！您的出席回复已成功提交。",
-    "successNote": "在回复截止日期前，您可再次使用您的邀请链接更新回复。",
+    "no": "遺憾婉拒",
+    "submit": "送出 RSVP",
+    "successMessage": "謝謝您！您的 RSVP 已成功送出。",
+    "successNote": "在 RSVP 截止日前，您可以再次使用邀請連結更新回覆。",
     "goBack": "返回",
-    "rsvpFor": "回复对象：",
-    "confirmHeading": "确认您的回复",
-    "confirmBody": "请在提交前仔细确认。在截止日期前，您仍可再次更新回复。",
-    "reviewReminder": "请注意，新加坡共有两间圣约瑟堂。我们的婚礼仪式将在维多利亚街的圣约瑟堂举行，出发前请再次确认地址，以免走错地方。",
-    "submitting": "正在提交您的回复...",
-    "errorMessage": "发生错误，请重试，或直接与我们联系。",
+    "rsvpFor": "為以下賓客 RSVP：",
+    "confirmHeading": "確認您的 RSVP",
+    "confirmBody": "送出前請先確認。您仍可在 RSVP 截止日前再次更新回覆。",
+    "reviewReminder": "請注意，新加坡有兩間 St. Joseph’s Church。我們的婚禮儀式將於 St. Joseph’s Church, Victoria Street 舉行。出發前請再次確認地址，以免造成混淆。",
+    "submitting": "正在送出您的 RSVP...",
+    "errorMessage": "發生錯誤。請重試，或直接與我們聯絡。",
     "inviteOnly": {
-      "message": "仅受邀宾客可提交出席回复并参加本次婚礼，请使用新人所提供的邀请链接。"
+      "message": "只有受邀賓客可以送出 RSVP 並出席活動。請使用新人分享給您的邀請連結。"
     },
     "search": {
-      "label": "请输入您的姓名以查找您的邀请",
+      "label": "請輸入您的名字與姓氏以尋找邀請",
       "placeholder": "例如：Eleazer",
-      "buttonLabel": "查找我的邀请",
-      "notFound": "我们无法验证此邀请链接，请",
-      "notFoundContact": "通过WhatsApp联系我们",
-      "searching": "搜索中..."
+      "buttonLabel": "尋找我的邀請",
+      "notFound": "我們無法驗證此邀請連結。請",
+      "notFoundContact": "透過 WhatsApp 傳訊息給我們",
+      "searching": "搜尋中..."
     },
     "related": {
-      "promptHeading": "我们也在您的邀请组中找到以下宾客",
-      "promptBody": "是否也一并为他们提交出席回复？",
+      "promptHeading": "我們也在您的同組賓客中找到以下名字",
+      "promptBody": "您也想一併為他們 RSVP 嗎？",
       "include": "包含",
-      "exclude": "不包含",
-      "alreadyResponded": "已回复"
+      "exclude": "排除",
+      "alreadyResponded": "已回覆"
     },
     "alreadyRsvped": {
-      "message": "此宾客已由{initiator}于{date}完成出席回复。",
-      "editPrompt": "在截止日期前，您可于下方更新出席回复与主餐选择。",
-      "notEditable": "由于回复截止日期已过，出席回复现已无法更改。"
+      "message": "此賓客已由 {initiator} 於 {date} 完成 RSVP。",
+      "editPrompt": "您可以在下方更新 RSVP 回覆與主餐選擇，期限為 RSVP 截止日前。",
+      "notEditable": "由於 RSVP 截止日已過，回覆已無法再更改。"
     }
   },
   "mainCourse": {
-    "heading": "请选择您的主餐",
-    "required": "请为所有出席宾客选择主餐。",
+    "heading": "選擇您的主餐",
+    "required": "請為所有出席賓客選擇主餐。",
     "options": {
       "beef": {
-        "label": "和牛西冷牛排",
-        "description": "油封马铃薯、鸡油菌、时令蔬菜、红酒酱汁"
+        "label": "和牛牛肉西冷",
+        "description": "油封馬鈴薯、雞油菌、時令蔬菜、紅酒醬汁"
       },
       "fish": {
-        "label": "圣约翰淡马锡海鲈鱼",
-        "description": "茴香马铃薯泥、时令蔬菜、夏布利奶油酱、松露黄油煎香"
+        "label": "St John Temasek 海鱸魚",
+        "description": "茴香馬鈴薯泥、時令蔬菜、夏布利奶油醬、松露奶油煎香"
       }
     }
   },
   "weddingTimeline": {
-    "heading": "婚礼流程",
-    "body": "简单预览婚礼当天的流程，从仪式到晚间庆典。我们会尽力依照时间表进行，惟当天时间可能略有调整。",
-    "note": "我们将在婚礼临近时分享更详细的流程内容，请留意本网站的最新消息。",
+    "heading": "婚禮流程",
+    "body": "簡單預覽我們這一天會如何展開，從儀式到晚間慶祝。我們會盡力依照時間表進行，但當天時間可能會稍有調整。",
+    "note": "我們會在婚禮日子臨近時分享更詳細的流程，敬請留意本網站的更新。",
     "events": {
       "partyAssembles": {
-        "time": "下午1:40",
-        "title": "婚礼团队集合",
-        "description": "直系亲属与婚礼随行团队集合，为仪式开始做准备。"
+        "time": "01:40 PM",
+        "title": "婚禮團隊集合",
+        "description": "直系親屬與婚禮隨行團隊集合，並為儀式做準備。"
       },
       "ceremonyBegins": {
-        "time": "下午2:00",
-        "title": "仪式开始",
-        "description": "我们将在家人、朋友与祈祷的围绕下，开始婚礼弥撒。"
+        "time": "02:00 PM",
+        "title": "儀式開始",
+        "description": "我們將在家人、朋友與祈禱的圍繞下開始婚禮彌撒。"
       },
       "massConcludes": {
-        "time": "下午3:15",
-        "title": "婚礼弥撒结束",
-        "description": "弥撒结束后，欢迎您留步在教堂拍摄大合照。稍后我们将于晚宴再次相聚，共度庆典之夜。"
+        "time": "03:15 PM",
+        "title": "婚禮彌撒結束",
+        "description": "彌撒結束後，誠邀您留在教堂一起拍攝團體照片。之後，我們將於晚間的婚宴慶祝中再次相聚。"
       },
       "break": {
         "time": "",
-        "title": "",
-        "description": "仪式与晚宴之间将有数小时的自由时间，欢迎您稍作休息、探索周边景点，或回到住处梳洗，为晚间庆典做准备。"
+        "title": "重要提醒",
+        "description": "儀式與婚宴之間會有幾個小時的自由時間。您可以稍作休息、探索附近景點，或回到住宿地點梳洗整理，再出席晚間慶祝。"
       },
       "guestArrival": {
-        "time": "下午6:00",
-        "title": "宾客抵达富丽敦灯塔餐厅",
-        "description": "我们将再次相聚，于晚宴中延续庆典。"
+        "time": "6:00 PM",
+        "title": "賓客抵達 The Lighthouse Fullerton",
+        "description": "我們將再次相聚，延續晚間婚宴的慶祝。"
       },
       "dinnerBegins": {
-        "time": "下午7:00",
-        "title": "晚宴开始",
-        "description": "随着城市灯光渐渐亮起，晚宴、致辞、欢笑与庆典正式展开。"
+        "time": "",
+        "title": "晚宴與慶祝開始",
+        "description": "當城市燈光亮起，晚宴、致詞、笑聲與慶祝也隨之展開。"
       },
       "sde": {
         "time": "",
-        "title": "特别婚礼影片",
-        "description": "我们准备了一部记录婚礼当天点滴的即日剪辑影片，诚邀您留到节目尾声，与我们一同观赏，为这个夜晚画下句点。"
+        "title": "特別婚禮影片",
+        "description": "我們準備了一支 Same-Day Edit，記錄婚禮當天的珍貴時刻，也希望您能留到節目最後，與我們一同觀看，為這個夜晚溫柔收尾。"
       },
       "receptionConcludes": {
-        "time": "晚上10:00",
-        "title": "晚宴结束",
-        "description": "我们怀着满满的感恩，为这个夜晚画上句点。"
+        "time": "9 ~ 10 PM",
+        "title": "婚宴結束",
+        "description": "我們將懷著滿滿的心意結束這個夜晚。"
       }
     }
   },
   "whatToWear": {
-    "heading": "着装指南",
-    "lead": "正式服装或鸡尾酒会礼服。",
+    "heading": "穿著建議",
+    "lead": "正式服裝或雞尾酒會服裝。",
     "ladies": {
-      "heading": "女宾",
-      "body": "欢迎穿着连衣裙、优雅连身裤，或正式的上下装组合。我们期待看到您身着柔粉色或浅棕色。也建议将白色礼服留给新娘哦！"
+      "heading": "給女士",
+      "body": "歡迎穿著洋裝、優雅連身褲，或較正式的上下裝。我們很期待看見您穿上柔粉色或淺棕色。也建議把白色洋裝留給新娘！"
     },
     "gentlemen": {
-      "heading": "男宾",
-      "body": "建议穿着西装、西装外套配合身长裤，或长袖衬衫配正装长裤。请避免短裤、牛仔裤、T恤与拖鞋。欢迎黑色、棕色、灰色、白色或柔粉色。"
+      "heading": "給男士",
+      "body": "建議穿著西裝、西裝外套配合身長褲，或長袖襯衫配正式長褲。請避免短褲、牛仔褲、T-shirt 和拖鞋。灰色、棕色、白色或柔粉色都很歡迎。"
     },
-    "closing": "诚邀您以优雅且舒适的装扮，出席我们的教堂仪式与晚间庆典。",
-    "colorGuide": "色系参考",
-    "imageTitle": "服装指南图",
-    "imageAlt": "婚礼着装指南",
-    "imageButtonAriaLabel": "以更大尺寸查看服装指南图",
-    "lightboxAriaLabel": "放大的服装指南图",
-    "closeAriaLabel": "关闭服装指南图",
-    "imagePlaceholder": "服装指南图即将上传"
+    "closing": "誠邀您以優雅且舒適的穿著，出席我們的教堂儀式與晚間慶祝。",
+    "colorGuide": "色彩指南",
+    "imageTitle": "穿著指南",
+    "imageAlt": "婚禮穿著指南",
+    "imageButtonAriaLabel": "以較大畫面開啟穿著指南",
+    "lightboxAriaLabel": "放大的穿著指南",
+    "closeAriaLabel": "關閉穿著指南",
+    "imagePlaceholder": "穿著指南即將上傳"
   },
   "whereToStay": {
-    "heading": "住宿推荐",
+    "heading": "住宿建議",
     "recommendation": {
-      "prefix": "我们建议入住于",
+      "prefix": "我們建議住宿可選在",
       "locations": {
-        "bencoolen": "明古连",
-        "bugis": "武吉士",
-        "cityHall": "政府大厦"
+        "bencoolen": "Bencoolen",
+        "bugis": "Bugis",
+        "cityHall": "City Hall"
       },
       "afterBencoolen": "、",
       "afterBugis": "或",
-      "suffix": "一带，这些地区位于圣约瑟堂与富丽敦酒店婚宴场地之间，交通十分便利。以下酒店均位于市中心交通枢纽地带，周边餐饮及各项设施亦十分完善。"
+      "suffix": "一帶，因為這些地區位於我們兩個場地之間 - St. Joseph’s Church 與 The Fullerton Hotel，位置方便。以下酒店都位於市中心且交通便利，前往公共交通、餐飲與其他設施都很方便。"
     },
     "hotelGroups": {
       "budget": {
-        "heading": "经济实惠之选",
+        "heading": "較注重預算的住宿選擇",
         "hotels": {
           "hotelMi": "Hotel Mi Bencoolen",
           "vHotel": "V Hotel Bencoolen",
@@ -260,61 +258,61 @@
         }
       },
       "comfort": {
-        "heading": "舒适便利之选",
+        "heading": "更舒適便利的住宿選擇",
         "hotels": {
           "lyfFunan": "lyf Funan Singapore",
           "carlton": "Carlton Hotel Singapore"
         }
       }
     },
-    "closing": "住宿将不由新人代为安排，建议宾客自行比较价格并及早预订，因房价与空房情况可能随时变动。"
+    "closing": "住宿將不由新人安排，因此我們誠摯建議賓客比較房價並及早預訂，因價格與空房情況可能有所變動。"
   },
   "giftRegistry": {
-    "heading": "礼物小提示",
-    "body": "若您希望以礼物祝福我们，",
-    "closing": "我们将由衷感激您以礼金的方式，为我们共同的未来献上祝福。"
+    "heading": "關於禮物的小提醒",
+    "body": "若您希望以新婚禮物祝福我們，",
+    "closing": "我們將由衷感謝您以禮金的方式，支持我們共同的未來。"
   },
   "questionsAndAnswers": {
-    "heading": "常见问题",
-    "body": "以下是一些有助于您筹备出席婚礼的小提示。",
+    "heading": "常見問題",
+    "body": "在您準備與我們一同慶祝時，這裡有幾項實用提醒。",
     "items": {
       "rsvpDeadline": {
-        "question": "我应该在什么时候回复？",
-        "answer": "敬请于2026年10月31日前提交出席回复，以便我们及时完成最终安排。"
+        "question": "我應該何時 RSVP？",
+        "answer": "敬請於2026年10月31日前送出 RSVP，讓我們能及時完成最後安排。"
       },
       "plusOnes": {
-        "question": "我可以携伴出席吗？",
-        "answer": "由于座位数量有限，我们只能接待邀请函上列明姓名的宾客。若邀请函中包含携伴名额，该姓名将显示于您邀请函的回复栏中。恕无法接待未列明姓名的宾客，感谢您的理解。"
+        "question": "我可以攜伴出席嗎？",
+        "answer": "由於我們已預留特定數量的座位，因此只能接待邀請函上列名的賓客。若包含 plus one，該賓客姓名會出現在您邀請函的 RSVP 區塊。很抱歉，我們無法接待未列名的賓客。感謝您的理解。"
       },
       "dressCode": {
-        "question": "我该穿什么？",
-        "answer": "请穿着正式服装或鸡尾酒会礼服。女宾可选择柔粉色或浅棕色，白色礼服则留给新娘。男宾欢迎黑色、棕色、灰色、白色或柔粉色。"
+        "question": "我應該穿什麼？",
+        "answer": "請穿著正式服裝或雞尾酒會服裝。女士歡迎選擇柔粉色與淺棕色，白色洋裝則留給新娘。男士歡迎選擇黑色、棕色、灰色、白色或柔粉色。"
       },
       "timelineDetails": {
-        "question": "你们会分享更详细的流程吗？",
-        "answer": "会的。我们将在婚礼临近时分享更详细的内容，请留意本网站的最新消息。"
+        "question": "你們會分享更詳細的流程嗎？",
+        "answer": "會的。我們會在婚禮日子臨近時分享更詳細的內容，敬請留意本網站。"
       },
       "kids": {
-        "question": "婚礼可以带小孩出席吗？",
-        "answer": "为了让庆典保持温馨私密的氛围，我们的婚礼将以成人为主，恕不接待儿童宾客。唯一例外为新人直系亲属或婚礼随行团队中的孩童，感谢您的理解。"
+        "question": "婚禮可以帶小孩出席嗎？",
+        "answer": "為了讓我們的慶祝保持親密溫馨，懇請理解我們的婚禮將以成人為主。唯一例外是新人直系親屬或婚禮隨行團隊中的孩子。感謝您的理解。"
       },
       "flightAccom": {
-        "question": "婚礼会提供机票与住宿吗？",
-        "answer": "除非我们另行通知，否则敬请宾客自行安排并承担机票与住宿费用。我们由衷感激您为出席这特别的一天所付出的时间、精力与安排。住宿建议请参阅本网站的“住宿推荐”栏目。"
+        "question": "會提供機票與住宿嗎？",
+        "answer": "除非我們曾親自另行告知，賓客需自行安排並負擔機票與住宿費用。我們非常感謝您為參與我們特別的日子所付出的時間、心力與規劃。若想查看住宿建議，請前往本網站的「住宿建議」部分。"
       },
       "AccomRecommendations": {
-        "question": "你们建议我们住在哪里？",
-        "answer": "我们建议入住明古连、武吉士或政府大厦一带，这些地区位于圣约瑟堂与富丽敦酒店婚宴场地之间，交通十分便利。经济实惠之选包括Hotel Mi Bencoolen、V Hotel Bencoolen与ibis Singapore on Bencoolen；若偏好更舒适便利，则可考虑lyf Funan Singapore与Carlton Hotel Singapore。以上酒店均位于市中心交通枢纽地带，周边餐饮及各项设施亦十分完善。住宿将不由新人代为安排，建议宾客自行比较价格并及早预订，因房价与空房情况可能随时变动。"
+        "question": "你們建議我們住在哪裡？",
+        "answer": "我們建議住宿可選在 Bencoolen、Bugis 或 City Hall 一帶，因為這些地區位於 St. Joseph’s Church 與我們位於 The Fullerton Hotel 的婚宴場地之間，位置方便。較注重預算的選擇包括 Hotel Mi Bencoolen、V Hotel Bencoolen 及 ibis Singapore on Bencoolen；若希望更舒適便利，也可考慮 lyf Funan Singapore 與 Carlton Hotel Singapore。這些酒店都位於市中心且交通便利，前往公共交通、餐飲與其他設施都很方便。住宿將不由新人安排，因此我們誠摯建議賓客比較房價並及早預訂，因價格與空房情況可能有所變動。"
       }
     }
   },
   "footer": {
-    "message": "本网站由新郎与新娘用心制作。",
-    "buildPrefix": "构建版本"
+    "message": "網站由新郎與新娘用愛製作。",
+    "buildPrefix": "Build"
   },
   "languageToggle": {
-    "ariaLabel": "切换语言",
-    "menuAriaLabel": "选择语言",
+    "ariaLabel": "切換語言",
+    "menuAriaLabel": "選擇語言",
     "labels": {
       "en": "EN",
       "fil": "FIL",
@@ -322,42 +320,42 @@
     }
   },
   "admin": {
-    "loginTitle": "管理员登录",
-    "passwordPlaceholder": "请输入密码",
-    "signIn": "登录",
-    "loginError": "密码错误。",
-    "title": "出席回复管理面板",
-    "refresh": "刷新",
-    "exportExcel": "导出Excel",
-    "lastRefreshed": "最近刷新：",
-    "fetchError": "宾客名单加载失败，请检查您的Sheets API密钥。",
-    "loading": "正在加载宾客名单...",
+    "loginTitle": "管理員存取",
+    "passwordPlaceholder": "輸入密碼",
+    "signIn": "登入",
+    "loginError": "密碼不正確。",
+    "title": "RSVP Dashboard",
+    "refresh": "重新整理",
+    "exportExcel": "匯出 Excel",
+    "lastRefreshed": "上次重新整理：",
+    "fetchError": "無法載入賓客名單。請檢查您的 Sheets API key。",
+    "loading": "正在載入賓客名單...",
     "summary": {
-      "totalGuests": "宾客总数",
+      "totalGuests": "賓客總數",
       "attending": "出席",
       "declined": "婉拒",
-      "pending": "待定",
+      "pending": "待回覆",
       "beef": "牛肉",
-      "fish": "鱼肉"
+      "fish": "魚"
     },
     "table": {
-      "guestName": "宾客姓名",
-      "partyOf": "人数",
-      "mealChoice": "餐点选择",
-      "rsvp": "出席回复",
-      "dateSubmitted": "提交日期",
-      "copyInvitationLink": "复制邀请链接"
+      "guestName": "賓客姓名",
+      "partyOf": "Party Of",
+      "mealChoice": "主餐選擇",
+      "rsvp": "RSVP",
+      "dateSubmitted": "送出日期",
+      "copyInvitationLink": "複製邀請連結"
     },
     "copyInvitation": {
-      "copy": "复制链接",
-      "copied": "已复制",
-      "unavailable": "无链接",
-      "error": "无法复制邀请链接，请重试。"
+      "copy": "複製連結",
+      "copied": "已複製",
+      "unavailable": "無 Hash",
+      "error": "無法複製邀請連結。請再試一次。"
     },
     "rsvpStatus": {
       "yes": "是",
       "no": "否",
-      "pending": "待定"
+      "pending": "待回覆"
     },
     "noValue": "-",
     "exportSheetName": "RSVP",
