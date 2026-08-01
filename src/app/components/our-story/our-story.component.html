@@ -15,19 +15,18 @@
           >
             @for (url of photoUrls(item); track url; let photoIndex = $index) {
               @if (isPhotoVisible(url)) {
-                <div class="our-story__photo-frame">
-                  <img
-                    class="our-story__photo"
-                    [src]="url"
-                    [alt]="
-                      ('ourStory.imageAlt' | translate)
-                        .replace('{0}', (i + 1).toString())
-                        .replace('{1}', (photoIndex + 1).toString())
-                    "
-                    loading="lazy"
-                    (error)="markPhotoFailed(url)"
-                  />
-                </div>
+                <app-polaroid-photo
+                  [imageUrl]="url"
+                  [imageWidth]="photoWidth(url)"
+                  [imageHeight]="photoHeight(url)"
+                  [alt]="
+                    ('ourStory.imageAlt' | translate)
+                      .replace('{0}', (i + 1).toString())
+                      .replace('{1}', (photoIndex + 1).toString())
+                  "
+                  [caption]="captionKey(item.id, photoIndex) | translate"
+                  (imageError)="markPhotoFailed(url)"
+                />
               }
             }
 

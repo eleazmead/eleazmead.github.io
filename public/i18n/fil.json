@@ -315,7 +315,8 @@
     "menuAriaLabel": "Pumili ng language",
     "labels": {
       "en": "EN",
-      "fil": "FIL"
+      "fil": "FIL",
+      "zh": "中文"
     }
   },
   "admin": {

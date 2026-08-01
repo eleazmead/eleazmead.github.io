@@ -1,12 +1,12 @@
 .hero {
-  min-height: 100dvh;
+  min-height: 55dvh;
   position: relative;
   isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(4.5rem, 8vw, 7rem) 1.5rem;
+  padding: clamp(2rem, 5vw, 7rem) 1.5rem clamp(1rem, 3vw, 4rem);
   overflow: hidden;
   background:
     linear-gradient(135deg, rgba(251, 247, 242, 0.7), rgba(236, 222, 211, 0.32)),
@@ -30,10 +30,10 @@
   z-index: -2;
   background:
     linear-gradient(
-      90deg,
-      rgba(251, 247, 242, 0.76) 0%,
-      rgba(251, 247, 242, 0.5) 48%,
-      rgba(18, 18, 18, 0.12) 100%
+      89deg,
+      rgba(251, 247, 242, 0) 0%,
+      rgba(251, 247, 242, 0.65) 48%,
+      rgba(18, 18, 18, 0) 100%
     ),
     linear-gradient(179deg, rgba(251, 247, 242, 0.46), rgba(251, 247, 242, 0));
 
@@ -49,7 +49,7 @@
 
 .hero__content {
   width: min(100%, 820px);
-  padding: clamp(2rem, 5vw, 4rem) 0;
+  padding: clamp(0.75rem, 3vw, 4rem) 0;
 
   &::before,
   &::after {
@@ -63,11 +63,11 @@
   }
 
   &::before {
-    margin-bottom: clamp(1rem, 3vw, 1.8rem);
+    margin-bottom: clamp(0.6rem, 2vw, 1.8rem);
   }
 
   &::after {
-    margin-top: clamp(1.5rem, 4vw, 2.75rem);
+    margin-top: clamp(0.75rem, 2.5vw, 2.75rem);
   }
 }
 
@@ -215,6 +215,51 @@
   }
 }
 
+.hero__scroll-cue {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  color: var(--color-secondary);
+  text-decoration: none;
+  opacity: 0;
+  animation:
+    heroScrollCueFadeIn 0.7s ease 1.4s forwards,
+    heroScrollBounce 2.2s ease-in-out 2.2s infinite;
+
+  svg {
+    width: 2.25rem;
+    height: 2.25rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  }
+
+  &:hover {
+    opacity: 1 !important;
+  }
+}
+
+@keyframes heroScrollCueFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.72;
+  }
+}
+
+@keyframes heroScrollBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(9px);
+  }
+}
+
 .fade-in {
   opacity: 0;
   animation: heroFadeIn 0.7s ease forwards;
@@ -239,9 +284,13 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding-bottom: 5.5rem;
+  }
+
   .hero__events {
     grid-template-columns: 1fr;
-    gap: 1.7rem;
+    gap: 1.2rem;
     font-size: 0.8rem;
   }
 
@@ -264,6 +313,11 @@
 @media (prefers-reduced-motion: reduce) {
   .fade-in {
     opacity: 1;
+    animation: none;
+  }
+
+  .hero__scroll-cue {
+    opacity: 0.72;
     animation: none;
   }
 }

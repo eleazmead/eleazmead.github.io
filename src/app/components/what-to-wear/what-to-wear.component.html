@@ -45,8 +45,10 @@
       <h3 class="what-to-wear__image-title">{{ 'whatToWear.imageTitle' | translate }}</h3>
       @if (shouldShowImage()) {
         <button
+          #imageButton
           class="what-to-wear__image-button"
           type="button"
+          [class.what-to-wear__image-button--concealed]="focused()"
           (click)="open()"
           [attr.aria-label]="'whatToWear.imageButtonAriaLabel' | translate"
         >
@@ -70,8 +72,9 @@
     </div>
   </div>
 
-  @if (isImageOpen()) {
+  @if (overlayVisible()) {
     <div
+      #overlayRoot
       class="what-to-wear__overlay"
       role="dialog"
       aria-modal="true"
@@ -86,7 +89,7 @@
       >
         &#215;
       </button>
-      <div class="what-to-wear__overlay-content" (click)="stopPropagation($event)">
+      <div #overlayContent class="what-to-wear__overlay-content" (click)="stopPropagation($event)">
         <img
           class="what-to-wear__overlay-image"
           [src]="attireGuideImage"

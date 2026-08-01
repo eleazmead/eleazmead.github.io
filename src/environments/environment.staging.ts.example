@@ -7,4 +7,5 @@ export const environment = {
   sheetsSpreadsheetId: 'YOUR_SPREADSHEET_ID',
   sheetsApiKey: 'YOUR_SHEETS_API_KEY',
   gasWebAppUrl: 'YOUR_GAS_WEB_APP_URL',
+  buildNumber: 'local',
 };

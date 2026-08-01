@@ -3,6 +3,12 @@
   top: 1.25rem;
   right: 1.25rem;
   z-index: 1000;
+}
+
+.lang-toggle__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid color-mix(in srgb, var(--color-primary) 60%, var(--color-secondary));
   color: var(--color-secondary);
@@ -10,7 +16,7 @@
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.12em;
-  padding: 0.375rem 0.75rem;
+  padding: 0.375rem 0.7rem 0.375rem 0.75rem;
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -20,5 +26,84 @@
     border-color: var(--color-text);
     color: var(--color-text);
     background: var(--color-surface);
+  }
+}
+
+.lang-toggle__chevron {
+  width: 0.6rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.lang-toggle__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: 0.35rem;
+  box-shadow:
+    0 4px 10px rgba(18, 18, 18, 0.08),
+    0 14px 28px rgba(18, 18, 18, 0.14);
+  animation: langMenuIn 0.16s ease both;
+}
+
+.lang-toggle__option {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  border-radius: 0.25rem;
+  color: var(--color-secondary);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    color: var(--color-text);
+  }
+
+  &--active {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+}
+
+@keyframes langMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-toggle__chevron {
+    transition: none;
+  }
+
+  .lang-toggle__menu {
+    animation: none;
   }
 }

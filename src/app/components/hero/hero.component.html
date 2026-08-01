@@ -1,7 +1,7 @@
 <section class="hero" id="hero">
   <video #backdropVideo class="hero__backdrop" muted loop playsinline aria-hidden="true">
-    <source src="hero/EleazMead_hero.webm" type="video/webm" />
-    <source src="hero/hero-backdrop.mp4" type="video/mp4" />
+    <source [src]="config.assets.heroBackdropWebm" type="video/webm" />
+    <source [src]="config.assets.heroBackdropMp4" type="video/mp4" />
   </video>
   <div class="hero__veil" aria-hidden="true"></div>
 
@@ -47,4 +47,20 @@
       </a>
     }
   </div>
+
+  <a href="#our-story" class="hero__scroll-cue" aria-label="Scroll down to see more">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </a>
 </section>

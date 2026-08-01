@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { APP_CONFIG } from '../../config/app.config';
 import {
@@ -15,11 +25,13 @@ import { TranslationService } from '../../shared/translation.service';
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.scss',
 })
-export class HeroComponent implements OnInit, AfterViewInit {
+export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('backdropVideo') private backdropVideo!: ElementRef<HTMLVideoElement>;
+  private readonly el = inject(ElementRef<HTMLElement>);
   private readonly route = inject(ActivatedRoute);
   private readonly guestSearch = inject(GuestSearchService);
   private readonly ts = inject(TranslationService);
+  private visibilityObserver?: IntersectionObserver;
 
   readonly config = APP_CONFIG;
   readonly hasInvitationHash = signal(false);
@@ -69,6 +81,28 @@ export class HeroComponent implements OnInit, AfterViewInit {
     const video = this.backdropVideo.nativeElement;
     video.muted = true;
     video.play().catch(() => {});
+
+    // The backdrop is purely decorative and only visible while the hero
+    // section itself is on screen - once the user scrolls past it, the
+    // <video> keeps decoding frames in the background regardless (browsers
+    // don't auto-pause off-screen video in a normal scrolling page), which
+    // costs real CPU/GPU work on mobile for zero visual benefit and
+    // competes with everything else on the page, including the Our Story
+    // polaroid scroll physics further down. Pausing while off-screen and
+    // resuming on return removes that cost entirely when it can't matter.
+    if (typeof IntersectionObserver === 'undefined') return;
+    this.visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0 },
+    );
+    this.visibilityObserver.observe(this.el.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.visibilityObserver?.disconnect();
   }
 
   scrollToRsvp(event: Event): void {

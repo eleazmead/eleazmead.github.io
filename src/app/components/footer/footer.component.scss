@@ -24,11 +24,11 @@
   letter-spacing: 0.06em;
 }
 
-.footer__message {
+.footer__build {
+  margin-top: 0.25rem;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 300;
-  color: var(--color-accent);
-  letter-spacing: 0.1em;
-  margin-top: 0.75rem;
+  color: color-mix(in srgb, var(--color-surface) 22%, var(--color-primary));
+  letter-spacing: 0.04em;
 }

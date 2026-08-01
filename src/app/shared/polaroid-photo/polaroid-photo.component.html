@@ -1,0 +1,125 @@
+<div
+  class="polaroid-mount"
+  [class.polaroid-mount--concealed]="focused()"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="alt()"
+  (click)="open()"
+  (keydown.enter)="open()"
+  (keydown.space)="open(); $event.preventDefault()"
+>
+  <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: true, rotDeg: rotationDeg(), offsetPx: staticOffsetPx() }"></ng-container>
+</div>
+
+@if (overlayVisible()) {
+  <div
+    #overlayRoot
+    class="polaroid-overlay"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="alt()"
+    (click)="close()"
+  >
+    <button class="polaroid-overlay__close" type="button" (click)="close()" aria-label="Close">
+      &#215;
+    </button>
+    <div class="polaroid-mount polaroid-mount--focused" (click)="stopPropagation($event)">
+      <!-- rotDeg: 0 so the overlay card always renders untilted regardless of
+           the inline card's resting rotation - the resting tilt (--polaroid-rotate)
+           is an inline style on the shared figure element, which would otherwise
+           be applied to both inline and overlay instances of the template.
+           offsetPx: 0 for the same reason - --polaroid-offset is a per-card
+           random vertical shift; in focus mode the card must be centered with
+           no vertical displacement or it drifts after the FLIP animation ends. -->
+      <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: false, rotDeg: 0, offsetPx: 0 }"></ng-container>
+    </div>
+  </div>
+}
+
+<ng-template #polaroidVisual let-showPin="showPin" let-rotDeg="rotDeg" let-offsetPx="offsetPx">
+  @if (showPin) {
+    <!-- Lifts off and fades when the photo is "picked up" into focus mode,
+         then eases back into place - with a slight overshoot bounce, like it's
+         being re-pinned - once focus mode closes. -->
+    <svg
+      class="polaroid__pin"
+      [class.polaroid__pin--lifted]="focused()"
+      viewBox="0 0 22 34"
+      aria-hidden="true"
+    >
+      <defs>
+        <radialGradient [attr.id]="pinGradientId" cx="33%" cy="26%" r="78%">
+          <stop offset="0%" stop-color="#fffdf8" />
+          <stop offset="32%" stop-color="var(--color-primary)" />
+          <stop offset="72%" stop-color="var(--color-muted)" />
+          <stop offset="100%" stop-color="#0c0c0c" />
+        </radialGradient>
+        <radialGradient [attr.id]="pinShadeId" cx="70%" cy="76%" r="65%">
+          <stop offset="0%" stop-color="#000" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <!-- shadow cast on the photo where the needle enters -->
+      <ellipse class="polaroid__pin-shadow" cx="11" cy="32" rx="2.4" ry="0.95" />
+
+      <!-- needle: tapers smoothly from the collar down to a fine point -->
+      <path
+        class="polaroid__pin-needle"
+        d="M9.9 14.6 L12.1 14.6 L11.35 30.5 C11.3 31 10.7 31 10.65 30.5 Z"
+      />
+      <line class="polaroid__pin-needle-shine" x1="10.35" y1="15" x2="10.6" y2="27.5" />
+
+      <!-- collar: where the plastic head meets the metal needle -->
+      <ellipse class="polaroid__pin-collar" cx="11" cy="14.4" rx="2.3" ry="0.95" />
+
+      <!-- domed head with glossy shading -->
+      <circle
+        class="polaroid__pin-head"
+        cx="11"
+        cy="9.5"
+        r="8.1"
+        [attr.fill]="'url(#' + pinGradientId + ')'"
+      />
+      <circle
+        class="polaroid__pin-shade"
+        cx="11"
+        cy="9.5"
+        r="8.1"
+        [attr.fill]="'url(#' + pinShadeId + ')'"
+      />
+      <ellipse
+        class="polaroid__pin-highlight polaroid__pin-highlight--soft"
+        cx="9.6"
+        cy="8"
+        rx="4.8"
+        ry="3.4"
+      />
+      <ellipse class="polaroid__pin-highlight" cx="7.9" cy="6.1" rx="2.1" ry="1.35" />
+    </svg>
+  }
+  <figure
+    #card
+    class="polaroid"
+    [style.--polaroid-rotate]="rotDeg + 'deg'"
+    [style.--polaroid-offset]="offsetPx + 'px'"
+    [style.--polaroid-spring-duration]="springDurationS() + 's'"
+  >
+    <div class="polaroid__frame">
+      <img
+        #photoImg
+        class="polaroid__photo"
+        [src]="imageUrl()"
+        [attr.width]="imageWidth()"
+        [attr.height]="imageHeight()"
+        [alt]="alt()"
+        loading="lazy"
+        decoding="async"
+        (error)="imageError.emit()"
+      />
+    </div>
+    @if (displayCaption()) {
+      <figcaption class="polaroid__caption">{{ displayCaption() }}</figcaption>
+    }
+  </figure>
+</ng-template>

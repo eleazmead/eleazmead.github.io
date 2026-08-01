@@ -50,7 +50,7 @@ export const APP_CONFIG = {
   },
   i18n: {
     defaultLocale: 'en',
-    supportedLocales: ['en', 'fil'] as const,
+    supportedLocales: ['en', 'fil', 'zh'] as const,
   },
   seo: {
     // Canonical production origin - update if the custom domain changes.
@@ -62,6 +62,7 @@ export const APP_CONFIG = {
     ogLocaleMap: {
       en: 'en_US',
       fil: 'fil_PH',
+      zh: 'zh_SG',
     },
   },
 } as const;

@@ -173,6 +173,17 @@
     outline: 3px solid color-mix(in srgb, var(--color-accent) 70%, white);
     outline-offset: 0.25rem;
   }
+
+  /* Hidden the instant focus mode opens (see WhatToWearComponent.focused),
+     so the board image isn't visible behind the backdrop while the overlay
+     is open - the FLIP animation in the component is what makes it read as
+     this same image growing into focus rather than a duplicate appearing on
+     top of it. Mirrors .polaroid-mount--concealed. */
+  &--concealed {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
 }
 
 .what-to-wear__image {
@@ -211,7 +222,12 @@
 .what-to-wear__overlay {
   position: fixed;
   inset: 0;
-  z-index: 500;
+  // Must sit above the fixed language toggle (z-index: 1000) so the overlay's
+  // own close button isn't covered by it - matches the convention used by
+  // the polaroid focus overlay (see polaroid-photo.component.scss). This was
+  // previously 500, which let the language toggle sit on top of the close
+  // button in the shared top-right corner.
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
