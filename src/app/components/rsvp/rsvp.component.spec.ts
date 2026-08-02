@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { of, Subject } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { isOnOrAfterDate, RsvpComponent } from './rsvp.component';
 import { GuestSearchService } from '../../shared/guest-search.service';
 import { SheetsService } from '../../shared/sheets.service';
@@ -122,6 +122,64 @@ describe('RsvpComponent', () => {
       included: true,
     });
     expect(component.getMealChoice(guestRow.guest1Name)).toBe('beef');
+  });
+
+  it('scrolls the success message into view after submitting an RSVP', () => {
+    const fixture = TestBed.createComponent(RsvpComponent);
+    const component = fixture.componentInstance;
+    const scrollIntoView = vi.fn();
+    const querySpy = vi
+      .spyOn(document, 'querySelector')
+      .mockReturnValue({ scrollIntoView } as unknown as Element);
+    const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      callback(0);
+      return 0;
+    });
+
+    component.rsvpDeadlineClosed.set(false);
+    component.matchedRow.set(guestRow);
+    component.initiatorName.set(guestRow.fullName);
+    component.selections.set(new Map([[guestRow.fullName, { attending: false, included: true }]]));
+
+    component.onSubmit();
+
+    expect(component.state()).toBe('success');
+    expect(querySpy).toHaveBeenCalledWith('#rsvp .rsvp__success-message');
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
+
+    rafSpy.mockRestore();
+    querySpy.mockRestore();
+  });
+
+  it('scrolls the loading spinner into view while submitting an RSVP', () => {
+    const fixture = TestBed.createComponent(RsvpComponent);
+    const component = fixture.componentInstance;
+    const submitResult = new Subject<{ status: string }>();
+    const sheets = TestBed.inject(SheetsService);
+    vi.spyOn(sheets, 'submitRsvp').mockReturnValue(submitResult);
+    const scrollIntoView = vi.fn();
+    const querySpy = vi
+      .spyOn(document, 'querySelector')
+      .mockReturnValue({ scrollIntoView } as unknown as Element);
+    const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      callback(0);
+      return 0;
+    });
+
+    component.rsvpDeadlineClosed.set(false);
+    component.matchedRow.set(guestRow);
+    component.initiatorName.set(guestRow.fullName);
+    component.selections.set(new Map([[guestRow.fullName, { attending: false, included: true }]]));
+
+    component.onSubmit();
+
+    expect(component.state()).toBe('submitting');
+    expect(querySpy).toHaveBeenCalledWith('#rsvp .rsvp__spinner');
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
+
+    submitResult.complete();
+    rafSpy.mockRestore();
+    querySpy.mockRestore();
   });
 
   it('blocks review when the RSVP deadline date has arrived', () => {
