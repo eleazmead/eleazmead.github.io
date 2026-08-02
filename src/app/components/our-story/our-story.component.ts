@@ -7,6 +7,7 @@ import { PolaroidPhotoComponent } from '../../shared/polaroid-photo/polaroid-pho
 const STORY_TIMELINE_ITEMS = [
   { id: 'metAtWork', filePrefix: 'Sep_2016' },
   { id: 'coffeeRuns', filePrefix: 'Apr_2017' },
+  { id: 'programming', filePrefix: 'Dec_2018' },
   { id: 'longDistance', filePrefix: 'Sep_2019' },
   { id: 'lionCity', filePrefix: 'Feb_2020' },
   { id: 'fluffyEra', filePrefix: 'Mar_2022' },
