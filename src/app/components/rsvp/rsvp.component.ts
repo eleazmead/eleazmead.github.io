@@ -81,6 +81,7 @@ export class RsvpComponent implements OnInit {
     const row = this.matchedRow();
     const initiator = this.initiatorName();
     if (!row?.rsvpRaw) return new Map();
+    if (initiator === row.fullName) return new Map();
     const entries = row.rsvpRaw[row.fullName] ?? [];
     const result = new Map<string, boolean>();
     for (const entry of entries) {
@@ -159,7 +160,11 @@ export class RsvpComponent implements OnInit {
     const map = new Map<string, Selection>();
     map.set(matchedName, { attending: matchedEntry?.RSVP ?? true, included: true });
     for (const name of related) {
-      map.set(name, { attending: true, included: false });
+      const existingEntry = entries.find((entry) => entry.Guest === name);
+      map.set(name, {
+        attending: existingEntry?.RSVP ?? true,
+        included: matchedName === row.fullName && Boolean(existingEntry),
+      });
     }
     this.selections.set(map);
     this.mealSelections.set(mealMap);

@@ -91,6 +91,40 @@ describe('RsvpComponent', () => {
     expect(component.getMealChoice(guestRow.fullName)).toBe('fish');
   });
 
+  it('lets the main guest edit related guests they previously RSVP-ed for', () => {
+    const fixture = TestBed.createComponent(RsvpComponent);
+    const component = fixture.componentInstance;
+
+    component.rsvpDeadlineClosed.set(false);
+    prepareMatchedGuest(component, {
+      ...guestRow,
+      rsvpRaw: {
+        [guestRow.fullName]: [
+          {
+            Guest: guestRow.fullName,
+            RSVP: true,
+            MealChoice: 'fish',
+            Date: '2026-07-26T12:00:00+08:00',
+          },
+          {
+            Guest: guestRow.guest1Name,
+            RSVP: true,
+            MealChoice: 'beef',
+            Date: '2026-07-26T12:00:00+08:00',
+          },
+        ],
+      },
+    });
+
+    expect(component.relatedNames()).toContain(guestRow.guest1Name);
+    expect(component.respondedNames().has(guestRow.guest1Name)).toBe(false);
+    expect(component.getSelectionFor(guestRow.guest1Name)).toEqual({
+      attending: true,
+      included: true,
+    });
+    expect(component.getMealChoice(guestRow.guest1Name)).toBe('beef');
+  });
+
   it('blocks review when the RSVP deadline date has arrived', () => {
     const fixture = TestBed.createComponent(RsvpComponent);
     const component = fixture.componentInstance;
