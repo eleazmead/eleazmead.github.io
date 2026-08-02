@@ -39,9 +39,8 @@ export class GuestLetterComponent implements OnInit {
     const hashInput = this.route.snapshot.paramMap.get('rsvpHash')?.trim() ?? '';
     if (!hashInput) return;
 
-    this.guestSearch.loadGuests().subscribe({
-      next: () => {
-        const result = this.guestSearch.findMatchByHash(hashInput);
+    this.guestSearch.findByHash(hashInput).subscribe({
+      next: (result) => {
         this.matchedRow.set(result?.row ?? null);
         this.matchedField.set(result?.matchedField ?? null);
       },

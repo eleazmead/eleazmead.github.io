@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, tap, map, shareReplay, finalize } from 'rxjs';
+import { Observable, map, shareReplay } from 'rxjs';
 import { SheetsService } from './sheets.service';
 import { GuestRow } from './models/guest.model';
 
@@ -25,54 +25,38 @@ export function shouldShowGuestLetterForMatch(match: GuestHashMatch | null): boo
 
 @Injectable({ providedIn: 'root' })
 export class GuestSearchService {
-  private guestList: GuestRow[] = [];
-  private loaded = false;
-  private loadRequest?: Observable<void>;
+  private cache = new Map<string, Observable<GuestHashMatch | null>>();
 
   constructor(private readonly sheets: SheetsService) {}
 
-  loadGuests(): Observable<void> {
-    if (this.loaded) return of(undefined);
-    if (this.loadRequest) return this.loadRequest;
-
-    this.loadRequest = this.sheets.fetchGuestList().pipe(
-      tap((rows) => {
-        this.guestList = rows;
-        this.loaded = true;
-      }),
-      map(() => undefined),
-      finalize(() => {
-        this.loadRequest = undefined;
-      }),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
-    return this.loadRequest;
-  }
-
-  findMatchByHash(hashInput: string): GuestHashMatch | null {
-    const normalizedHash = this.normalizeHash(hashInput);
-    if (!normalizedHash) return null;
-
-    for (const row of this.guestList) {
-      const candidates = [
-        { hash: row.fullNameHashMd5, name: row.fullName, field: 'fullName' as const },
-        { hash: row.guest1FullNameHashMd5, name: row.guest1Name, field: 'guest1FullName' as const },
-        { hash: row.guest2FullNameHashMd5, name: row.guest2Name, field: 'guest2FullName' as const },
-      ];
-      for (const candidate of candidates) {
-        if (candidate.name.trim() && this.normalizeHash(candidate.hash) === normalizedHash) {
-          return { row, matchedName: candidate.name, matchedField: candidate.field };
-        }
-      }
+  findByHash(hash: string): Observable<GuestHashMatch | null> {
+    const key = hash.trim().toLowerCase();
+    if (!this.cache.has(key)) {
+      const req = this.sheets.fetchGuestByHash(hash).pipe(
+        map((row) => (row ? this.resolveMatch(row, key) : null)),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
+      this.cache.set(key, req);
     }
-    return null;
+    return this.cache.get(key)!;
   }
 
   getRelatedNames(row: GuestRow): string[] {
     return [row.guest1Name, row.guest2Name].filter((n) => n.trim().length > 0);
   }
 
-  private normalizeHash(hash: string): string {
-    return hash.trim().toLowerCase();
+  private resolveMatch(row: GuestRow, normalizedHash: string): GuestHashMatch | null {
+    const candidates: { hash: string; name: string; field: GuestHashMatchField }[] = [
+      { hash: row.fullNameHashMd5, name: row.fullName, field: 'fullName' },
+      { hash: row.guest1FullNameHashMd5, name: row.guest1Name, field: 'guest1FullName' },
+      { hash: row.guest2FullNameHashMd5, name: row.guest2Name, field: 'guest2FullName' },
+    ];
+    for (const c of candidates) {
+      if (c.name.trim() && c.hash.trim().toLowerCase() === normalizedHash) {
+        return { row, matchedName: c.name, matchedField: c.field };
+      }
+    }
+    // Fallback: return fullName match if hash comparison is inconclusive
+    return { row, matchedName: row.fullName, matchedField: 'fullName' };
   }
 }

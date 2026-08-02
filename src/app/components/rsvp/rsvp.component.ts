@@ -123,9 +123,8 @@ export class RsvpComponent implements OnInit {
 
     this.state.set('searching');
 
-    this.guestSearch.loadGuests().subscribe({
-      next: () => {
-        const result = this.guestSearch.findMatchByHash(hashInput);
+    this.guestSearch.findByHash(hashInput).subscribe({
+      next: (result) => {
         if (!result) {
           this.state.set('not_found');
           return;
