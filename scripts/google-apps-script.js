@@ -45,9 +45,15 @@
 
 /**
  * Run this ONCE from the Apps Script editor to store the admin password hash.
- * Open Extensions > Apps Script, select this function, click Run, enter your password.
+ * Open Extensions > Apps Script, select this function, click Run.
+ * A dialog will appear - enter your chosen password and click OK.
  */
-function setupAdminPasswordHash(password) {
+function setupAdminPasswordHash() {
+  const password = Browser.inputBox('Admin Setup', 'Enter the admin password to hash and store:', Browser.Buttons.OK_CANCEL);
+  if (!password || password === 'cancel') {
+    Logger.log('Setup cancelled.');
+    return;
+  }
   const hash = Utilities.computeDigest(
     Utilities.DigestAlgorithm.SHA_256,
     password,
@@ -57,6 +63,7 @@ function setupAdminPasswordHash(password) {
     .join('');
   PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD_HASH', hash);
   Logger.log('Stored ADMIN_PASSWORD_HASH: ' + hash);
+  Browser.msgBox('Done', 'Admin password hash stored successfully.', Browser.Buttons.OK);
 }
 
 function generateMd5Hash(input) {
