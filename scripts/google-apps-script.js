@@ -88,6 +88,42 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
 
+    if (payload.action === 'getGuestList') {
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName('GuestList');
+      const values = sheet.getDataRange().getValues();
+      return ContentService.createTextOutput(JSON.stringify({ values })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
+
+    if (payload.action === 'getGuestByHash') {
+      const hash = String(payload.hash || '').trim().toLowerCase();
+      if (!hash) {
+        return ContentService.createTextOutput(JSON.stringify({ found: false })).setMimeType(
+          ContentService.MimeType.JSON,
+        );
+      }
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName('GuestList');
+      const values = sheet.getDataRange().getValues();
+      // Skip header row (index 0), search columns J(9), K(10), L(11)
+      for (let i = 1; i < values.length; i++) {
+        const row = values[i];
+        const j = String(row[9] || '').trim().toLowerCase();
+        const k = String(row[10] || '').trim().toLowerCase();
+        const l = String(row[11] || '').trim().toLowerCase();
+        if ((j && j === hash) || (k && k === hash) || (l && l === hash)) {
+          return ContentService.createTextOutput(
+            JSON.stringify({ found: true, row, rowIndex: i + 1 }),
+          ).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ found: false })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
+
     if (payload.action === 'verifyAdmin') {
       const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
       const authorized = stored !== null && stored === payload.passwordHash;

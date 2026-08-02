@@ -3,8 +3,6 @@ export const environment = {
   staging: false,
   name: 'development',
   apiUrl: 'http://localhost:4200/api',
-  sheetsSpreadsheetId: 'YOUR_SPREADSHEET_ID',
-  sheetsApiKey: 'YOUR_SHEETS_API_KEY',
   gasWebAppUrl: 'YOUR_GAS_WEB_APP_URL',
   buildNumber: 'local',
 };

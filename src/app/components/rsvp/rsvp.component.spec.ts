@@ -26,8 +26,7 @@ describe('RsvpComponent', () => {
         {
           provide: GuestSearchService,
           useValue: {
-            loadGuests: () => of([]),
-            findMatchByHash: () => null,
+            findByHash: () => of(null),
           },
         },
         {

@@ -56,9 +56,8 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hasInvitationHash.set(true);
     this.guestNameLoading.set(true);
-    this.guestSearch.loadGuests().subscribe({
-      next: () => {
-        const result = this.guestSearch.findMatchByHash(hashInput);
+    this.guestSearch.findByHash(hashInput).subscribe({
+      next: (result) => {
         if (result) {
           const letterAddress = result.row.letterAddress.trim();
           const shouldShowGuestLetter = shouldShowGuestLetterForMatch(result);

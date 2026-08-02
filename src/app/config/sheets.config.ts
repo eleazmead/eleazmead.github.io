@@ -1,13 +1,7 @@
 import { environment } from '../../environments/environment';
 
 export const SHEETS_CONFIG = {
-  spreadsheetId: environment.sheetsSpreadsheetId,
-  apiKey: environment.sheetsApiKey,
   gasWebAppUrl: environment.gasWebAppUrl,
-  ranges: {
-    guestList: 'GuestList!A:P',
-    log: 'Log!A:F',
-  },
   guestListColumns: {
     fullName: 0, // A
     guest1Name: 1, // B

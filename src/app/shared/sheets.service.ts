@@ -10,14 +10,33 @@ export class SheetsService {
   private http = inject(HttpClient);
 
   fetchGuestList(): Observable<GuestRow[]> {
-    const { spreadsheetId, apiKey, ranges } = SHEETS_CONFIG;
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${ranges.guestList}?key=${apiKey}`;
-    return this.http.get<{ values: string[][] }>(url).pipe(
-      map((res) => {
-        const rows = res.values ?? [];
-        return rows.slice(1).map((row, i) => this.parseRow(row, i + 2));
-      }),
-    );
+    const body = JSON.stringify({ action: 'getGuestList' });
+    return this.http
+      .post<{ values: string[][] }>(SHEETS_CONFIG.gasWebAppUrl, body, {
+        headers: { 'Content-Type': 'text/plain' },
+      })
+      .pipe(
+        map((res) => {
+          const rows = res.values ?? [];
+          return rows.slice(1).map((row, i) => this.parseRow(row, i + 2));
+        }),
+      );
+  }
+
+  fetchGuestByHash(hash: string): Observable<GuestRow | null> {
+    const body = JSON.stringify({ action: 'getGuestByHash', hash });
+    return this.http
+      .post<{ found: boolean; row?: string[]; rowIndex?: number }>(
+        SHEETS_CONFIG.gasWebAppUrl,
+        body,
+        { headers: { 'Content-Type': 'text/plain' } },
+      )
+      .pipe(
+        map((res) => {
+          if (!res.found || !res.row) return null;
+          return this.parseRow(res.row, res.rowIndex ?? 0);
+        }),
+      );
   }
 
   submitRsvp(submission: RsvpSubmission): Observable<{ status: string }> {
