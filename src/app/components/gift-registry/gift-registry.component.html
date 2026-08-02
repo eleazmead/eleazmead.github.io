@@ -1,9 +1,18 @@
 <section class="gift-registry" id="gift-registry">
-  <div class="gift-registry__container" appFadeUp>
-    <h2 class="section-heading">{{ 'giftRegistry.heading' | translate }}</h2>
-    <div class="gift-registry__message">
-      <p>{{ 'giftRegistry.body' | translate }}</p>
-      <p>{{ 'giftRegistry.closing' | translate }}</p>
+  <div class="gift-registry__stage" appFadeUp>
+    <!-- Four masking tape strips, one per corner. Each has a torn-end
+         clip-path to simulate real tape torn off the roll. -->
+    <div class="gift-registry__tape gift-registry__tape--tl" aria-hidden="true"></div>
+    <div class="gift-registry__tape gift-registry__tape--tr" aria-hidden="true"></div>
+    <div class="gift-registry__tape gift-registry__tape--bl" aria-hidden="true"></div>
+    <div class="gift-registry__tape gift-registry__tape--br" aria-hidden="true"></div>
+
+    <div class="gift-registry__card">
+      <h2 class="section-heading">{{ 'giftRegistry.heading' | translate }}</h2>
+      <div class="gift-registry__message">
+        <p>{{ 'giftRegistry.body' | translate }}</p>
+        <p>{{ 'giftRegistry.closing' | translate }}</p>
+      </div>
     </div>
   </div>
 </section>

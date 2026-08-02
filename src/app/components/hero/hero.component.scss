@@ -1,5 +1,9 @@
 .hero {
+  /* On mobile, fill most of the viewport (scroll cue handles the affordance).
+     On desktop, cap at 82dvh so the Our Story section's heading is always
+     partially visible below the fold, hinting that content continues. */
   min-height: 55dvh;
+  max-height: 100dvh;
   position: relative;
   isolation: isolate;
   display: flex;
@@ -8,6 +12,10 @@
   text-align: center;
   padding: clamp(2rem, 5vw, 7rem) 1.5rem clamp(1rem, 3vw, 4rem);
   overflow: hidden;
+
+  @media (min-width: 1024px) {
+    max-height: 82dvh;
+  }
   background:
     linear-gradient(135deg, rgba(251, 247, 242, 0.7), rgba(236, 222, 211, 0.32)),
     radial-gradient(circle at 25% 18%, rgba(217, 160, 168, 0.14), transparent 34%),
@@ -68,6 +76,13 @@
 
   &::after {
     margin-top: clamp(0.75rem, 2.5vw, 2.75rem);
+    // On desktop the content ends lower in the taller hero, placing this
+    // line too close to the scroll cue chevron. The chevron already
+    // provides visual closure at the bottom on desktop, so the line is
+    // hidden there. On mobile it's already hidden via max-width: 640px.
+    @media (min-width: 641px) {
+      display: none;
+    }
   }
 }
 
@@ -229,6 +244,13 @@
   animation:
     heroScrollCueFadeIn 0.7s ease 1.4s forwards,
     heroScrollBounce 2.2s ease-in-out 2.2s infinite;
+
+  /* Hide on very short viewports where there isn't enough vertical space
+     between the content bottom (RSVP button + ::after line) and the
+     hero bottom for the chevron to bounce without crowding. */
+  @media (max-height: 620px) {
+    display: none;
+  }
 
   svg {
     width: 2.25rem;

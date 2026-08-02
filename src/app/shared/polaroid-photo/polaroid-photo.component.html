@@ -8,7 +8,12 @@
   (keydown.enter)="open()"
   (keydown.space)="open(); $event.preventDefault()"
 >
-  <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: true, rotDeg: rotationDeg(), offsetPx: staticOffsetPx() }"></ng-container>
+  <ng-container
+    *ngTemplateOutlet="
+      polaroidVisual;
+      context: { showPin: true, rotDeg: rotationDeg(), offsetPx: staticOffsetPx() }
+    "
+  ></ng-container>
 </div>
 
 @if (overlayVisible()) {
@@ -31,7 +36,9 @@
            offsetPx: 0 for the same reason - --polaroid-offset is a per-card
            random vertical shift; in focus mode the card must be centered with
            no vertical displacement or it drifts after the FLIP animation ends. -->
-      <ng-container *ngTemplateOutlet="polaroidVisual; context: { showPin: false, rotDeg: 0, offsetPx: 0 }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="polaroidVisual; context: { showPin: false, rotDeg: 0, offsetPx: 0 }"
+      ></ng-container>
     </div>
   </div>
 }
@@ -106,6 +113,34 @@
     [style.--polaroid-spring-duration]="springDurationS() + 's'"
   >
     <div class="polaroid__frame">
+      <!-- Loading overlay: visible while the lazy image is still in flight.
+           Kept in the DOM (opacity toggle, not @if) so the fade-out
+           transition plays rather than the element vanishing instantly. -->
+      <div
+        class="polaroid__loading"
+        [class.polaroid__loading--hidden]="imageLoaded()"
+        aria-hidden="true"
+      >
+        <svg
+          class="polaroid__loading-icon"
+          viewBox="0 0 40 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Background track ring -->
+          <circle class="polaroid__loading-track" cx="20" cy="20" r="14" stroke-width="1.5" />
+          <!-- Spinning arc -->
+          <circle
+            class="polaroid__loading-arc"
+            cx="20"
+            cy="20"
+            r="14"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-dasharray="22 88"
+          />
+        </svg>
+      </div>
       <img
         #photoImg
         class="polaroid__photo"
@@ -115,6 +150,7 @@
         [alt]="alt()"
         loading="lazy"
         decoding="async"
+        (load)="imageLoaded.set(true)"
         (error)="imageError.emit()"
       />
     </div>

@@ -1,31 +1,172 @@
 .gift-registry {
   padding: 3.75rem 1.25rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(251, 247, 242, 0.8)),
-    linear-gradient(140deg, rgba(184, 149, 126, 0.14), rgba(217, 160, 168, 0.1));
+  // Warm blush-and-white blend: #b8957e at ~19% opacity fades in from the edges
+  // toward the center, layered over white, with a subtle noise grain for texture.
+  background-color: #e8d5c4;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='1'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 55% 45%, rgba(184, 149, 126, 0.55) 0%, rgba(232, 213, 196, 0.7) 55%, #e8d5c4 80%);
+  background-size: 160px 160px, 100% 100%;
 
   @media (min-width: 1024px) {
     padding: 7.5rem 4rem;
   }
 }
 
-.gift-registry__container {
-  max-width: 760px;
+// Wrapper that establishes the positioning context for the tape strips.
+.gift-registry__stage {
+  position: relative;
+  max-width: 520px;
   margin: 0 auto;
-  padding: clamp(2rem, 5vw, 3.25rem) clamp(1.25rem, 4vw, 3rem);
-  border-top: 1px solid color-mix(in srgb, var(--color-primary) 58%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 58%, transparent);
+  // Extra padding so the tape strips (which hang outside the card edges)
+  // don't get clipped.
+  padding: 1.5rem;
+}
+
+.gift-registry__card {
+  position: relative;
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 5vw, 3.5rem);
+  // Two-layer background: a solid black cover sized to the top padding hides
+  // any ruled line that repeats into the heading area; the repeating gradient
+  // runs full-width so no visible side boundaries appear.
+  background-color: #0d0d0d;
+  background-image:
+    linear-gradient(#0d0d0d, #0d0d0d),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2.2rem,
+      rgba(255, 255, 255, 0.2) 2.2rem,
+      rgba(255, 255, 255, 0.2) calc(2.2rem + 1px)
+    );
+  background-size:
+    100% clamp(2.5rem, 5vw, 3.5rem),
+    auto;
+  background-position: 0 0, 0 0;
+  background-repeat: no-repeat, repeat;
+  // Depth via filter: drop-shadow (not box-shadow which gets clipped by the
+  // mask below). drop-shadow traces the actual visible shape after masking,
+  // so the shadow correctly follows the scalloped perimeter.
+  filter: drop-shadow(0 1px 3px rgba(18, 18, 18, 0.22))
+    drop-shadow(0 6px 14px rgba(18, 18, 18, 0.22))
+    drop-shadow(0 22px 48px rgba(18, 18, 18, 0.28))
+    drop-shadow(0 40px 70px rgba(18, 18, 18, 0.14));
   text-align: center;
-  background: rgba(255, 255, 255, 0.34);
+  // Very slight rotation — hand-placed notes are never perfectly level.
+  transform: rotate(0.4deg);
+
+  // Scalloped / perforated edges on all four sides, like a real notecard.
+  //
+  // Technique: thin edge strips (one per side) + a body fill, all composed
+  // with `add` (max of all layers). Each strip is ONLY as deep as the scallop
+  // radius, and the gradient within each strip is: transparent inside the
+  // circle (the punched-out hole), black outside (the paper). The body fill
+  // covers the interior so everything between the strips is always opaque.
+  //
+  // `add` avoids the mask-composite subtract ambiguity - the browser's
+  // interpretation of `subtract` (source-first or destination-first) varies,
+  // making the card invisible. With `add`, a pixel is opaque if ANY layer
+  // covers it with black, and transparent only where ALL layers have holes.
+  /* stylelint-disable */
+  -webkit-mask:
+    radial-gradient(circle at 50% 0, transparent 8px, black 8px) top / 22px 16px repeat-x,
+    radial-gradient(circle at 50% 100%, transparent 8px, black 8px) bottom / 22px 16px repeat-x,
+    radial-gradient(circle at 0 50%, transparent 8px, black 8px) left / 16px 22px repeat-y,
+    radial-gradient(circle at 100% 50%, transparent 8px, black 8px) right / 16px 22px repeat-y,
+    linear-gradient(black, black) 8px 8px / calc(100% - 16px) calc(100% - 16px) no-repeat;
+  -webkit-mask-composite: source-over;
+  mask:
+    radial-gradient(circle at 50% 0, transparent 8px, black 8px) top / 22px 16px repeat-x,
+    radial-gradient(circle at 50% 100%, transparent 8px, black 8px) bottom / 22px 16px repeat-x,
+    radial-gradient(circle at 0 50%, transparent 8px, black 8px) left / 16px 22px repeat-y,
+    radial-gradient(circle at 100% 50%, transparent 8px, black 8px) right / 16px 22px repeat-y,
+    linear-gradient(black, black) 8px 8px / calc(100% - 16px) calc(100% - 16px) no-repeat;
+  mask-composite: add;
+  /* stylelint-enable */
+}
+
+// -------------------------------------------------------------------
+// Masking tape strips at all four corners. Each has an organic torn-
+// end clip-path on both short ends to simulate real tape torn from
+// the roll. Points are hardcoded (non-uniform) so the tear reads as
+// hand-torn, not machine-cut, and stays consistent across loads.
+// -------------------------------------------------------------------
+.gift-registry__tape {
+  position: absolute;
+  width: 5.5rem;
+  height: 1.35rem;
+  // Semi-transparent blush - real masking tape is translucent
+  background: rgba(217, 160, 168, 0.58);
+  // Vertical stripe texture mimicking tape fiber grain
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.14) 0px,
+    rgba(255, 255, 255, 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  // Torn-end clip-path (applied before rotation, in local coordinates).
+  // Left and right are the "torn" short ends; top/bottom are straight.
+  clip-path: polygon(
+    7% 0%,
+    0% 22%,
+    10% 40%,
+    1% 58%,
+    8% 78%,
+    3% 100%,
+    97% 100%,
+    93% 78%,
+    99% 60%,
+    90% 42%,
+    98% 22%,
+    92% 0%,
+    7% 0%
+  );
+  filter: drop-shadow(0 1px 3px rgba(18, 18, 18, 0.22));
+  z-index: 1;
+}
+
+// Top-left corner
+.gift-registry__tape--tl {
+  top: 0.3rem;
+  left: 0.2rem;
+  transform: rotate(-32deg);
+}
+
+// Top-right corner
+.gift-registry__tape--tr {
+  top: 0.3rem;
+  right: 0.2rem;
+  transform: rotate(32deg);
+}
+
+// Bottom-left corner
+.gift-registry__tape--bl {
+  bottom: 0.3rem;
+  left: 0.2rem;
+  transform: rotate(32deg);
+}
+
+// Bottom-right corner
+.gift-registry__tape--br {
+  bottom: 0.3rem;
+  right: 0.2rem;
+  transform: rotate(-32deg);
+}
+
+.gift-registry__card {
+  .section-heading {
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .gift-registry__message {
   display: grid;
   gap: 1rem;
-  color: var(--color-text);
+  color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-body);
   font-size: clamp(1rem, 2vw, 1.08rem);
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.85;
 
   p {

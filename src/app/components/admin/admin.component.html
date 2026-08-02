@@ -37,10 +37,19 @@
       </div>
       <div class="admin__header-actions">
         <button class="admin__btn admin__btn--ghost" type="button" (click)="fetchGuests()">
-          ↻ {{ 'admin.refresh' | translate }}
+          <svg class="admin__btn-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          {{ 'admin.refresh' | translate }}
         </button>
         <button class="admin__btn admin__btn--primary" type="button" (click)="exportToExcel()">
-          ↓ {{ 'admin.exportExcel' | translate }}
+          <svg class="admin__btn-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          {{ 'admin.exportExcel' | translate }}
         </button>
       </div>
     </header>
@@ -58,26 +67,70 @@
     <!-- Summary cards -->
     <div class="admin__summary">
       <div class="admin__card">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().total }}</span>
         <span class="admin__card-label">{{ 'admin.summary.totalGuests' | translate }}</span>
       </div>
       <div class="admin__card admin__card--yes">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().attending }}</span>
         <span class="admin__card-label">{{ 'admin.summary.attending' | translate }}</span>
       </div>
       <div class="admin__card admin__card--no">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m15 9-6 6"/>
+            <path d="m9 9 6 6"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().declined }}</span>
         <span class="admin__card-label">{{ 'admin.summary.declined' | translate }}</span>
       </div>
       <div class="admin__card">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 22h14"/>
+            <path d="M5 2h14"/>
+            <path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/>
+            <path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().pending }}</span>
         <span class="admin__card-label">{{ 'admin.summary.pending' | translate }}</span>
       </div>
       <div class="admin__card">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V9z"/>
+            <path d="M9 9.5l3 4.5"/>
+            <path d="M13 8.5l3 4.5"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().beef }}</span>
         <span class="admin__card-label">{{ 'admin.summary.beef' | translate }}</span>
       </div>
       <div class="admin__card">
+        <span class="admin__card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.5 12C6.5 8.5 9.5 6 14.5 6C19 6 22 9 22 12C22 15 19 18 14.5 18C9.5 18 6.5 15.5 6.5 12Z"/>
+            <path d="M6.5 12L2.5 9"/>
+            <path d="M6.5 12L2.5 15"/>
+            <circle cx="18" cy="10" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
         <span class="admin__card-value">{{ summary().fish }}</span>
         <span class="admin__card-label">{{ 'admin.summary.fish' | translate }}</span>
       </div>
@@ -91,16 +144,96 @@
         <table class="admin__table">
           <thead>
             <tr>
-              <th>{{ 'admin.table.guestName' | translate }}</th>
-              <th>{{ 'admin.table.partyOf' | translate }}</th>
-              <th>{{ 'admin.table.mealChoice' | translate }}</th>
-              <th>{{ 'admin.table.rsvp' | translate }}</th>
-              <th>{{ 'admin.table.dateSubmitted' | translate }}</th>
+              <th>
+                <button class="admin__th-btn" (click)="toggleSort('guestName')">
+                  {{ 'admin.table.guestName' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('guestName')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('guestName') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('guestName') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('guestName') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button class="admin__th-btn" (click)="toggleSort('partyOf')">
+                  {{ 'admin.table.partyOf' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('partyOf')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('partyOf') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('partyOf') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('partyOf') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button class="admin__th-btn" (click)="toggleSort('meal')">
+                  {{ 'admin.table.mealChoice' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('meal')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('meal') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('meal') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('meal') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button class="admin__th-btn" (click)="toggleSort('rsvp')">
+                  {{ 'admin.table.rsvp' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('rsvp')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('rsvp') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('rsvp') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('rsvp') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
+              <th>
+                <button class="admin__th-btn" (click)="toggleSort('dateSubmitted')">
+                  {{ 'admin.table.dateSubmitted' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('dateSubmitted')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('dateSubmitted') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('dateSubmitted') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('dateSubmitted') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
               <th>{{ 'admin.table.copyInvitationLink' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            @for (row of adminRows(); track row.guestName) {
+            @for (row of sortedRows(); track row.guestName) {
               <tr
                 [class.admin__row--pending]="row.rsvp === 'pending'"
                 [class.admin__row--yes]="row.rsvp === 'yes'"

@@ -86,10 +86,33 @@
   font-size: 0.98rem;
   font-weight: 300;
   line-height: 1.75;
+  /* Drop-in animation when the details panel opens: starts slightly above and
+     faded, drops to its natural position. @starting-style defines the state
+     the element begins in when it first enters the DOM (i.e. when [open] is
+     added), so the transition plays forward from that starting point. */
+  transition:
+    opacity 0.28s ease,
+    translate 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@starting-style {
+  .questions-answers__item[open] .questions-answers__answer {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+.questions-answers__item[open] .questions-answers__answer {
+  opacity: 1;
+  translate: 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .questions-answers__question::after {
+    transition: none;
+  }
+
+  .questions-answers__answer {
     transition: none;
   }
 }

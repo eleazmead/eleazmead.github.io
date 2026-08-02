@@ -17,7 +17,11 @@ export class FadeUpDirective implements OnInit, OnDestroy {
           this.observer?.unobserve(entry.target);
         }
       },
-      { threshold: 0.15 },
+      // threshold:0 fires as soon as any pixel intersects.
+      // rootMargin bottom 120px extends detection below the fold so elements
+      // at the viewport edge (e.g. guest letter, our-story items on short
+      // mobile viewports) trigger immediately on load without requiring scroll.
+      { threshold: 0, rootMargin: '0px 0px 120px 0px' },
     );
     this.observer.observe(this.el.nativeElement);
   }

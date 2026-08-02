@@ -13,7 +13,11 @@ interface AdminRow {
   meal: MealChoice | null;
   rsvp: 'yes' | 'no' | 'pending';
   dateSubmitted: string;
+  dateRaw: string;
 }
+
+type SortKey = 'guestName' | 'partyOf' | 'meal' | 'rsvp' | 'dateSubmitted';
+interface SortEntry { key: SortKey; dir: 'asc' | 'desc' }
 
 @Component({
   selector: 'app-admin',
@@ -34,6 +38,7 @@ export class AdminComponent {
   readonly guestRows = signal<GuestRow[]>([]);
   readonly lastRefreshed = signal<Date | null>(null);
   readonly copiedInvitationHash = signal('');
+  readonly sortColumns = signal<SortEntry[]>([]);
 
   readonly adminRows = computed((): AdminRow[] => {
     const rows: AdminRow[] = [];
@@ -53,10 +58,24 @@ export class AdminComponent {
           meal: entry?.MealChoice ?? null,
           rsvp: entry ? (entry.RSVP ? 'yes' : 'no') : 'pending',
           dateSubmitted: entry ? this.formatDate(entry.Date) : this.ts.t('admin.noValue'),
+          dateRaw: entry?.Date ?? '',
         });
       }
     }
     return rows;
+  });
+
+  readonly sortedRows = computed((): AdminRow[] => {
+    const rows = [...this.adminRows()];
+    const cols = this.sortColumns();
+    if (!cols.length) return rows;
+    return rows.sort((a, b) => {
+      for (const { key, dir } of cols) {
+        const cmp = this.compareRows(a, b, key);
+        if (cmp !== 0) return dir === 'asc' ? cmp : -cmp;
+      }
+      return 0;
+    });
   });
 
   readonly summary = computed(() => {
@@ -70,6 +89,29 @@ export class AdminComponent {
       fish: rows.filter((r) => r.rsvp === 'yes' && r.meal === 'fish').length,
     };
   });
+
+  toggleSort(key: SortKey): void {
+    const cols = this.sortColumns();
+    const idx = cols.findIndex((c) => c.key === key);
+    if (idx === -1) {
+      this.sortColumns.set([...cols, { key, dir: 'asc' }]);
+    } else if (cols[idx].dir === 'asc') {
+      const next = [...cols];
+      next[idx] = { key, dir: 'desc' };
+      this.sortColumns.set(next);
+    } else {
+      this.sortColumns.set(cols.filter((_, i) => i !== idx));
+    }
+  }
+
+  sortDirOf(key: SortKey): 'asc' | 'desc' | null {
+    return this.sortColumns().find((c) => c.key === key)?.dir ?? null;
+  }
+
+  sortPriorityOf(key: SortKey): number {
+    const idx = this.sortColumns().findIndex((c) => c.key === key);
+    return idx === -1 ? 0 : idx + 1;
+  }
 
   onPasswordChange(value: string): void {
     this.passwordInput.set(value);
@@ -148,6 +190,25 @@ export class AdminComponent {
       return this.ts.t('admin.copyInvitation.copied');
     }
     return this.ts.t('admin.copyInvitation.copy');
+  }
+
+  private compareRows(a: AdminRow, b: AdminRow, key: SortKey): number {
+    switch (key) {
+      case 'rsvp': {
+        const order = { yes: 0, pending: 1, no: 2 } as const;
+        return order[a.rsvp] - order[b.rsvp];
+      }
+      case 'meal': {
+        const order = { beef: 0, fish: 1 } as const;
+        const av = a.meal != null ? order[a.meal] : 2;
+        const bv = b.meal != null ? order[b.meal] : 2;
+        return av - bv;
+      }
+      case 'dateSubmitted':
+        return a.dateRaw.localeCompare(b.dateRaw);
+      default:
+        return a[key].localeCompare(b[key], undefined, { sensitivity: 'base' });
+    }
   }
 
   private invitationLink(row: AdminRow): string {
