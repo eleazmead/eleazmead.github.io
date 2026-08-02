@@ -31,6 +31,7 @@ export class LanguageToggleComponent {
 
   select(locale: Locale): void {
     this.ts.setLocale(locale);
+    localStorage.setItem('eleazmead_locale', locale);
     this.isOpen.set(false);
   }
 

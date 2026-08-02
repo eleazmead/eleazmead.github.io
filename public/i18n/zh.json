@@ -137,6 +137,8 @@
     "reviewReminder": "請注意，新加坡有兩間 St. Joseph’s Church。我們的婚禮儀式將於 St. Joseph’s Church, Victoria Street 舉行。出發前請再次確認地址，以免造成混淆。",
     "submitting": "正在送出您的 RSVP...",
     "errorMessage": "發生錯誤。請重試，或直接與我們聯絡。",
+    "retry": "重試",
+    "contactUs": "聯絡我們",
     "inviteOnly": {
       "message": "只有受邀賓客可以送出 RSVP 並出席活動。請使用新人分享給您的邀請連結。"
     },

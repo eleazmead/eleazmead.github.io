@@ -136,7 +136,9 @@
     "confirmBody": "Pakicheck muna bago i-submit. Pwede mo pa ring i-update ang response mo before the RSVP deadline.",
     "reviewReminder": "Note lang: may dalawang St. Joseph’s Church sa Singapore. Ang wedding ceremony namin ay sa St. Joseph’s Church, Victoria Street. Pakicheck ang address bago pumunta para hindi malito.",
     "submitting": "Submitting your RSVP...",
-    "errorMessage": "May something wrong. Please try again or message us directly.",
+    "errorMessage": "May nangyaring mali. Subukang muli o makipag-ugnayan sa amin.",
+    "retry": "Subukan Ulit",
+    "contactUs": "Makipag-ugnayan",
     "inviteOnly": {
       "message": "Invited guests lang ang pwedeng mag-RSVP at umattend ng event. Please use the invitation link shared by the couple."
     },
