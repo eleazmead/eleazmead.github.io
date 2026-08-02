@@ -64,7 +64,6 @@ jobs:
       - name: Inject secrets
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           SHEETS_SPREADSHEET_ID: ${{ secrets.SHEETS_SPREADSHEET_ID }}
           SHEETS_API_KEY: ${{ secrets.SHEETS_API_KEY }}
           GAS_WEB_APP_URL: ${{ secrets.GAS_WEB_APP_URL }}
@@ -73,7 +72,6 @@ jobs:
           node -e "
             const fs = require('fs');
             let c = fs.readFileSync('src/environments/environment.production.ts', 'utf8');
-            c = c.replace('REPLACE_ADMIN_PASSWORD', process.env.ADMIN_PASSWORD || '');
             c = c.replace('REPLACE_SHEETS_SPREADSHEET_ID', process.env.SHEETS_SPREADSHEET_ID || '');
             c = c.replace('REPLACE_SHEETS_API_KEY', process.env.SHEETS_API_KEY || '');
             c = c.replace('REPLACE_GAS_WEB_APP_URL', process.env.GAS_WEB_APP_URL || '');

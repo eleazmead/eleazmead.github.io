@@ -43,6 +43,22 @@
  *   E (5) — createdAt
  */
 
+/**
+ * Run this ONCE from the Apps Script editor to store the admin password hash.
+ * Open Extensions > Apps Script, select this function, click Run, enter your password.
+ */
+function setupAdminPasswordHash(password) {
+  const hash = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    password,
+    Utilities.Charset.UTF_8,
+  )
+    .map((b) => (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'))
+    .join('');
+  PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD_HASH', hash);
+  Logger.log('Stored ADMIN_PASSWORD_HASH: ' + hash);
+}
+
 function generateMd5Hash(input) {
   const value = String(input || '').trim();
   if (!value) return '';
@@ -58,6 +74,14 @@ function generateMd5Hash(input) {
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
+
+    if (payload.action === 'verifyAdmin') {
+      const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+      const authorized = stored !== null && stored === payload.passwordHash;
+      return ContentService.createTextOutput(JSON.stringify({ authorized })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
 
     if (payload.action === 'updateRsvp') {
       const ss = SpreadsheetApp.getActiveSpreadsheet();

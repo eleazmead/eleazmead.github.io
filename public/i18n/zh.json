@@ -331,6 +331,8 @@
     "passwordPlaceholder": "輸入密碼",
     "signIn": "登入",
     "loginError": "密碼不正確。",
+    "loginNetworkError": "无法连接到服务器，请重试。",
+    "logout": "登出",
     "title": "RSVP Dashboard",
     "refresh": "重新整理",
     "exportExcel": "匯出 Excel",

@@ -331,6 +331,8 @@
     "passwordPlaceholder": "Enter password",
     "signIn": "Sign in",
     "loginError": "Incorrect password.",
+    "loginNetworkError": "Could not reach the server. Please try again.",
+    "logout": "Log out",
     "title": "RSVP Dashboard",
     "refresh": "Refresh",
     "exportExcel": "Export Excel",

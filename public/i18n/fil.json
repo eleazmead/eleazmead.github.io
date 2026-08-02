@@ -331,6 +331,8 @@
     "passwordPlaceholder": "Ilagay ang password",
     "signIn": "Sign in",
     "loginError": "Maling password.",
+    "loginNetworkError": "Hindi ma-abot ang server. Pakisubukang muli.",
+    "logout": "Mag-log out",
     "title": "RSVP Dashboard",
     "refresh": "Refresh",
     "exportExcel": "Export Excel",
