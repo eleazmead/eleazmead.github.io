@@ -138,7 +138,7 @@
                     <li class="rsvp__related-item">
                       <span class="rsvp__person-name">{{ name }}</span>
                       @if (respondedNames().has(name)) {
-                        <!-- Already responded — show read-only status -->
+                        <!-- Already responded - show read-only status -->
                         <span class="rsvp__already-responded">
                           {{
                             respondedNames().get(name)
@@ -221,7 +221,7 @@
             }
             <p class="rsvp__review-reminder">{{ 'rsvp.reviewReminder' | translate }}</p>
             <button class="rsvp__submit" type="button" (click)="onReview()">
-              {{ 'rsvp.confirmHeading' | translate }}
+              {{ 'rsvp.submit' | translate }}
             </button>
           </div>
         }

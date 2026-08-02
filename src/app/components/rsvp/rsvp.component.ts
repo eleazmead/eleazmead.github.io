@@ -220,7 +220,7 @@ export class RsvpComponent implements OnInit {
       this.state.set('found');
       return;
     }
-    this.state.set('submitting');
+    this.showSubmitting();
 
     const timestamp = nowSGT();
     const entries: RsvpEntry[] = Array.from(this.selections().entries())
@@ -257,7 +257,7 @@ export class RsvpComponent implements OnInit {
         mergedRsvpRaw,
       })
       .subscribe({
-        next: () => this.state.set('success'),
+        next: () => this.showSuccess(),
         error: () => {
           this.errorMessage.set(this.ts.t('rsvp.errorMessage'));
           this.state.set('error');
@@ -306,11 +306,24 @@ export class RsvpComponent implements OnInit {
     return entries.find((entry) => entry.Guest === name);
   }
 
-  private scrollRsvpContainerIntoView(): void {
+  private showSuccess(): void {
+    this.state.set('success');
+    this.scrollRsvpContainerIntoView('.rsvp__success-message', 'center');
+  }
+
+  private showSubmitting(): void {
+    this.state.set('submitting');
+    this.scrollRsvpContainerIntoView('.rsvp__spinner', 'center');
+  }
+
+  private scrollRsvpContainerIntoView(
+    targetSelector = '.rsvp__container',
+    block: ScrollLogicalPosition = 'start',
+  ): void {
     window.requestAnimationFrame(() => {
       document
-        .querySelector<HTMLElement>('#rsvp .rsvp__container')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        .querySelector<HTMLElement>(`#rsvp ${targetSelector}`)
+        ?.scrollIntoView({ behavior: 'smooth', block });
     });
   }
 }
