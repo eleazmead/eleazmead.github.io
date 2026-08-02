@@ -67,6 +67,16 @@
   display: block;
   height: auto;
   object-fit: contain;
+  // Shimmer loading state: shows while the lazy image is in flight.
+  // The gradient background is covered once the image renders on top of it.
+  background: linear-gradient(90deg, #f4ede3 0%, #f8f3ed 50%, #f4ede3 100%);
+  background-size: 200% 100%;
+  animation: venuePhotoShimmer 1.8s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #f4ede3;
+  }
 }
 
 .venues__photo-placeholder {
@@ -126,4 +136,13 @@
   color: var(--color-muted);
   font-style: normal;
   font-weight: 400;
+}
+
+@keyframes venuePhotoShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

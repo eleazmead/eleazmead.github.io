@@ -131,8 +131,7 @@
 
 .polaroid-mount:hover .polaroid,
 .polaroid-mount:focus-visible .polaroid {
-  transform: translate3d(0, var(--polaroid-offset, 0px), 0)
-    rotate(0deg) scale(1.03);
+  transform: translate3d(0, var(--polaroid-offset, 0px), 0) rotate(0deg) scale(1.03);
   box-shadow:
     0 4px 8px rgba(18, 18, 18, 0.1),
     0 26px 42px rgba(18, 18, 18, 0.22);
@@ -233,10 +232,88 @@
      of matching it exactly) reads as the wall of a shallow well the photo
      sits down inside of, reinforcing the recessed feel from the photo's own
      inset shadow below. */
+  position: relative; /* needed so .polaroid__loading can overlay the frame */
   overflow: hidden;
   background: #ece4da;
   padding: 3px;
   line-height: 0;
+}
+
+/* Loading state: a warm-cream Polaroid-film blank that covers the image
+   while it's being fetched over the network. The shimmer (::after) mimics
+   the chemical development wave passing across the print. Fades out once
+   the image finishes loading via the --hidden modifier class. */
+.polaroid__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4ede3;
+  transition: opacity 0.8s ease;
+
+  /* Development shimmer - a soft highlight sweeping left to right */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 -60%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.28) 50%,
+      transparent 100%
+    );
+    animation: polaroidDevelopShimmer 2.6s ease-in-out infinite;
+  }
+
+  &--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.polaroid__loading-icon {
+  position: relative; /* sits above the ::after shimmer */
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+}
+
+.polaroid__loading-track {
+  stroke: color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.polaroid__loading-arc {
+  stroke: var(--color-primary);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: polaroidSpinnerRotate 1.4s linear infinite;
+}
+
+@keyframes polaroidDevelopShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes polaroidSpinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .polaroid__loading::after {
+    animation: none;
+  }
+  .polaroid__loading-arc {
+    animation: none;
+    stroke-dasharray: 11 88; /* static partial arc, no spin */
+  }
 }
 
 .polaroid__photo {

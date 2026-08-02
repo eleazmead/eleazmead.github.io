@@ -48,7 +48,7 @@
     }
   </div>
 
-  <a href="#our-story" class="hero__scroll-cue" aria-label="Scroll down to see more">
+  <a [attr.href]="shouldMoveRsvpCta() ? '#guest-letter' : '#our-story'" class="hero__scroll-cue" aria-label="Scroll down to see more" (click)="scrollDown($event)">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"

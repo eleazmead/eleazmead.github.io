@@ -103,6 +103,9 @@
 }
 
 .admin__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.5rem 1.1rem;
   font-family: inherit;
   font-size: 0.78rem;
@@ -133,6 +136,12 @@
   }
 }
 
+.admin__btn-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+}
+
 .admin__refreshed {
   font-size: 0.72rem;
   color: #555;
@@ -156,16 +165,18 @@
 
 // Summary cards
 .admin__summary {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   max-width: 1100px;
   margin: 0 auto 2rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 .admin__card {
-  flex: 1;
-  min-width: 100px;
   padding: 1rem 1.25rem;
   background: #1a1a1a;
   border: 1px solid #2a2a2a;
@@ -181,6 +192,27 @@
   &--no {
     border-color: #4a2a2a;
     background: #1f1313;
+  }
+}
+
+.admin__card-icon {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: #666;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .admin__card--yes & {
+    color: #4a8a4a;
+  }
+
+  .admin__card--no & {
+    color: #8a4a4a;
   }
 }
 
@@ -212,13 +244,22 @@
 
   th {
     text-align: left;
-    padding: 0.6rem 1rem;
+    padding: 0;
     font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #666;
     border-bottom: 1px solid #2a2a2a;
+    white-space: nowrap;
+  }
+
+  th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #0f0f0f;
+    box-shadow: 1px 0 0 #2a2a2a;
   }
 
   td {
@@ -226,6 +267,63 @@
     border-bottom: 1px solid #1e1e1e;
     color: #ccc;
   }
+
+  td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: #0f0f0f;
+    box-shadow: 1px 0 0 #1e1e1e;
+  }
+}
+
+.admin__th-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+
+  &:hover {
+    color: #aaa;
+  }
+}
+
+.admin__sort-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #444;
+  transition: color 0.15s ease;
+
+  &--active {
+    color: #d4d4d4;
+  }
+}
+
+.admin__sort-arrow {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+}
+
+.admin__sort-priority {
+  font-size: 0.6rem;
+  line-height: 1;
+  font-weight: 600;
+  color: #e8c4b8;
+  font-variant-numeric: tabular-nums;
 }
 
 .admin__td--muted {

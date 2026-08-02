@@ -105,6 +105,12 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.visibilityObserver?.disconnect();
   }
 
+  scrollDown(event: Event): void {
+    event.preventDefault();
+    const targetId = this.shouldMoveRsvpCta() ? 'guest-letter' : 'our-story';
+    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   scrollToRsvp(event: Event): void {
     event.preventDefault();
     const rsvpContainer = document.querySelector<HTMLElement>('#rsvp .rsvp__container');

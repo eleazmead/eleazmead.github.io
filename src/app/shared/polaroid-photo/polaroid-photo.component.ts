@@ -104,6 +104,13 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   readonly caption = input<string>('');
   readonly imageError = output<void>();
 
+  // Tracks whether the photo has finished loading. Used to show a
+  // "developing" placeholder while lazy-loaded images are in flight and
+  // fade it out once the image is ready. Starts false; set to true
+  // immediately in ngAfterViewInit if the image is already cached, or
+  // via the (load) event binding otherwise.
+  readonly imageLoaded = signal(false);
+
   readonly focused = signal(false);
   // Separate from `focused` so the overlay can stay mounted for the duration
   // of the reverse FLIP shrink-back-to-page animation on close, instead of
@@ -163,8 +170,20 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
 
       this.applyPinShift();
       const img = this.photoImgRef?.nativeElement;
-      if (img && !img.complete) {
-        img.addEventListener('load', () => this.applyPinShift(), { once: true });
+      if (img) {
+        if (img.complete && img.naturalWidth > 0) {
+          // Already cached - no loading flash needed.
+          this.imageLoaded.set(true);
+        } else {
+          img.addEventListener(
+            'load',
+            () => {
+              this.applyPinShift();
+              this.imageLoaded.set(true);
+            },
+            { once: true },
+          );
+        }
       }
 
       // The card's rendered width/height (and so the correct pin position)
@@ -368,7 +387,11 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
 
     this.renderer.setStyle(overlayCard, 'will-change', 'transform');
     // Only transform in the transition - box-shadow is excluded intentionally.
-    this.renderer.setStyle(overlayCard, 'transition', this.flipTransitionCss(FLIP_CLOSE_EASING, FLIP_CLOSE_TRANSITION_MS));
+    this.renderer.setStyle(
+      overlayCard,
+      'transition',
+      this.flipTransitionCss(FLIP_CLOSE_EASING, FLIP_CLOSE_TRANSITION_MS),
+    );
     this.renderer.setStyle(overlayCard, 'box-shadow', endBoxShadow);
     this.renderer.setStyle(
       overlayCard,
@@ -436,10 +459,7 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   // directions for the position component; scale is computed separately using
   // offsetWidth/offsetHeight to avoid getBoundingClientRect's axis-aligned bbox
   // expansion from rotation inflating the scale factor.
-  private flipCenter(
-    toRect: DOMRect,
-    fromRect: DOMRect,
-  ): { deltaX: number; deltaY: number } {
+  private flipCenter(toRect: DOMRect, fromRect: DOMRect): { deltaX: number; deltaY: number } {
     return {
       deltaX: toRect.left + toRect.width / 2 - (fromRect.left + fromRect.width / 2),
       deltaY: toRect.top + toRect.height / 2 - (fromRect.top + fromRect.height / 2),
