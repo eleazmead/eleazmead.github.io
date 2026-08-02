@@ -86,6 +86,14 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     video.addEventListener('canplay', () => {
       if (video.paused) video.play().catch(() => {});
     }, { once: true });
+    // iOS Safari stops looping silently after 1-2 cycles without firing 'ended'.
+    // Seeking back just before the video reaches its end preempts the stop
+    // entirely, so the browser never gets a chance to exit the loop.
+    video.addEventListener('timeupdate', () => {
+      if (video.duration && video.currentTime >= video.duration - 0.2) {
+        video.currentTime = 0;
+      }
+    });
 
     // The backdrop is purely decorative and only visible while the hero
     // section itself is on screen - once the user scrolls past it, the

@@ -136,7 +136,9 @@
     "confirmBody": "Please review before submitting. You may update your response again before the RSVP deadline.",
     "reviewReminder": "Please note that there are two St. Joseph’s Churches in Singapore. Our wedding ceremony will be held at St. Joseph’s Church, Victoria Street. Kindly double-check the address before making your way to the church to avoid any confusion.",
     "submitting": "Submitting your RSVP...",
-    "errorMessage": "Something went wrong. Please try again or contact us directly.",
+    "errorMessage": "Something went wrong. Please try again or reach out to us directly.",
+    "retry": "Try Again",
+    "contactUs": "Contact Us",
     "inviteOnly": {
       "message": "Only invited guests can send an RSVP and attend the event. Please use the invitation link shared by the couple."
     },

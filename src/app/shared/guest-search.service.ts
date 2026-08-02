@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, catchError, map, shareReplay, throwError } from 'rxjs';
 import { SheetsService } from './sheets.service';
 import { GuestRow } from './models/guest.model';
 
@@ -34,6 +34,11 @@ export class GuestSearchService {
     if (!this.cache.has(key)) {
       const req = this.sheets.fetchGuestByHash(hash).pipe(
         map((row) => (row ? this.resolveMatch(row, key) : null)),
+        catchError((err) => {
+          // Don't cache errors so retries make a fresh network request.
+          this.cache.delete(key);
+          return throwError(() => err);
+        }),
         shareReplay({ bufferSize: 1, refCount: false }),
       );
       this.cache.set(key, req);
