@@ -73,9 +73,10 @@ export class SheetsService {
     });
   }
 
-  private parseRow(row: string[], rowIndex: number): GuestRow {
+  private parseRow(row: unknown[], rowIndex: number): GuestRow {
     const cols = SHEETS_CONFIG.guestListColumns;
-    const rsvpRawStr = row[cols.rsvpRaw] ?? '';
+    const str = (v: unknown): string => (v == null ? '' : String(v));
+    const rsvpRawStr = str(row[cols.rsvpRaw]);
     let rsvpRaw: RsvpRawPayload | null = null;
     if (rsvpRawStr.trim()) {
       try {
@@ -86,22 +87,22 @@ export class SheetsService {
     }
     return {
       rowIndex,
-      fullName: row[cols.fullName] ?? '',
-      guest1Name: row[cols.guest1Name] ?? '',
-      guest2Name: row[cols.guest2Name] ?? '',
+      fullName: str(row[cols.fullName]),
+      guest1Name: str(row[cols.guest1Name]),
+      guest2Name: str(row[cols.guest2Name]),
       rsvpRaw,
       rsvpTotal: row[cols.rsvpTotal] ? Number(row[cols.rsvpTotal]) : null,
       rsvpBeefCount: row[cols.rsvpBeefCount] ? Number(row[cols.rsvpBeefCount]) : null,
       rsvpFishCount: row[cols.rsvpFishCount] ? Number(row[cols.rsvpFishCount]) : null,
-      rsvpSubmittedAt: row[cols.rsvpSubmittedAt] ?? null,
-      rsvpSubmittedBy: row[cols.rsvpSubmittedBy] ?? null,
-      fullNameHashMd5: row[cols.fullNameHashMd5] ?? '',
-      guest1FullNameHashMd5: row[cols.guest1FullNameHashMd5] ?? '',
-      guest2FullNameHashMd5: row[cols.guest2FullNameHashMd5] ?? '',
-      letterAddress: row[cols.letterAddress] ?? '',
-      letterMessage: row[cols.letterMessage] ?? '',
-      letterShowForAll: row[cols.letterShowForAll] ?? '',
-      letterSignedBy: row[cols.letterSignedBy] ?? '',
+      rsvpSubmittedAt: row[cols.rsvpSubmittedAt] != null ? str(row[cols.rsvpSubmittedAt]) : null,
+      rsvpSubmittedBy: row[cols.rsvpSubmittedBy] != null ? str(row[cols.rsvpSubmittedBy]) : null,
+      fullNameHashMd5: str(row[cols.fullNameHashMd5]),
+      guest1FullNameHashMd5: str(row[cols.guest1FullNameHashMd5]),
+      guest2FullNameHashMd5: str(row[cols.guest2FullNameHashMd5]),
+      letterAddress: str(row[cols.letterAddress]),
+      letterMessage: str(row[cols.letterMessage]),
+      letterShowForAll: str(row[cols.letterShowForAll]),
+      letterSignedBy: str(row[cols.letterSignedBy]),
     };
   }
 }

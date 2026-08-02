@@ -34,6 +34,7 @@ export class AdminComponent implements OnInit {
   readonly authenticated = signal(false);
   readonly passwordInput = signal('');
   readonly loginError = signal('');
+  readonly loggingIn = signal(false);
   readonly loading = signal(false);
   readonly fetchError = signal('');
   readonly guestRows = signal<GuestRow[]>([]);
@@ -137,10 +138,13 @@ export class AdminComponent implements OnInit {
   }
 
   async login(): Promise<void> {
-    const hash = await this.sha256(this.passwordInput());
+    if (this.loggingIn()) return;
+    this.loggingIn.set(true);
     this.loginError.set('');
+    const hash = await this.sha256(this.passwordInput());
     this.sheets.verifyAdminPassword(hash).subscribe({
       next: ({ authorized }) => {
+        this.loggingIn.set(false);
         if (authorized) {
           sessionStorage.setItem(
             AdminComponent.SESSION_KEY,
@@ -153,6 +157,7 @@ export class AdminComponent implements OnInit {
         }
       },
       error: () => {
+        this.loggingIn.set(false);
         this.loginError.set(this.ts.t('admin.loginNetworkError'));
       },
     });
