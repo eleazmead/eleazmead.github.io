@@ -43,10 +43,16 @@
  *   E (5) — createdAt
  */
 
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('Admin')
+    .addItem('Set admin password', 'setupAdminPasswordHash')
+    .addToUi();
+}
+
 /**
- * Run this ONCE from the Apps Script editor to store the admin password hash.
- * Open Extensions > Apps Script, select this function, click Run.
- * A dialog will appear - enter your chosen password and click OK.
+ * Triggered from the Admin menu in the Google Sheet (not the Apps Script editor).
+ * Refresh the sheet after saving this script to see the Admin menu appear.
  */
 function setupAdminPasswordHash() {
   const password = Browser.inputBox('Admin Setup', 'Enter the admin password to hash and store:', Browser.Buttons.OK_CANCEL);

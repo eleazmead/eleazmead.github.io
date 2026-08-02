@@ -121,7 +121,7 @@
     "heading": "RSVP",
     "deadline": {
       "prefix": "Kindly RSVP by",
-      "date": "31 October 2026.",
+      "date": "15 October 2026.",
       "closedMessage": "RSVP updates are now closed. Thank you for your understanding."
     },
     "note": "We understand that attending our wedding will involve travelling for some of you, and we truly appreciate the additional time, effort, and arrangements you will make. At the same time, please know that there is absolutely no pressure. While having you celebrate with us would make us very happy, your love and well wishes are equally cherished.",
@@ -285,7 +285,7 @@
     "items": {
       "rsvpDeadline": {
         "question": "When should I RSVP?",
-        "answer": "Kindly send your RSVP by 31 October 2026 so we can make the final arrangements in time."
+        "answer": "Kindly send your RSVP by 15 October 2026 so we can make the final arrangements in time."
       },
       "plusOnes": {
         "question": "Can I bring a plus one?",
