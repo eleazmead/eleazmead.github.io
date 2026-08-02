@@ -79,9 +79,13 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const video = this.backdropVideo.nativeElement;
     video.muted = true;
-    // autoplay attribute handles most cases; this fires once the browser has
-    // buffered enough to play, catching any case where autoplay was deferred.
-    video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+    // Angular sets [src] on <source> elements after the video is in the DOM,
+    // so the browser has already evaluated the sources (as empty) by the time
+    // bindings run. load() tells it to re-read the now-populated sources.
+    video.load();
+    video.addEventListener('canplay', () => {
+      if (video.paused) video.play().catch(() => {});
+    }, { once: true });
 
     // The backdrop is purely decorative and only visible while the hero
     // section itself is on screen - once the user scrolls past it, the
