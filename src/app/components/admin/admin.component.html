@@ -17,8 +17,12 @@
           (keydown.enter)="login()"
           autocomplete="current-password"
         />
-        <button class="admin__login-btn" type="button" (click)="login()">
-          {{ 'admin.signIn' | translate }}
+        <button class="admin__login-btn" type="button" (click)="login()" [disabled]="loggingIn()">
+          @if (loggingIn()) {
+            <span class="admin__login-spinner"></span>
+          } @else {
+            {{ 'admin.signIn' | translate }}
+          }
         </button>
       </div>
       @if (loginError()) {
