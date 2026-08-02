@@ -43,6 +43,48 @@
  *   E (5) — createdAt
  */
 
+const CACHE_KEY = 'guestList_v1';
+const CACHE_TTL_SECONDS = 1800; // 30 minutes
+
+/**
+ * Reads the GuestList sheet, with a 30-minute in-memory cache via CacheService.
+ * Returns rows as string arrays (same shape as getValues() but all values stringified).
+ * Call invalidateGuestListCache() after any write to force a fresh read.
+ */
+function getGuestListCached() {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get(CACHE_KEY);
+  if (hit) return JSON.parse(hit);
+
+  const values = SpreadsheetApp.getActiveSpreadsheet()
+    .getSheetByName('GuestList')
+    .getDataRange()
+    .getValues()
+    .map(function(row) {
+      return row.map(function(v) { return v === null || v === undefined ? '' : String(v); });
+    });
+
+  try {
+    cache.put(CACHE_KEY, JSON.stringify(values), CACHE_TTL_SECONDS);
+  } catch (_) {
+    // Data exceeds 100KB cache limit - skip caching, serve fresh every time.
+  }
+  return values;
+}
+
+function invalidateGuestListCache() {
+  CacheService.getScriptCache().remove(CACHE_KEY);
+}
+
+/**
+ * Keep-warm no-op. Set up a time-based trigger in the GAS editor:
+ *   Triggers -> Add Trigger -> keepWarm -> Time-driven -> Minutes timer -> Every 5 minutes
+ * This prevents the 5+ second cold-start delay guests would otherwise experience.
+ */
+function keepWarm() {
+  // Intentionally empty - just keeping the script container alive.
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Admin')
@@ -89,9 +131,7 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
 
     if (payload.action === 'getGuestList') {
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
-      const sheet = ss.getSheetByName('GuestList');
-      const values = sheet.getDataRange().getValues();
+      const values = getGuestListCached();
       return ContentService.createTextOutput(JSON.stringify({ values })).setMimeType(
         ContentService.MimeType.JSON,
       );
@@ -104,9 +144,7 @@ function doPost(e) {
           ContentService.MimeType.JSON,
         );
       }
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
-      const sheet = ss.getSheetByName('GuestList');
-      const values = sheet.getDataRange().getValues();
+      const values = getGuestListCached();
       // Skip header row (index 0), search columns J(9), K(10), L(11)
       for (let i = 1; i < values.length; i++) {
         const row = values[i];
@@ -124,6 +162,20 @@ function doPost(e) {
       );
     }
 
+    if (payload.action === 'clearCache') {
+      const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+      const authorized = stored !== null && stored === payload.passwordHash;
+      if (!authorized) {
+        return ContentService.createTextOutput(JSON.stringify({ status: 'unauthorized' })).setMimeType(
+          ContentService.MimeType.JSON,
+        );
+      }
+      invalidateGuestListCache();
+      return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
+
     if (payload.action === 'verifyAdmin') {
       const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
       const authorized = stored !== null && stored === payload.passwordHash;
@@ -133,6 +185,7 @@ function doPost(e) {
     }
 
     if (payload.action === 'updateRsvp') {
+      invalidateGuestListCache();
       const ss = SpreadsheetApp.getActiveSpreadsheet();
       const guestSheet = ss.getSheetByName('GuestList');
       const row = payload.rowIndex;

@@ -1,4 +1,16 @@
 <app-language-toggle />
+
+@if (isInAppBrowser() && !bannerDismissed()) {
+  <div class="home__iab-banner">
+    <p class="home__iab-banner-text">
+      For the best experience and to complete your RSVP, please open this page in Safari or Chrome.
+    </p>
+    <button class="home__iab-banner-dismiss" type="button" (click)="dismissBanner()" aria-label="Dismiss">
+      &#x2715;
+    </button>
+  </div>
+}
+
 <main>
   <app-hero />
   <app-guest-letter />
