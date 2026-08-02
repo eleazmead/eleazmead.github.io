@@ -10,7 +10,7 @@
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",
-    "weddingDate": "16 Enero 2027, Sabado",
+    "weddingDate": "Ika-16 ng Enero 2027, Sabado",
     "ceremonyVenue": "St. Joseph's Church Victoria Street",
     "receptionVenue": "The Lighthouse Fullerton, Singapore",
     "hashtag": "#EleazMead"
@@ -120,8 +120,8 @@
   "rsvp": {
     "heading": "RSVP",
     "deadline": {
-      "prefix": "Please mag-RSVP by",
-      "date": "31 Oktubre 2026.",
+      "prefix": "Please mag-RSVP bago ang",
+      "date": "ika-15 ng Oktubre 2026.",
       "closedMessage": "Closed na ang RSVP updates. Thank you for understanding."
     },
     "note": "Alam naming may ilan sa inyo na kailangang bumiyahe para makapunta sa wedding namin, kaya super appreciated namin ang time, effort, at planning ninyo. At the same time, no pressure at all. Sobrang saya namin kung makakasama namin kayo, pero mahalaga rin sa amin ang love and well wishes ninyo.",
@@ -285,7 +285,7 @@
     "items": {
       "rsvpDeadline": {
         "question": "Kailan dapat mag-RSVP?",
-        "answer": "Please send your RSVP by 31 Oktubre 2026 para ma-finalize namin ang arrangements on time."
+        "answer": "Please send your RSVP bago ang ika-15 Oktubre 2026 para ma-finalize namin ang arrangements on time."
       },
       "plusOnes": {
         "question": "Pwede ba akong magsama ng plus one?",
@@ -331,6 +331,8 @@
     "passwordPlaceholder": "Ilagay ang password",
     "signIn": "Sign in",
     "loginError": "Maling password.",
+    "loginNetworkError": "Hindi ma-abot ang server. Pakisubukang muli.",
+    "logout": "Mag-log out",
     "title": "RSVP Dashboard",
     "refresh": "Refresh",
     "exportExcel": "Export Excel",

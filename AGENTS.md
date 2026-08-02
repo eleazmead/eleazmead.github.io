@@ -219,7 +219,10 @@ Notable `APP_CONFIG` fields:
 
 **Admin page** (`/admin`) - Password-protected RSVP dashboard:
 
-- Password stored in `environment.adminPassword`. Dev: `dev-admin`. Production: injected from GitHub secret at build time.
+- Password verified server-side via GAS. The Angular bundle contains no password or hash. On login, the browser computes SHA-256 of the input via `crypto.subtle` and POSTs `{ action: 'verifyAdmin', passwordHash }` to the GAS endpoint. GAS compares the hash against `ADMIN_PASSWORD_HASH` stored in Script Properties and returns `{ authorized: boolean }`.
+- **One-time owner setup:** open Extensions > Apps Script, select `setupAdminPasswordHash`, run it, and enter your password. It computes the SHA-256 hash via `Utilities.computeDigest` and stores it in Script Properties. The raw password is never stored anywhere.
+- **Session persistence:** on successful login, `{ expiresAt: Date.now() + 8h }` is written to `sessionStorage` under key `eleazmead_admin`. On page load, `ngOnInit` reads this key; if the session is valid, the dashboard opens without a GAS round-trip. Session clears when the browser tab is closed or on explicit logout.
+- **Logout button** in the header clears `sessionStorage`, resets all component signals to initial state, and returns to the login gate.
 - Fetches guest list live from Sheets on login. Manual refresh button available.
 - Table enumerates all individual guests (not grouped by row) with: Guest Name, Party Of, Meal Choice, RSVP badge, Date Submitted, Copy Invitation Link.
 - The table includes a "Copy Invitation Link" button for each individual guest. It copies `window.location.origin + '/' + <guest-specific MD5 hash>` using `FullNameHash_MD5`, `Guest1FullName_MD5`, or `Guest2FullName_MD5` depending on the row.

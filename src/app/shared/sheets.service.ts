@@ -47,6 +47,13 @@ export class SheetsService {
     });
   }
 
+  verifyAdminPassword(passwordHash: string): Observable<{ authorized: boolean }> {
+    const body = JSON.stringify({ action: 'verifyAdmin', passwordHash });
+    return this.http.post<{ authorized: boolean }>(SHEETS_CONFIG.gasWebAppUrl, body, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
+
   private parseRow(row: string[], rowIndex: number): GuestRow {
     const cols = SHEETS_CONFIG.guestListColumns;
     const rsvpRawStr = row[cols.rsvpRaw] ?? '';

@@ -14,7 +14,6 @@ export type RsvpFlowState =
   | 'no_invitation_link'
   | 'searching'
   | 'found'
-  | 'confirming'
   | 'submitting'
   | 'success'
   | 'not_found'
@@ -212,12 +211,7 @@ export class RsvpComponent implements OnInit {
       return;
     }
 
-    this.state.set('confirming');
-    this.scrollRsvpContainerIntoView();
-  }
-
-  onBackToFound(): void {
-    this.state.set('found');
+    this.onSubmit();
   }
 
   onSubmit(): void {

@@ -40,7 +40,7 @@ export const APP_CONFIG = {
     ] as const,
   },
   rsvp: {
-    deadlineDate: '2026-10-31',
+    deadlineDate: '2026-10-16',
   },
   questionsAndAnswers: {
     items: ['plusOnes', 'kids', 'flightAccom'] as const,

@@ -43,6 +43,35 @@
  *   E (5) — createdAt
  */
 
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('Admin')
+    .addItem('Set admin password', 'setupAdminPasswordHash')
+    .addToUi();
+}
+
+/**
+ * Triggered from the Admin menu in the Google Sheet (not the Apps Script editor).
+ * Refresh the sheet after saving this script to see the Admin menu appear.
+ */
+function setupAdminPasswordHash() {
+  const password = Browser.inputBox('Admin Setup', 'Enter the admin password to hash and store:', Browser.Buttons.OK_CANCEL);
+  if (!password || password === 'cancel') {
+    Logger.log('Setup cancelled.');
+    return;
+  }
+  const hash = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    password,
+    Utilities.Charset.UTF_8,
+  )
+    .map((b) => (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'))
+    .join('');
+  PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD_HASH', hash);
+  Logger.log('Stored ADMIN_PASSWORD_HASH: ' + hash);
+  Browser.msgBox('Done', 'Admin password hash stored successfully.', Browser.Buttons.OK);
+}
+
 function generateMd5Hash(input) {
   const value = String(input || '').trim();
   if (!value) return '';
@@ -58,6 +87,14 @@ function generateMd5Hash(input) {
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
+
+    if (payload.action === 'verifyAdmin') {
+      const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+      const authorized = stored !== null && stored === payload.passwordHash;
+      return ContentService.createTextOutput(JSON.stringify({ authorized })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
 
     if (payload.action === 'updateRsvp') {
       const ss = SpreadsheetApp.getActiveSpreadsheet();

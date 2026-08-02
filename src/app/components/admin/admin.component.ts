@@ -1,8 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { SheetsService } from '../../shared/sheets.service';
 import { GuestRow, MealChoice, RsvpEntry } from '../../shared/models/guest.model';
-import { environment } from '../../../environments/environment';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
 
@@ -26,7 +25,9 @@ interface SortEntry { key: SortKey; dir: 'asc' | 'desc' }
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
 })
-export class AdminComponent {
+export class AdminComponent implements OnInit {
+  private static readonly SESSION_KEY = 'eleazmead_admin';
+  private static readonly SESSION_TTL_MS = 8 * 60 * 60 * 1000;
   private readonly sheets = inject(SheetsService);
   private readonly ts = inject(TranslationService);
 
@@ -90,6 +91,23 @@ export class AdminComponent {
     };
   });
 
+  ngOnInit(): void {
+    try {
+      const raw = sessionStorage.getItem(AdminComponent.SESSION_KEY);
+      if (raw) {
+        const { expiresAt } = JSON.parse(raw) as { expiresAt: number };
+        if (expiresAt > Date.now()) {
+          this.authenticated.set(true);
+          this.fetchGuests();
+          return;
+        }
+        sessionStorage.removeItem(AdminComponent.SESSION_KEY);
+      }
+    } catch {
+      sessionStorage.removeItem(AdminComponent.SESSION_KEY);
+    }
+  }
+
   toggleSort(key: SortKey): void {
     const cols = this.sortColumns();
     const idx = cols.findIndex((c) => c.key === key);
@@ -118,13 +136,45 @@ export class AdminComponent {
     this.loginError.set('');
   }
 
-  login(): void {
-    if (this.passwordInput() === environment.adminPassword) {
-      this.authenticated.set(true);
-      this.fetchGuests();
-    } else {
-      this.loginError.set(this.ts.t('admin.loginError'));
-    }
+  async login(): Promise<void> {
+    const hash = await this.sha256(this.passwordInput());
+    this.loginError.set('');
+    this.sheets.verifyAdminPassword(hash).subscribe({
+      next: ({ authorized }) => {
+        if (authorized) {
+          sessionStorage.setItem(
+            AdminComponent.SESSION_KEY,
+            JSON.stringify({ expiresAt: Date.now() + AdminComponent.SESSION_TTL_MS }),
+          );
+          this.authenticated.set(true);
+          this.fetchGuests();
+        } else {
+          this.loginError.set(this.ts.t('admin.loginError'));
+        }
+      },
+      error: () => {
+        this.loginError.set(this.ts.t('admin.loginNetworkError'));
+      },
+    });
+  }
+
+  logout(): void {
+    sessionStorage.removeItem(AdminComponent.SESSION_KEY);
+    this.authenticated.set(false);
+    this.guestRows.set([]);
+    this.lastRefreshed.set(null);
+    this.fetchError.set('');
+    this.passwordInput.set('');
+    this.loginError.set('');
+    this.sortColumns.set([]);
+    this.copiedInvitationHash.set('');
+  }
+
+  private async sha256(message: string): Promise<string> {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+    return Array.from(new Uint8Array(buf))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
   }
 
   fetchGuests(): void {

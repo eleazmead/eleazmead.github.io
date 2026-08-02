@@ -227,37 +227,6 @@
         }
       }
 
-      @case ('confirming') {
-        <div class="rsvp__panel">
-          <div class="rsvp__guest-card">
-            <span class="rsvp__guest-name">{{ initiatorName() }}</span>
-          </div>
-          <p class="rsvp__confirm-heading">{{ 'rsvp.confirmHeading' | translate }}</p>
-          <p class="rsvp__confirm-body">{{ 'rsvp.confirmBody' | translate }}</p>
-          <ul class="rsvp__confirm-list">
-            @for (entry of getIncludedEntries(); track entry[0]) {
-              <li class="rsvp__confirm-item">
-                <span>{{ entry[0] }}</span>
-                <span class="rsvp__confirm-status">
-                  {{ entry[1].attending ? ('rsvp.yes' | translate) : ('rsvp.no' | translate) }}
-                  @if (entry[1].attending && getMealChoice(entry[0])) {
-                    &nbsp;·&nbsp;{{ mealLabel(getMealChoice(entry[0])!) }}
-                  }
-                </span>
-              </li>
-            }
-          </ul>
-          <div class="rsvp__confirm-actions">
-            <button class="rsvp__submit" type="button" (click)="onSubmit()">
-              {{ 'rsvp.submit' | translate }}
-            </button>
-            <button class="rsvp__back-btn" type="button" (click)="onBackToFound()">
-              {{ 'rsvp.goBack' | translate }}
-            </button>
-          </div>
-        </div>
-      }
-
       @case ('submitting') {
         <div class="rsvp__panel rsvp__panel--centered">
           <div class="rsvp__spinner"></div>
