@@ -1,23 +1,28 @@
 [
   {
     "file": "Apr_2017_1.webp",
-    "width": 3024,
-    "height": 4032
-  },
-  {
-    "file": "Apr_2017_2.webp",
     "width": 4284,
     "height": 5712
   },
   {
+    "file": "Apr_2017_2.webp",
+    "width": 3024,
+    "height": 4032
+  },
+  {
+    "file": "Dec_2018_1.webp",
+    "width": 2300,
+    "height": 4102
+  },
+  {
     "file": "Feb_2020_1.webp",
-    "width": 1536,
-    "height": 2048
+    "width": 2268,
+    "height": 3024
   },
   {
     "file": "Feb_2020_2.webp",
-    "width": 2268,
-    "height": 3024
+    "width": 1536,
+    "height": 2048
   },
   {
     "file": "Jan_2027_1.webp",
