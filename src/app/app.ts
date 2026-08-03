@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SeoService } from './shared/seo.service';
 import { TranslationService } from './shared/translation.service';
+import { GuestSearchService } from './shared/guest-search.service';
 import { APP_CONFIG } from './config/app.config';
 
 @Component({
@@ -16,6 +17,20 @@ export class App {
 
   constructor() {
     this.applyLocaleParam();
+    this.prefetchHashIfPresent();
+  }
+
+  private prefetchHashIfPresent(): void {
+    // Strip leading slash to get the raw path segment (the rsvpHash).
+    // Ignore the root path and the /admin route.
+    const hash = window.location.pathname.replace(/^\//, '').trim();
+    if (!hash || hash === 'admin') return;
+    // Fire the GAS request immediately at bootstrap. GuestSearchService caches
+    // the result via shareReplay, so when RsvpComponent (and Hero, GuestLetter)
+    // call findByHash() after Angular finishes rendering, they subscribe to the
+    // already-in-flight Observable and get the result the moment it arrives
+    // rather than starting a fresh request after component init.
+    inject(GuestSearchService).findByHash(hash).subscribe();
   }
 
   private applyLocaleParam(): void {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, switchMap, throwError } from 'rxjs';
 import { SHEETS_CONFIG } from '../config/sheets.config';
 import { GuestRow, RsvpRawPayload, RsvpSubmission } from './models/guest.model';
 import { buildEventString } from './utils/rsvp.utils';
@@ -61,14 +61,29 @@ export class SheetsService {
       },
     };
 
-    return this.http.post<{ status: string }>(SHEETS_CONFIG.gasWebAppUrl, JSON.stringify(payload), {
-      headers: { 'Content-Type': 'text/plain' },
-    });
+    return this.http
+      .post<{ status: string }>(SHEETS_CONFIG.gasWebAppUrl, JSON.stringify(payload), {
+        headers: { 'Content-Type': 'text/plain' },
+      })
+      .pipe(
+        switchMap((res) =>
+          res.status === 'ok'
+            ? [res]
+            : throwError(() => new Error(res.status ?? 'unknown_error')),
+        ),
+      );
   }
 
   verifyAdminPassword(passwordHash: string): Observable<{ authorized: boolean }> {
     const body = JSON.stringify({ action: 'verifyAdmin', passwordHash });
     return this.http.post<{ authorized: boolean }>(SHEETS_CONFIG.gasWebAppUrl, body, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
+
+  clearGasCache(passwordHash: string): Observable<{ status: string }> {
+    const body = JSON.stringify({ action: 'clearCache', passwordHash });
+    return this.http.post<{ status: string }>(SHEETS_CONFIG.gasWebAppUrl, body, {
       headers: { 'Content-Type': 'text/plain' },
     });
   }

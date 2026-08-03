@@ -41,6 +41,8 @@ export class AdminComponent implements OnInit {
   readonly lastRefreshed = signal<Date | null>(null);
   readonly copiedInvitationHash = signal('');
   readonly sortColumns = signal<SortEntry[]>([]);
+  readonly clearingCache = signal(false);
+  private passwordHash = '';
 
   readonly adminRows = computed((): AdminRow[] => {
     const rows: AdminRow[] = [];
@@ -146,6 +148,7 @@ export class AdminComponent implements OnInit {
       next: ({ authorized }) => {
         this.loggingIn.set(false);
         if (authorized) {
+          this.passwordHash = hash;
           sessionStorage.setItem(
             AdminComponent.SESSION_KEY,
             JSON.stringify({ expiresAt: Date.now() + AdminComponent.SESSION_TTL_MS }),
@@ -173,6 +176,21 @@ export class AdminComponent implements OnInit {
     this.loginError.set('');
     this.sortColumns.set([]);
     this.copiedInvitationHash.set('');
+    this.passwordHash = '';
+  }
+
+  clearCache(): void {
+    if (this.clearingCache() || !this.passwordHash) return;
+    this.clearingCache.set(true);
+    this.sheets.clearGasCache(this.passwordHash).subscribe({
+      next: () => {
+        this.clearingCache.set(false);
+        this.fetchGuests();
+      },
+      error: () => {
+        this.clearingCache.set(false);
+      },
+    });
   }
 
   private async sha256(message: string): Promise<string> {
