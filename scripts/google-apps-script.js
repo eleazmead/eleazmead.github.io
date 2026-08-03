@@ -77,12 +77,19 @@ function invalidateGuestListCache() {
 }
 
 /**
- * Keep-warm no-op. Set up a time-based trigger in the GAS editor:
+ * Keep-warm. Set up a time-based trigger in the GAS editor:
  *   Triggers -> Add Trigger -> keepWarm -> Time-driven -> Minutes timer -> Every 5 minutes
  * This prevents the 5+ second cold-start delay guests would otherwise experience.
+ * Also primes the CacheService so the first real request after idle hits the cache, not the sheet.
  */
 function keepWarm() {
-  // Intentionally empty - just keeping the script container alive.
+  getGuestListCached();
+}
+
+function onEdit(e) {
+  if (e && e.source.getActiveSheet().getName() === 'GuestList') {
+    invalidateGuestListCache();
+  }
 }
 
 function onOpen() {
