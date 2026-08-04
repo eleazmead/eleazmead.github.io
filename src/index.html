@@ -57,8 +57,27 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://script.google.com" />
+    <link rel="preconnect" href="https://script.googleusercontent.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta name="gas-url" content="REPLACE_GAS_WEB_APP_URL" />
+    <script>
+      (function () {
+        var meta = document.querySelector('meta[name="gas-url"]');
+        var url = meta && meta.getAttribute('content');
+        if (!url || url.indexOf('https://') !== 0) return;
+        var hash = window.location.pathname.replace(/^\//, '').trim();
+        if (!hash || hash === 'admin') return;
+        window.__guestPrefetch__ = fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'getGuestByHash', hash: hash }),
+        })
+          .then(function (r) { return r.json(); })
+          .catch(function () { return null; });
+      })();
+    </script>
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
       rel="stylesheet"

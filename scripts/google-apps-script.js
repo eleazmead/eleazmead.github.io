@@ -44,7 +44,14 @@
  */
 
 const CACHE_KEY = 'guestList_v1';
+const ADMIN_HASH_CACHE_KEY = 'adminPasswordHash_v1';
+const HASH_INDEX_GEN_KEY = 'hashIndexGen_v1';
 const CACHE_TTL_SECONDS = 1800; // 30 minutes
+const ADMIN_HASH_CACHE_TTL_SECONDS = 21600; // 6 hours (CacheService maximum)
+
+// Paste your spreadsheet ID from the URL:
+// https://docs.google.com/spreadsheets/d/<SPREADSHEET_ID>/edit
+const SPREADSHEET_ID = 'REPLACE_WITH_SPREADSHEET_ID';
 
 /**
  * Reads the GuestList sheet, with a 30-minute in-memory cache via CacheService.
@@ -56,24 +63,69 @@ function getGuestListCached() {
   const hit = cache.get(CACHE_KEY);
   if (hit) return JSON.parse(hit);
 
-  const values = SpreadsheetApp.getActiveSpreadsheet()
-    .getSheetByName('GuestList')
-    .getDataRange()
-    .getValues()
-    .map(function(row) {
-      return row.map(function(v) { return v === null || v === undefined ? '' : String(v); });
-    });
-
+  // LockService prevents concurrent cache-miss reads from all hitting the sheet simultaneously.
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
   try {
-    cache.put(CACHE_KEY, JSON.stringify(values), CACHE_TTL_SECONDS);
-  } catch (_) {
-    // Data exceeds 100KB cache limit - skip caching, serve fresh every time.
+    // Re-check cache after acquiring lock - another execution may have populated it.
+    const hit2 = cache.get(CACHE_KEY);
+    if (hit2) return JSON.parse(hit2);
+
+    const values = SpreadsheetApp.openById(SPREADSHEET_ID)
+      .getSheetByName('GuestList')
+      .getDataRange()
+      .getValues()
+      .map(function(row) {
+        return row.map(function(v) { return v === null || v === undefined ? '' : String(v); });
+      });
+
+    try {
+      cache.put(CACHE_KEY, JSON.stringify(values), CACHE_TTL_SECONDS);
+    } catch (_) {
+      // Data exceeds 100KB cache limit - skip caching, serve fresh every time.
+    }
+    populateHashIndex(values);
+    return values;
+  } finally {
+    lock.releaseLock();
   }
-  return values;
 }
 
 function invalidateGuestListCache() {
-  CacheService.getScriptCache().remove(CACHE_KEY);
+  const cache = CacheService.getScriptCache();
+  cache.remove(CACHE_KEY);
+  cache.remove(HASH_INDEX_GEN_KEY);
+  // Individual hash entries expire naturally - their gen prefix makes them unreachable.
+}
+
+// Writes one cache entry per hash (columns J/K/L) so getGuestByHash is a single cache.get().
+// Uses a generation ID so invalidateGuestListCache() can atomically retire all entries at once
+// by removing just the gen key - no need to enumerate or pattern-delete individual hash entries.
+function populateHashIndex(values) {
+  const cache = CacheService.getScriptCache();
+  const gen = String(Date.now());
+  const entries = {};
+  entries[HASH_INDEX_GEN_KEY] = gen;
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    const payload = JSON.stringify({ row: row, rowIndex: i + 1 });
+    [row[9], row[10], row[11]].forEach(function(h) {
+      const key = String(h || '').trim().toLowerCase();
+      if (key) entries['hash:' + gen + ':' + key] = payload;
+    });
+  }
+  try {
+    cache.putAll(entries, CACHE_TTL_SECONDS);
+  } catch (_) {}
+}
+
+function getAdminPasswordHashCached() {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get(ADMIN_HASH_CACHE_KEY);
+  if (hit) return hit;
+  const hash = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+  if (hash) cache.put(ADMIN_HASH_CACHE_KEY, hash, ADMIN_HASH_CACHE_TTL_SECONDS);
+  return hash;
 }
 
 /**
@@ -117,6 +169,7 @@ function setupAdminPasswordHash() {
     .map((b) => (b < 0 ? b + 256 : b).toString(16).padStart(2, '0'))
     .join('');
   PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD_HASH', hash);
+  CacheService.getScriptCache().put(ADMIN_HASH_CACHE_KEY, hash, ADMIN_HASH_CACHE_TTL_SECONDS);
   Logger.log('Stored ADMIN_PASSWORD_HASH: ' + hash);
   Browser.msgBox('Done', 'Admin password hash stored successfully.', Browser.Buttons.OK);
 }
@@ -151,8 +204,27 @@ function doPost(e) {
           ContentService.MimeType.JSON,
         );
       }
+      // Fast path: check the per-hash index populated by populateHashIndex().
+      const cache = CacheService.getScriptCache();
+      const gen = cache.get(HASH_INDEX_GEN_KEY);
+      const indexed = gen ? cache.get('hash:' + gen + ':' + hash) : null;
+      if (indexed) {
+        const data = JSON.parse(indexed);
+        return ContentService.createTextOutput(
+          JSON.stringify({ found: true, row: data.row, rowIndex: data.rowIndex }),
+        ).setMimeType(ContentService.MimeType.JSON);
+      }
+      // Slow path: index was cold or invalidated - reload sheet (repopulates index) then retry.
       const values = getGuestListCached();
-      // Skip header row (index 0), search columns J(9), K(10), L(11)
+      const gen2 = cache.get(HASH_INDEX_GEN_KEY);
+      const indexed2 = gen2 ? cache.get('hash:' + gen2 + ':' + hash) : null;
+      if (indexed2) {
+        const data = JSON.parse(indexed2);
+        return ContentService.createTextOutput(
+          JSON.stringify({ found: true, row: data.row, rowIndex: data.rowIndex }),
+        ).setMimeType(ContentService.MimeType.JSON);
+      }
+      // Final fallback: linear scan in case putAll failed and hash index was never populated.
       for (let i = 1; i < values.length; i++) {
         const row = values[i];
         const j = String(row[9] || '').trim().toLowerCase();
@@ -160,7 +232,7 @@ function doPost(e) {
         const l = String(row[11] || '').trim().toLowerCase();
         if ((j && j === hash) || (k && k === hash) || (l && l === hash)) {
           return ContentService.createTextOutput(
-            JSON.stringify({ found: true, row, rowIndex: i + 1 }),
+            JSON.stringify({ found: true, row: row, rowIndex: i + 1 }),
           ).setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -170,7 +242,7 @@ function doPost(e) {
     }
 
     if (payload.action === 'clearCache') {
-      const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+      const stored = getAdminPasswordHashCached();
       const authorized = stored !== null && stored === payload.passwordHash;
       if (!authorized) {
         return ContentService.createTextOutput(JSON.stringify({ status: 'unauthorized' })).setMimeType(
@@ -184,7 +256,7 @@ function doPost(e) {
     }
 
     if (payload.action === 'verifyAdmin') {
-      const stored = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH');
+      const stored = getAdminPasswordHashCached();
       const authorized = stored !== null && stored === payload.passwordHash;
       return ContentService.createTextOutput(JSON.stringify({ authorized })).setMimeType(
         ContentService.MimeType.JSON,
@@ -193,7 +265,7 @@ function doPost(e) {
 
     if (payload.action === 'updateRsvp') {
       invalidateGuestListCache();
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
       const guestSheet = ss.getSheetByName('GuestList');
       const row = payload.rowIndex;
 
