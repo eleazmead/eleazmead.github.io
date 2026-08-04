@@ -73,6 +73,9 @@ jobs:
             c = c.replace('REPLACE_GAS_WEB_APP_URL', process.env.GAS_WEB_APP_URL || '');
             c = c.replace('REPLACE_BUILD_NUMBER', process.env.BUILD_NUMBER || '');
             fs.writeFileSync('src/environments/environment.production.ts', c);
+            let h = fs.readFileSync('src/index.html', 'utf8');
+            h = h.replace('REPLACE_GAS_WEB_APP_URL', process.env.GAS_WEB_APP_URL || '');
+            fs.writeFileSync('src/index.html', h);
           "
 
       - name: Build (production / main branch)

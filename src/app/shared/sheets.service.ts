@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, switchMap, throwError } from 'rxjs';
+import { Observable, from, map, switchMap, throwError, catchError } from 'rxjs';
 import { SHEETS_CONFIG } from '../config/sheets.config';
 import { GuestRow, RsvpRawPayload, RsvpSubmission } from './models/guest.model';
 import { buildEventString } from './utils/rsvp.utils';
@@ -24,6 +24,14 @@ export class SheetsService {
   }
 
   fetchGuestByHash(hash: string): Observable<GuestRow | null> {
+    const prefetch = (window as Window & { __guestPrefetch__?: Promise<{ found: boolean; row?: string[]; rowIndex?: number } | null> }).__guestPrefetch__;
+    if (prefetch) {
+      delete (window as any).__guestPrefetch__;
+      return from(prefetch).pipe(
+        map((res) => (res?.found && res.row ? this.parseRow(res.row, res.rowIndex ?? 0) : null)),
+        catchError(() => this.fetchGuestByHash(hash)),
+      );
+    }
     const body = JSON.stringify({ action: 'getGuestByHash', hash });
     return this.http
       .post<{ found: boolean; row?: string[]; rowIndex?: number }>(
