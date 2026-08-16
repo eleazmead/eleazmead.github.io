@@ -186,6 +186,12 @@ function generateMd5Hash(input) {
     .join('');
 }
 
+function doGet() {
+  return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
+    ContentService.MimeType.JSON,
+  );
+}
+
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
@@ -259,6 +265,30 @@ function doPost(e) {
       const stored = getAdminPasswordHashCached();
       const authorized = stored !== null && stored === payload.passwordHash;
       return ContentService.createTextOutput(JSON.stringify({ authorized })).setMimeType(
+        ContentService.MimeType.JSON,
+      );
+    }
+
+    if (payload.action === 'trackAccess') {
+      const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+      const guestSheet = ss.getSheetByName('GuestList');
+      const row = payload.rowIndex;
+      guestSheet.getRange(row, 17).setValue(payload.ipAddress);    // Q - IPAddress
+      guestSheet.getRange(row, 18).setValue(payload.lastAccessedAt); // R - LastAccessedAt
+      guestSheet.getRange(row, 19).setValue(payload.userAgent);    // S - UserAgent
+
+      const logSheet = ss.getSheetByName('Log');
+      const event =
+        'IP: [' +
+        payload.ipAddress +
+        '], LastAccessed: [' +
+        payload.lastAccessedAt +
+        '], UserAgent: [' +
+        payload.userAgent +
+        ']';
+      logSheet.appendRow([Utilities.getUuid(), payload.name, event, 0, payload.lastAccessedAt]);
+
+      return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
         ContentService.MimeType.JSON,
       );
     }
