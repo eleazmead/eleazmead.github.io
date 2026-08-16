@@ -358,7 +358,10 @@
       "mealChoice": "Meal Choice",
       "rsvp": "RSVP",
       "dateSubmitted": "Date Submitted",
-      "copyInvitationLink": "Copy Invitation Link"
+      "ipAddress": "IP",
+      "lastAccessedAt": "Last Accessed",
+      "userAgent": "UA",
+      "copyInvitationLink": "Link"
     },
     "copyInvitation": {
       "copy": "Copy Link",

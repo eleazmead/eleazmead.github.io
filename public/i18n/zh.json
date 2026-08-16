@@ -358,7 +358,10 @@
       "mealChoice": "主餐選擇",
       "rsvp": "RSVP",
       "dateSubmitted": "送出日期",
-      "copyInvitationLink": "複製邀請連結"
+      "ipAddress": "IP",
+      "lastAccessedAt": "Last Accessed",
+      "userAgent": "UA",
+      "copyInvitationLink": "Link"
     },
     "copyInvitation": {
       "copy": "複製連結",

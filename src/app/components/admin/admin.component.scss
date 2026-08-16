@@ -358,6 +358,24 @@
   font-size: 0.8rem;
 }
 
+.admin__td--ip {
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.admin__td--last-access {
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+.admin__td--ua {
+  min-width: 120px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .admin__row--pending td {
   color: #888;
 }

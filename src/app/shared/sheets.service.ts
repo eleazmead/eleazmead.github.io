@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from, map, switchMap, throwError, catchError } from 'rxjs';
+import { Observable, from, map, switchMap, throwError, catchError, of, tap } from 'rxjs';
 import { SHEETS_CONFIG } from '../config/sheets.config';
 import { GuestRow, RsvpRawPayload, RsvpSubmission } from './models/guest.model';
 import { buildEventString } from './utils/rsvp.utils';
+import { nowSGT } from './utils/date.utils';
 
 @Injectable({ providedIn: 'root' })
 export class SheetsService {
@@ -30,6 +31,7 @@ export class SheetsService {
       return from(prefetch).pipe(
         map((res) => (res?.found && res.row ? this.parseRow(res.row, res.rowIndex ?? 0) : null)),
         catchError(() => this.fetchGuestByHash(hash)),
+        tap((guest) => { if (guest) this.trackAccess(guest); }),
       );
     }
     const body = JSON.stringify({ action: 'getGuestByHash', hash });
@@ -44,7 +46,33 @@ export class SheetsService {
           if (!res.found || !res.row) return null;
           return this.parseRow(res.row, res.rowIndex ?? 0);
         }),
+        tap((guest) => { if (guest) this.trackAccess(guest); }),
       );
+  }
+
+  private trackAccess(guest: GuestRow): void {
+    const lastAccessedAt = nowSGT();
+    const userAgent = navigator.userAgent;
+    this.http
+      .get<{ ip: string }>('https://api64.ipify.org?format=json')
+      .pipe(
+        map((r) => r.ip),
+        catchError(() => of('unknown')),
+        switchMap((ip) => {
+          const body = JSON.stringify({
+            action: 'trackAccess',
+            rowIndex: guest.rowIndex,
+            name: guest.fullName,
+            ipAddress: ip,
+            lastAccessedAt,
+            userAgent,
+          });
+          return this.http.post(SHEETS_CONFIG.gasWebAppUrl, body, {
+            headers: { 'Content-Type': 'text/plain' },
+          });
+        }),
+      )
+      .subscribe();
   }
 
   submitRsvp(submission: RsvpSubmission): Observable<{ status: string }> {
@@ -126,6 +154,9 @@ export class SheetsService {
       letterMessage: str(row[cols.letterMessage]),
       letterShowForAll: str(row[cols.letterShowForAll]),
       letterSignedBy: str(row[cols.letterSignedBy]),
+      ipAddress: str(row[cols.ipAddress]),
+      lastAccessedAt: str(row[cols.lastAccessedAt]),
+      userAgent: str(row[cols.userAgent]),
     };
   }
 }

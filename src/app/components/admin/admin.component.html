@@ -251,6 +251,25 @@
                   </span>
                 </button>
               </th>
+              <th class="admin__td--ip">{{ 'admin.table.ipAddress' | translate }}</th>
+              <th class="admin__td--last-access">
+                <button class="admin__th-btn" (click)="toggleSort('lastAccessedAt')">
+                  {{ 'admin.table.lastAccessedAt' | translate }}
+                  <span class="admin__sort-cue" [class.admin__sort-cue--active]="sortDirOf('lastAccessedAt')">
+                    <svg class="admin__sort-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      @if (sortDirOf('lastAccessedAt') === 'desc') {
+                        <polyline points="6 9 12 15 18 9"/>
+                      } @else {
+                        <polyline points="18 15 12 9 6 15"/>
+                      }
+                    </svg>
+                    @if (sortColumns().length > 1 && sortPriorityOf('lastAccessedAt') > 0) {
+                      <span class="admin__sort-priority">{{ sortPriorityOf('lastAccessedAt') }}</span>
+                    }
+                  </span>
+                </button>
+              </th>
+              <th class="admin__td--ua">{{ 'admin.table.userAgent' | translate }}</th>
               <th>{{ 'admin.table.copyInvitationLink' | translate }}</th>
             </tr>
           </thead>
@@ -275,6 +294,9 @@
                   </span>
                 </td>
                 <td class="admin__td--muted">{{ row.dateSubmitted }}</td>
+                <td class="admin__td--muted admin__td--ip">{{ row.ipAddress || '-' }}</td>
+                <td class="admin__td--muted admin__td--last-access">{{ row.lastAccessedAt || '-' }}</td>
+                <td class="admin__td--muted admin__td--ua">{{ row.userAgent || '-' }}</td>
                 <td>
                   <button
                     class="admin__copy-btn"

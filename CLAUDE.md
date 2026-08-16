@@ -212,6 +212,9 @@ Notable `APP_CONFIG` fields:
 | N | 13 | LetterMessage |
 | O | 14 | LetterShowForAll |
 | P | 15 | LetterSignedBy |
+| Q | 16 | IPAddress |
+| R | 17 | LastAccessedAt |
+| S | 18 | UserAgent |
 
 **Apps Script** - source of truth is `scripts/google-apps-script.js` in this repo. To deploy: copy contents into the Apps Script editor → Deploy → New deployment. Always create a new deployment version (not "Manage deployments") for changes to take effect. The deployed Web App URL goes into `SHEETS_CONFIG.gasWebAppUrl`.
 

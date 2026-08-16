@@ -13,9 +13,12 @@ interface AdminRow {
   rsvp: 'yes' | 'no' | 'pending';
   dateSubmitted: string;
   dateRaw: string;
+  ipAddress: string;
+  lastAccessedAt: string;
+  userAgent: string;
 }
 
-type SortKey = 'guestName' | 'partyOf' | 'meal' | 'rsvp' | 'dateSubmitted';
+type SortKey = 'guestName' | 'partyOf' | 'meal' | 'rsvp' | 'dateSubmitted' | 'lastAccessedAt';
 interface SortEntry { key: SortKey; dir: 'asc' | 'desc' }
 
 @Component({
@@ -63,6 +66,9 @@ export class AdminComponent implements OnInit {
           rsvp: entry ? (entry.RSVP ? 'yes' : 'no') : 'pending',
           dateSubmitted: entry ? this.formatDate(entry.Date) : this.ts.t('admin.noValue'),
           dateRaw: entry?.Date ?? '',
+          ipAddress: g.ipAddress,
+          lastAccessedAt: g.lastAccessedAt,
+          userAgent: g.userAgent,
         });
       }
     }
@@ -279,6 +285,8 @@ export class AdminComponent implements OnInit {
       }
       case 'dateSubmitted':
         return a.dateRaw.localeCompare(b.dateRaw);
+      case 'lastAccessedAt':
+        return a.lastAccessedAt.localeCompare(b.lastAccessedAt);
       default:
         return a[key].localeCompare(b[key], undefined, { sensitivity: 'base' });
     }
