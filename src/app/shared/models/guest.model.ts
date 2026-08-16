@@ -16,6 +16,9 @@ export interface GuestRow {
   letterMessage: string;
   letterShowForAll: string;
   letterSignedBy: string;
+  ipAddress: string;
+  lastAccessedAt: string;
+  userAgent: string;
 }
 
 export type MealChoice = 'beef' | 'fish';

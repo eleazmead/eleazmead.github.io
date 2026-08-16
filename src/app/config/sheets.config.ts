@@ -19,6 +19,9 @@ export const SHEETS_CONFIG = {
     letterMessage: 13, // N
     letterShowForAll: 14, // O
     letterSignedBy: 15, // P
+    ipAddress: 16, // Q
+    lastAccessedAt: 17, // R
+    userAgent: 18, // S
   },
   logColumns: {
     id: 0,

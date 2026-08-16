@@ -154,6 +154,9 @@ export class SheetsService {
       letterMessage: str(row[cols.letterMessage]),
       letterShowForAll: str(row[cols.letterShowForAll]),
       letterSignedBy: str(row[cols.letterSignedBy]),
+      ipAddress: str(row[cols.ipAddress]),
+      lastAccessedAt: str(row[cols.lastAccessedAt]),
+      userAgent: str(row[cols.userAgent]),
     };
   }
 }
