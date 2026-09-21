@@ -28,7 +28,9 @@
   "guestLetter": {
     "dear": "Dear",
     "signatureLine": "With love",
-    "coupleName": "Eleaz & Mead"
+    "coupleName": "Eleaz & Mead",
+    "photoAlt": "Photo shared with your letter",
+    "photoPlaceholder": "[YOUR PHOTO]"
   },
   "ourStory": {
     "heading": "Our Story",

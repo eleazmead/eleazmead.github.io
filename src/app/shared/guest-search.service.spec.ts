@@ -26,6 +26,11 @@ const guestRow: GuestRow = {
   letterMessage: '',
   letterShowForAll: '',
   letterSignedBy: '',
+  ipAddress: '',
+  lastAccessedAt: '',
+  userAgent: '',
+  imageUrl: '',
+  imageCaption: '',
 };
 
 function makeService(row: GuestRow | null) {

@@ -102,6 +102,17 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   readonly imageHeight = input<number>();
   readonly alt = input.required<string>();
   readonly caption = input<string>('');
+  // 'pinned' (default, Our Story): hangs from a pin and reacts to scroll
+  // physics. 'taped' (Guest Letter): static, held by a strip of tape, with a
+  // fixed square print, its own serif caption, and a built-in placeholder
+  // when the image fails to load - no scroll physics registered at all.
+  readonly variant = input<'pinned' | 'taped'>('pinned');
+  // Fixed resting tilt in degrees. Only used by the taped variant, where the
+  // parent picks the angle per layout (the tilt differs on desktop/mobile);
+  // the pinned variant always derives its tilt from a hash of imageUrl.
+  readonly tiltDeg = input<number>();
+  // Text shown under the icon in the taped variant's placeholder.
+  readonly placeholderLabel = input<string>('');
   readonly imageError = output<void>();
 
   // Tracks whether the photo has finished loading. Used to show a
@@ -110,6 +121,13 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   // immediately in ngAfterViewInit if the image is already cached, or
   // via the (load) event binding otherwise.
   readonly imageLoaded = signal(false);
+  private readonly imageFailed = signal(false);
+  readonly isTaped = computed(() => this.variant() === 'taped');
+  // The taped variant swaps in a placeholder itself when the image can't load.
+  // The pinned variant never does: its parent removes the whole component on
+  // (imageError) instead.
+  readonly showPlaceholder = computed(() => this.isTaped() && this.imageFailed());
+  readonly tapeRotationDeg = computed(() => this.rotationDeg() * 0.6 - 2);
 
   readonly focused = signal(false);
   // Separate from `focused` so the overlay can stay mounted for the duration
@@ -128,10 +146,13 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
   });
 
   readonly rotationDeg = computed(() => {
+    const fixed = this.tiltDeg();
+    if (fixed !== undefined) return fixed;
     const t = hash01(this.imageUrl() + '::rotate');
     return (t * 2 - 1) * MAX_REST_TILT_DEG;
   });
   readonly staticOffsetPx = computed(() => {
+    if (this.isTaped()) return 0;
     const t = hash01(this.imageUrl() + '::offset');
     return (t * 2 - 1) * MAX_STATIC_OFFSET_PX;
   });
@@ -158,7 +179,7 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
       // listener/rAF loop total) instead of each instance running its own -
       // see PolaroidScrollPhysicsService for why.
       const card = this.cardRef?.nativeElement;
-      if (card) {
+      if (card && !this.isTaped()) {
         this.physicsHandle = {
           hostElement: this.el.nativeElement,
           cardElement: card,
@@ -168,7 +189,7 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
         this.physicsService.register(this.physicsHandle);
       }
 
-      this.applyPinShift();
+      if (!this.isTaped()) this.applyPinShift();
       const img = this.photoImgRef?.nativeElement;
       if (img) {
         if (img.complete && img.naturalWidth > 0) {
@@ -178,7 +199,7 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
           img.addEventListener(
             'load',
             () => {
-              this.applyPinShift();
+              if (!this.isTaped()) this.applyPinShift();
               this.imageLoaded.set(true);
             },
             { once: true },
@@ -188,11 +209,16 @@ export class PolaroidPhotoComponent implements AfterViewInit, OnDestroy {
 
       // The card's rendered width/height (and so the correct pin position)
       // can change on viewport resize since it's a fluid, not fixed, width.
-      if (card && typeof ResizeObserver !== 'undefined') {
+      if (card && !this.isTaped() && typeof ResizeObserver !== 'undefined') {
         this.pinShiftResizeObserver = new ResizeObserver(() => this.applyPinShift());
         this.pinShiftResizeObserver.observe(card);
       }
     });
+  }
+
+  onImageError(): void {
+    this.imageFailed.set(true);
+    this.imageError.emit();
   }
 
   ngOnDestroy(): void {

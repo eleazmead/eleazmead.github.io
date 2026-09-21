@@ -34,6 +34,11 @@
  *   N (14) — LetterMessage
  *   O (15) — LetterShowForAll
  *   P (16) — LetterSignedBy
+ *   Q (17) - IPAddress       (written by trackAccess)
+ *   R (18) - LastAccessedAt  (written by trackAccess)
+ *   S (19) - UserAgent       (written by trackAccess)
+ *   T (20) - ImageUrl        (public image link for the Guest Letter polaroid; blank = no photo)
+ *   U (21) - ImageCaption    (short polaroid caption; blank = no caption)
  *
  * LOG COLUMN MAPPING (Log tab):
  *   A (1) — id
@@ -43,15 +48,18 @@
  *   E (5) — createdAt
  */
 
-const CACHE_KEY = 'guestList_v1';
+// Bumped to v2 when ImageUrl/ImageCaption (columns T/U) were added, so entries cached
+// before those columns existed are never served. The cache stores whole sheet rows
+// (getDataRange), so new columns flow through with no other change.
+const CACHE_KEY = 'guestList_v2';
 const ADMIN_HASH_CACHE_KEY = 'adminPasswordHash_v1';
-const HASH_INDEX_GEN_KEY = 'hashIndexGen_v1';
+const HASH_INDEX_GEN_KEY = 'hashIndexGen_v2';
 const CACHE_TTL_SECONDS = 1800; // 30 minutes
 const ADMIN_HASH_CACHE_TTL_SECONDS = 21600; // 6 hours (CacheService maximum)
 
 // Paste your spreadsheet ID from the URL:
 // https://docs.google.com/spreadsheets/d/<SPREADSHEET_ID>/edit
-const SPREADSHEET_ID = 'REPLACE_WITH_SPREADSHEET_ID';
+const SPREADSHEET_ID = '1t9JPJ29iSUEcVs6px3HBCIQcdZOSwAGo3Yr-qu2rzlU';
 
 /**
  * Reads the GuestList sheet, with a 30-minute in-memory cache via CacheService.
@@ -184,12 +192,6 @@ function generateMd5Hash(input) {
       return unsignedByte.toString(16).padStart(2, '0');
     })
     .join('');
-}
-
-function doGet() {
-  return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
-    ContentService.MimeType.JSON,
-  );
 }
 
 function doPost(e) {
@@ -328,4 +330,35 @@ function doPost(e) {
       JSON.stringify({ status: 'error', message: err.message }),
     ).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function findGenerateMd5HashCells() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const results = [];
+  ss.getSheets().forEach(function(sheet) {
+    const formulas = sheet.getDataRange().getFormulas();
+    formulas.forEach(function(row, r) {
+      row.forEach(function(formula, c) {
+        if (formula.toLowerCase().includes('generatemd5hash')) {
+          results.push(sheet.getName() + '!' + sheet.getRange(r + 1, c + 1).getA1Notation() + ': ' + formula);
+        }
+      });
+    });
+  });
+  Logger.log(results.length ? results.join('\n') : 'None found');
+}
+
+function checkCacheSize() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet()
+    .getSheetByName('GuestList')
+    .getDataRange()
+    .getValues();
+  const json = JSON.stringify(sheet);
+  Logger.log('Size: ' + json.length + ' bytes (' + (json.length / 1024).toFixed(1) + ' KB)');
+}
+
+function doGet() {
+  return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
+    ContentService.MimeType.JSON,
+  );
 }

@@ -22,6 +22,8 @@ export const SHEETS_CONFIG = {
     ipAddress: 16, // Q
     lastAccessedAt: 17, // R
     userAgent: 18, // S
+    imageUrl: 19, // T
+    imageCaption: 20, // U
   },
   logColumns: {
     id: 0,

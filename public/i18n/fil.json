@@ -28,7 +28,9 @@
   "guestLetter": {
     "dear": "Dear",
     "signatureLine": "With love",
-    "coupleName": "Eleaz & Mead"
+    "coupleName": "Eleaz & Mead",
+    "photoAlt": "Larawang kasama ng iyong sulat",
+    "photoPlaceholder": "[ANG IYONG LARAWAN]"
   },
   "ourStory": {
     "heading": "Ang Kwento Namin",

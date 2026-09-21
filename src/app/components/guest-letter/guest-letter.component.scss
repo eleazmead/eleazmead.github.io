@@ -9,11 +9,58 @@
   }
 }
 
+/* Holds the paper and the taped polaroid as siblings. The paper's clip-path
+   (torn edges) would crop anything overhanging it, so the polaroid can't be
+   its child; this wrapper gives both a shared positioning context instead. */
+/* The polaroid rises above the paper, so the section needs extra top room when
+   one is shown or it pokes up into the hero video above. */
+.guest-letter--with-photo {
+  padding-top: 5.75rem;
+
+  @media (min-width: 1024px) {
+    padding-top: 8.5rem;
+  }
+}
+
+.guest-letter__sheet {
+  --guest-letter-photo-width: clamp(8rem, 32vw, 11rem);
+
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+
+  @media (min-width: 1024px) {
+    --guest-letter-photo-width: 13rem;
+  }
+}
+
+/* Mobile/tablet: the polaroid is taped across the top edge of the paper, a
+   little right of center, with about a third of it above the paper. */
+.guest-letter__photo {
+  position: absolute;
+  top: 0;
+  left: 64%;
+  z-index: 2;
+  width: var(--guest-letter-photo-width);
+  transform: translate(-50%, -32%);
+
+  /* Desktop: taped to the top-right corner, hanging off the paper's right
+     edge and rising above its top edge. */
+  @media (min-width: 1024px) {
+    top: -5.5rem;
+    right: -5rem;
+    left: auto;
+    transform: none;
+  }
+
+  @media (min-width: 1280px) {
+    right: -6rem;
+  }
+}
+
 .guest-letter__paper {
   position: relative;
   isolation: isolate;
-  max-width: 760px;
-  margin: 0 auto;
   padding: clamp(2rem, 5vw, 4rem);
   clip-path: polygon(
     0.7% 3%,
@@ -117,6 +164,23 @@
       radial-gradient(circle at 42% 0%, rgba(30, 18, 12, 0.11), transparent 8%),
       radial-gradient(circle at 72% 100%, rgba(30, 18, 12, 0.12), transparent 9%);
     pointer-events: none;
+  }
+}
+
+/* Makes room for the part of the polaroid that overlaps the paper so it never
+   sits on top of the text. The polaroid is ~1.2x its width tall and, on
+   mobile, ~68% of that overlaps the paper. */
+.guest-letter__paper--with-photo {
+  padding-top: calc(var(--guest-letter-photo-width) * 0.82 + 2.75rem);
+
+  @media (min-width: 1024px) {
+    /* Photo is beside the text, not above it: only the salutation shares its
+       vertical band, so cap that line's width instead of pushing all text down. */
+    padding-top: 9.5rem;
+
+    .guest-letter__salutation {
+      max-width: 60%;
+    }
   }
 }
 

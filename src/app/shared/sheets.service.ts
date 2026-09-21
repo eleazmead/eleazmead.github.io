@@ -157,6 +157,8 @@ export class SheetsService {
       ipAddress: str(row[cols.ipAddress]),
       lastAccessedAt: str(row[cols.lastAccessedAt]),
       userAgent: str(row[cols.userAgent]),
+      imageUrl: str(row[cols.imageUrl]).trim(),
+      imageCaption: str(row[cols.imageCaption]).trim(),
     };
   }
 }
