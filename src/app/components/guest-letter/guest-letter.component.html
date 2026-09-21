@@ -1,16 +1,32 @@
 @if (shouldShowLetter()) {
-  <section class="guest-letter" id="guest-letter">
-    <div class="guest-letter__paper" appFadeUp>
-      <p class="guest-letter__salutation">
-        {{ 'guestLetter.dear' | translate }} {{ matchedRow()!.letterAddress }},
-      </p>
-      <p class="guest-letter__message">{{ matchedRow()!.letterMessage }}</p>
-      <p class="guest-letter__signature-line">{{ 'guestLetter.signatureLine' | translate }},</p>
-      <p class="guest-letter__signature-name">{{ signatureName() }}</p>
-      <div class="guest-letter__cta-wrap">
-        <a href="#rsvp" class="guest-letter__cta" (click)="scrollToRsvp($event)">
-          {{ 'hero.cta' | translate }}
-        </a>
+  <section class="guest-letter" [class.guest-letter--with-photo]="!!photoUrl()" id="guest-letter">
+    <div class="guest-letter__sheet" appFadeUp>
+      @if (photoUrl(); as url) {
+        <!-- A sibling of the paper, not a child: the paper's clip-path (torn
+             edges) would otherwise crop the polaroid where it overhangs. -->
+        <div class="guest-letter__photo">
+          <app-polaroid-photo
+            variant="taped"
+            [imageUrl]="url"
+            [alt]="'guestLetter.photoAlt' | translate"
+            [caption]="matchedRow()!.imageCaption"
+            [tiltDeg]="photoTiltDeg()"
+            [placeholderLabel]="'guestLetter.photoPlaceholder' | translate"
+          />
+        </div>
+      }
+      <div class="guest-letter__paper" [class.guest-letter__paper--with-photo]="!!photoUrl()">
+        <p class="guest-letter__salutation">
+          {{ 'guestLetter.dear' | translate }} {{ matchedRow()!.letterAddress }},
+        </p>
+        <p class="guest-letter__message">{{ matchedRow()!.letterMessage }}</p>
+        <p class="guest-letter__signature-line">{{ 'guestLetter.signatureLine' | translate }},</p>
+        <p class="guest-letter__signature-name">{{ signatureName() }}</p>
+        <div class="guest-letter__cta-wrap">
+          <a href="#rsvp" class="guest-letter__cta" (click)="scrollToRsvp($event)">
+            {{ 'hero.cta' | translate }}
+          </a>
+        </div>
       </div>
     </div>
   </section>

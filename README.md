@@ -72,6 +72,8 @@ The hero RSVP CTA scrolls directly to the RSVP content container with an explici
 
 When the matched RSVP sheet row has both `LetterAddress` and `LetterMessage`, a handwritten-style Guest Letter section appears after the hero if the URL RSVP hash matches `FullNameHash_MD5`, or if it matches `Guest1FullName_MD5` / `Guest2FullName_MD5` and `LetterShowForAll` is `1`. The letter is styled as white stationery with subtle burnt edges. The closing signature name uses `LetterSignedBy` from the sheet when present, otherwise it falls back to `guestLetter.coupleName` from the i18n JSON files.
 
+The letter can also carry a taped polaroid photo. Add two columns to the end of the `GuestList` sheet: `ImageUrl` (column T, any public `http(s)` image link, for example from Azure or S3) and `ImageCaption` (column U, a short caption). A blank `ImageUrl` shows no photo, a blank `ImageCaption` shows no caption text, and a photo that fails to load shows a placeholder in the same frame. On mobile the photo is taped across the top edge of the letter; on desktop it hangs off the top-right corner. After changing the sheet layout, redeploy `scripts/google-apps-script.js` as a new deployment so the updated cache keys take effect.
+
 The language toggle switches the site between English and Tagalog. Keep both i18n JSON files structurally complete whenever copy changes; keep non-text settings such as theme color, backdrop AVIF path, stable option IDs, and WhatsApp URL in `src/app/config/app.config.ts`.
 
 The global visual theme uses a subtle wedding-stationery background with warm vellum tones, lace-like linework, and blush/taupe washes behind the sections.

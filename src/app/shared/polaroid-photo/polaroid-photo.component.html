@@ -1,5 +1,6 @@
 <div
   class="polaroid-mount"
+  [class.polaroid-mount--taped]="isTaped()"
   [class.polaroid-mount--concealed]="focused()"
   tabindex="0"
   role="button"
@@ -28,7 +29,11 @@
     <button class="polaroid-overlay__close" type="button" (click)="close()" aria-label="Close">
       &#215;
     </button>
-    <div class="polaroid-mount polaroid-mount--focused" (click)="stopPropagation($event)">
+    <div
+      class="polaroid-mount polaroid-mount--focused"
+      [class.polaroid-mount--taped]="isTaped()"
+      (click)="stopPropagation($event)"
+    >
       <!-- rotDeg: 0 so the overlay card always renders untilted regardless of
            the inline card's resting rotation - the resting tilt (--polaroid-rotate)
            is an inline style on the shared figure element, which would otherwise
@@ -44,7 +49,20 @@
 }
 
 <ng-template #polaroidVisual let-showPin="showPin" let-rotDeg="rotDeg" let-offsetPx="offsetPx">
-  @if (showPin) {
+  @if (showPin && isTaped()) {
+    <!-- Translucent strip of tape across the top edge. The outer element
+         carries the drop shadow (a clip-path on the strip itself would clip
+         any box-shadow), the inner strip carries the serrated ends. Lifts off
+         with the card when the lightbox opens, like the pin does. -->
+    <div
+      class="polaroid__tape"
+      [class.polaroid__tape--lifted]="focused()"
+      [style.--polaroid-tape-rotate]="tapeRotationDeg() + 'deg'"
+      aria-hidden="true"
+    >
+      <span class="polaroid__tape-strip"></span>
+    </div>
+  } @else if (showPin) {
     <!-- Lifts off and fades when the photo is "picked up" into focus mode,
          then eases back into place - with a slight overshoot bounce, like it's
          being re-pinned - once focus mode closes. -->
@@ -108,6 +126,7 @@
   <figure
     #card
     class="polaroid"
+    [class.polaroid--taped]="isTaped()"
     [style.--polaroid-rotate]="rotDeg + 'deg'"
     [style.--polaroid-offset]="offsetPx + 'px'"
     [style.--polaroid-spring-duration]="springDurationS() + 's'"
@@ -118,7 +137,7 @@
            transition plays rather than the element vanishing instantly. -->
       <div
         class="polaroid__loading"
-        [class.polaroid__loading--hidden]="imageLoaded()"
+        [class.polaroid__loading--hidden]="imageLoaded() || showPlaceholder()"
         aria-hidden="true"
       >
         <svg
@@ -141,21 +160,47 @@
           />
         </svg>
       </div>
-      <img
-        #photoImg
-        class="polaroid__photo"
-        [src]="imageUrl()"
-        [attr.width]="imageWidth()"
-        [attr.height]="imageHeight()"
-        [alt]="alt()"
-        loading="lazy"
-        decoding="async"
-        (load)="imageLoaded.set(true)"
-        (error)="imageError.emit()"
-      />
+      @if (showPlaceholder()) {
+        <div class="polaroid__placeholder">
+          <svg
+            class="polaroid__placeholder-icon"
+            viewBox="0 0 64 56"
+            fill="none"
+            stroke-width="3"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="21" cy="13" r="9" />
+            <circle cx="47" cy="20" r="6" />
+            <path d="M4 52 C4 36 12 30 22 30 C32 30 40 36 40 52" />
+            <path d="M38 52 C38 42 42 37 47 37 C53 37 57 42 57 52" />
+          </svg>
+          @if (placeholderLabel()) {
+            <span class="polaroid__placeholder-label">{{ placeholderLabel() }}</span>
+          }
+        </div>
+      } @else {
+        <img
+          #photoImg
+          class="polaroid__photo"
+          [src]="imageUrl()"
+          [attr.width]="imageWidth()"
+          [attr.height]="imageHeight()"
+          [alt]="alt()"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          (load)="imageLoaded.set(true)"
+          (error)="onImageError()"
+        />
+      }
     </div>
     @if (displayCaption()) {
       <figcaption class="polaroid__caption">{{ displayCaption() }}</figcaption>
+    } @else if (isTaped()) {
+      <!-- No caption supplied: keep the polaroid's thick bottom strip so the
+           card still reads as an instant print, just with nothing written. -->
+      <div class="polaroid__caption polaroid__caption--empty" aria-hidden="true"></div>
     }
   </figure>
 </ng-template>

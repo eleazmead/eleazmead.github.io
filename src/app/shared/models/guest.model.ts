@@ -19,6 +19,8 @@ export interface GuestRow {
   ipAddress: string;
   lastAccessedAt: string;
   userAgent: string;
+  imageUrl: string;
+  imageCaption: string;
 }
 
 export type MealChoice = 'beef' | 'fish';

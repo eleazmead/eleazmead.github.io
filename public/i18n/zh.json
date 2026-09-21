@@ -28,7 +28,9 @@
   "guestLetter": {
     "dear": "親愛的",
     "signatureLine": "愛您的",
-    "coupleName": "Eleaz & Mead"
+    "coupleName": "Eleaz & Mead",
+    "photoAlt": "隨信附上的照片",
+    "photoPlaceholder": "[您的照片]"
   },
   "ourStory": {
     "heading": "我們的故事",

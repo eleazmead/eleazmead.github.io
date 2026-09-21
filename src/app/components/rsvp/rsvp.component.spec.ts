@@ -219,6 +219,11 @@ const guestRow: GuestRow = {
   letterMessage: '',
   letterShowForAll: '',
   letterSignedBy: '',
+  ipAddress: '',
+  lastAccessedAt: '',
+  userAgent: '',
+  imageUrl: '',
+  imageCaption: '',
 };
 
 function prepareMatchedGuest(component: RsvpComponent, row: GuestRow): void {

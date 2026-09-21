@@ -427,6 +427,180 @@
   }
 }
 
+/* ------------------------------------------------------------------
+   Taped variant (Guest Letter). No pin, no scroll physics: a static card
+   held down by a strip of translucent tape. Its tilt comes from the
+   --polaroid-rotate binding like the pinned variant (the parent picks the
+   angle per layout), so the FLIP focus transition works unchanged.
+   ------------------------------------------------------------------ */
+.polaroid-mount--taped {
+  max-width: none;
+
+  /* Straightening on hover is a pinned-card behaviour (it pivots freely).
+     A taped card stays put and only lifts slightly. Excludes the lightbox
+     copy, which has its own resting rules. */
+  &:not(.polaroid-mount--focused):hover .polaroid,
+  &:not(.polaroid-mount--focused):focus-visible .polaroid {
+    transform: translate3d(0, 0, 0) rotate(var(--polaroid-rotate, 0deg)) scale(1.02);
+  }
+}
+
+.polaroid--taped {
+  /* Thinner top/side mat than the pinned card, thick strip below for the
+     caption - proportions taken from the design mock-up. */
+  padding: 1rem 1rem 0.35rem;
+
+  .polaroid__frame {
+    /* Square print, cropped to fit, so the card's height is predictable
+       regardless of the photo's own aspect ratio. The letter reserves space
+       for exactly this height around the polaroid. */
+    aspect-ratio: 1 / 1;
+  }
+
+  .polaroid__photo {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .polaroid__caption {
+    /* Handwritten-style serif caption, matching the letter's own type,
+       instead of the pinned card's monospace label. */
+    min-height: 2.75rem;
+    margin-top: 0.6rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85rem;
+    line-height: 1.25;
+    color: #3a2f28;
+
+    @media (min-width: 1024px) {
+      font-size: 1.05rem;
+    }
+  }
+}
+
+.polaroid__tape {
+  position: absolute;
+  top: -0.85rem;
+  left: 50%;
+  width: 44%;
+  height: 2rem;
+  transform: translateX(-50%) rotate(var(--polaroid-tape-rotate, 0deg));
+  opacity: 1;
+  /* The strip below is clip-path'd (serrated ends), which would clip a
+     box-shadow - so the shadow is a drop-shadow filter on this wrapper. */
+  filter: drop-shadow(0 1px 1px rgba(18, 18, 18, 0.22))
+    drop-shadow(0 3px 4px rgba(18, 18, 18, 0.12));
+  z-index: 3;
+  pointer-events: none;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
+
+  &--lifted {
+    transform: translate(-50%, -1.6rem) rotate(calc(var(--polaroid-tape-rotate, 0deg) - 8deg));
+    opacity: 0;
+  }
+}
+
+.polaroid__tape-strip {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Cut-off, slightly serrated ends like tape torn or scissored off the roll. */
+  clip-path: polygon(
+    0 0,
+    3.5% 16%,
+    0 33%,
+    3.5% 50%,
+    0 66%,
+    3.5% 83%,
+    0 100%,
+    100% 100%,
+    96.5% 83%,
+    100% 66%,
+    96.5% 50%,
+    100% 33%,
+    96.5% 16%,
+    100% 0
+  );
+  /* Semi-transparent so the mat, print and paper beneath show through
+     (darker where it crosses the photo, lighter over the white border) -
+     that see-through quality is most of what sells it as real tape. On top:
+     a soft sheen down the length, faint horizontal fibres, and a streaky
+     matte grain from the same cheap feTurbulence trick used on the card. */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.05' numOctaves='1'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35 0 0 0 0 0.26 0 0 0 0 0.16 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23t)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, rgba(120, 92, 66, 0.05) 0 1px, transparent 1px 5px),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 38%,
+      rgba(96, 70, 46, 0.12) 100%
+    ),
+    rgba(204, 180, 148, 0.8);
+  background-size:
+    120px 60px,
+    auto,
+    auto,
+    auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(96, 70, 46, 0.2);
+}
+
+.polaroid__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  width: 100%;
+  height: 100%;
+  background: #d6c8b8;
+  /* Same recessed-print inset shadows as a real photo, so the placeholder
+     sits in the frame exactly where the image would. */
+  box-shadow:
+    inset 0 0 0 1px rgba(18, 18, 18, 0.12),
+    inset 0 4px 9px rgba(18, 18, 18, 0.16);
+  line-height: normal;
+}
+
+.polaroid__placeholder-icon {
+  width: 36%;
+  height: auto;
+  stroke: #7d6a5a;
+}
+
+.polaroid__placeholder-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #4a3b31;
+  text-align: center;
+}
+
+.polaroid-mount--focused.polaroid-mount--taped {
+  width: min(86vw, 26rem);
+  max-width: none;
+
+  .polaroid {
+    width: 100%;
+    padding: 1.5rem 1.5rem 0.5rem;
+  }
+
+  .polaroid__caption {
+    min-height: 3.6rem;
+    font-size: 1.3rem;
+  }
+
+  .polaroid__placeholder-label {
+    font-size: 0.85rem;
+  }
+}
+
 @keyframes polaroidOverlayFadeIn {
   from {
     opacity: 0;
