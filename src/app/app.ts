@@ -37,13 +37,14 @@ export class App {
     const supported = APP_CONFIG.i18n.supportedLocales as readonly string[];
     const ts = inject(TranslationService);
     const STORAGE_KEY = 'eleazmead_locale';
+    const storage = this.safeLocalStorage();
 
     const params = new URLSearchParams(window.location.search);
     const fromParam = params.get('locale')?.trim().toLowerCase();
 
     if (fromParam && supported.includes(fromParam)) {
       ts.setLocale(fromParam as (typeof APP_CONFIG.i18n.supportedLocales)[number]);
-      localStorage.setItem(STORAGE_KEY, fromParam);
+      storage?.setItem(STORAGE_KEY, fromParam);
       params.delete('locale');
       const newSearch = params.toString();
       const cleanUrl =
@@ -53,9 +54,17 @@ export class App {
     }
 
     // No param - restore saved preference if any.
-    const saved = localStorage.getItem(STORAGE_KEY)?.trim().toLowerCase();
+    const saved = storage?.getItem(STORAGE_KEY)?.trim().toLowerCase();
     if (saved && supported.includes(saved)) {
       ts.setLocale(saved as (typeof APP_CONFIG.i18n.supportedLocales)[number]);
+    }
+  }
+
+  private safeLocalStorage(): Storage | null {
+    try {
+      return typeof window !== 'undefined' && window.localStorage ? window.localStorage : null;
+    } catch {
+      return null;
     }
   }
 }

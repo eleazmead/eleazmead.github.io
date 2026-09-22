@@ -5,8 +5,15 @@
   background-color: #e8d5c4;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='1'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse at 55% 45%, rgba(184, 149, 126, 0.55) 0%, rgba(232, 213, 196, 0.7) 55%, #e8d5c4 80%);
-  background-size: 160px 160px, 100% 100%;
+    radial-gradient(
+      ellipse at 55% 45%,
+      rgba(184, 149, 126, 0.55) 0%,
+      rgba(232, 213, 196, 0.7) 55%,
+      #e8d5c4 80%
+    );
+  background-size:
+    160px 160px,
+    100% 100%;
 
   @media (min-width: 1024px) {
     padding: 7.5rem 4rem;
@@ -42,17 +49,18 @@
   background-size:
     100% clamp(2.5rem, 5vw, 3.5rem),
     auto;
-  background-position: 0 0, 0 0;
+  background-position:
+    0 0,
+    0 0;
   background-repeat: no-repeat, repeat;
   // Depth via filter: drop-shadow (not box-shadow which gets clipped by the
   // mask below). drop-shadow traces the actual visible shape after masking,
   // so the shadow correctly follows the scalloped perimeter.
   filter: drop-shadow(0 1px 3px rgba(18, 18, 18, 0.22))
-    drop-shadow(0 6px 14px rgba(18, 18, 18, 0.22))
-    drop-shadow(0 22px 48px rgba(18, 18, 18, 0.28))
+    drop-shadow(0 6px 14px rgba(18, 18, 18, 0.22)) drop-shadow(0 22px 48px rgba(18, 18, 18, 0.28))
     drop-shadow(0 40px 70px rgba(18, 18, 18, 0.14));
   text-align: center;
-  // Very slight rotation — hand-placed notes are never perfectly level.
+  // Very slight rotation - hand-placed notes are never perfectly level.
   transform: rotate(0.4deg);
 
   // Scalloped / perforated edges on all four sides, like a real notecard.
@@ -171,5 +179,23 @@
 
   p {
     margin: 0;
+  }
+}
+
+.gift-registry__details-link {
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 72%, transparent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: #fff;
+    text-decoration-color: var(--color-accent);
   }
 }

@@ -7,13 +7,133 @@
 
     <div class="questions-answers__list">
       @for (itemId of itemIds; track itemId) {
-        <details class="questions-answers__item" appFadeUp>
+        <details
+          class="questions-answers__item"
+          [attr.id]="isGiftBlessingItem(itemId) ? 'gift-blessing' : null"
+          appFadeUp
+        >
           <summary class="questions-answers__question">
             {{ textKey(itemId, 'question') | translate }}
           </summary>
-          <p class="questions-answers__answer">
-            {{ textKey(itemId, 'answer') | translate }}
-          </p>
+          @if (isGiftBlessingItem(itemId)) {
+            <div class="questions-answers__answer questions-answers__answer--gift">
+              <p class="questions-answers__answer-text">
+                {{ textKey(itemId, 'answer') | translate }}
+              </p>
+
+              <div class="questions-answers__gift-options">
+                <div class="questions-answers__gift-option">
+                  <h3 class="questions-answers__gift-heading">
+                    <span>{{
+                      'questionsAndAnswers.items.giftBlessing.philippinesHeaderLine1' | translate
+                    }}</span>
+                    <span>{{
+                      'questionsAndAnswers.items.giftBlessing.philippinesHeaderLine2' | translate
+                    }}</span>
+                  </h3>
+
+                  @if (shouldShowGiftQrCode('philippines')) {
+                    <img
+                      class="questions-answers__gift-qr"
+                      [src]="giftQrCodeUrl('philippines')"
+                      [alt]="'questionsAndAnswers.items.giftBlessing.philippinesQrAlt' | translate"
+                      loading="lazy"
+                      (error)="markGiftQrCodeFailed('philippines')"
+                    />
+                  } @else {
+                    <div
+                      class="questions-answers__gift-qr-placeholder"
+                      role="img"
+                      [attr.aria-label]="
+                        'questionsAndAnswers.items.giftBlessing.philippinesQrAlt' | translate
+                      "
+                    >
+                      <span>{{
+                        'questionsAndAnswers.items.giftBlessing.qrPlaceholder' | translate
+                      }}</span>
+                    </div>
+                  }
+
+                  <dl class="questions-answers__gift-details">
+                    <div>
+                      <dt>
+                        {{ 'questionsAndAnswers.items.giftBlessing.accountNameLabel' | translate }}
+                      </dt>
+                      <dd>{{ giftDetails.philippines.accountName }}</dd>
+                    </div>
+                    <div>
+                      <dt>
+                        {{
+                          'questionsAndAnswers.items.giftBlessing.accountNumberLabel' | translate
+                        }}
+                      </dt>
+                      <dd>{{ giftDetails.philippines.accountNumber }}</dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <div class="questions-answers__gift-separator">
+                  {{ 'questionsAndAnswers.items.giftBlessing.or' | translate }}
+                </div>
+
+                <div class="questions-answers__gift-option">
+                  <h3 class="questions-answers__gift-heading">
+                    <span>{{
+                      'questionsAndAnswers.items.giftBlessing.singaporeHeaderLine1' | translate
+                    }}</span>
+                    <span>{{
+                      'questionsAndAnswers.items.giftBlessing.singaporeHeaderLine2' | translate
+                    }}</span>
+                  </h3>
+
+                  @if (shouldShowGiftQrCode('singapore')) {
+                    <img
+                      class="questions-answers__gift-qr"
+                      [src]="giftQrCodeUrl('singapore')"
+                      [alt]="'questionsAndAnswers.items.giftBlessing.singaporeQrAlt' | translate"
+                      loading="lazy"
+                      (error)="markGiftQrCodeFailed('singapore')"
+                    />
+                  } @else {
+                    <div
+                      class="questions-answers__gift-qr-placeholder"
+                      role="img"
+                      [attr.aria-label]="
+                        'questionsAndAnswers.items.giftBlessing.singaporeQrAlt' | translate
+                      "
+                    >
+                      <span>{{
+                        'questionsAndAnswers.items.giftBlessing.qrPlaceholder' | translate
+                      }}</span>
+                    </div>
+                  }
+
+                  <dl class="questions-answers__gift-details">
+                    <div>
+                      <dt>
+                        {{ 'questionsAndAnswers.items.giftBlessing.accountNameLabel' | translate }}
+                      </dt>
+                      <dd>{{ giftDetails.singapore.accountName }}</dd>
+                    </div>
+                    <div>
+                      <dt>
+                        {{ 'questionsAndAnswers.items.giftBlessing.mobileNumberLabel' | translate }}
+                      </dt>
+                      <dd>{{ giftDetails.singapore.mobileNumber }}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+
+              <p class="questions-answers__gift-bank-transfer">
+                {{ 'questionsAndAnswers.items.giftBlessing.bankTransfer' | translate }}
+              </p>
+            </div>
+          } @else {
+            <p class="questions-answers__answer">
+              {{ textKey(itemId, 'answer') | translate }}
+            </p>
+          }
         </details>
       }
     </div>

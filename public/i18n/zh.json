@@ -281,7 +281,10 @@
   "giftRegistry": {
     "heading": "關於禮物的小提醒",
     "body": "若您希望以新婚禮物祝福我們，",
-    "closing": "我們將由衷感謝您以禮金的方式，支持我們共同的未來。"
+    "closing": "我們將由衷感謝您以禮金的方式，支持我們共同的未來。",
+    "detailsPromptPrefix": "您可以在",
+    "detailsPromptLink": "這裡",
+    "detailsPromptSuffix": "查看我們的禮物詳情。"
   },
   "questionsAndAnswers": {
     "heading": "常見問題",
@@ -310,6 +313,22 @@
       "flightAccom": {
         "question": "會提供機票與住宿嗎？",
         "answer": "除非我們曾親自另行告知，賓客需自行安排並負擔機票與住宿費用。我們非常感謝您為參與我們特別的日子所付出的時間、心力與規劃。若想查看住宿建議，請前往本網站的「住宿建議」部分。"
+      },
+      "giftBlessing": {
+        "question": "可以如何用禮物祝福我們？",
+        "answer": "感謝有心詢問並希望進一步祝福我們的親友，禮物詳情如下。",
+        "philippinesHeaderLine1": "給來自菲律賓的賓客",
+        "philippinesHeaderLine2": "BDO",
+        "singaporeHeaderLine1": "給來自新加坡的賓客",
+        "singaporeHeaderLine2": "PayNow",
+        "accountNameLabel": "帳戶名稱",
+        "accountNumberLabel": "帳戶號碼",
+        "mobileNumberLabel": "手機號碼",
+        "or": "或",
+        "bankTransfer": "銀行轉帳：詳情可依需求提供。",
+        "philippinesQrAlt": "婚禮禮物詳情的 BDO QR code",
+        "singaporeQrAlt": "婚禮禮物詳情的 PayNow QR code",
+        "qrPlaceholder": "QR code 即將提供"
       },
       "AccomRecommendations": {
         "question": "你們建議我們住在哪裡？",
