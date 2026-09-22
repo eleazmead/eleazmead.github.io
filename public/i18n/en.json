@@ -281,7 +281,10 @@
   "giftRegistry": {
     "heading": "A note on gifts",
     "body": "Should you wish to bless us with a wedding gift, ",
-    "closing": "a monetary contribution toward our future together would be sincerely appreciated."
+    "closing": "a monetary contribution toward our future together would be sincerely appreciated. ",
+    "detailsPromptPrefix": "You may view our gift details ",
+    "detailsPromptLink": "here",
+    "detailsPromptSuffix": "."
   },
   "questionsAndAnswers": {
     "heading": "Questions & Answers",
@@ -310,6 +313,22 @@
       "flightAccom": {
         "question": "Will flight tickets and accommodation be provided?",
         "answer": "Guests are kindly asked to arrange and cover their own flights and accommodation, unless we have personally advised you otherwise. We truly appreciate the time, effort, and planning involved in joining us for our special day. For suggested places to stay, please visit the “Where to Stay” section of this website."
+      },
+      "giftBlessing": {
+        "question": "How can we bless you with a gift?",
+        "answer": "For those who have kindly asked and wish to bless us further, gift details are available below.",
+        "philippinesHeaderLine1": "For our guests from the Philippines",
+        "philippinesHeaderLine2": "(BDO)",
+        "singaporeHeaderLine1": "For our guests from Singapore",
+        "singaporeHeaderLine2": "(PayNow)",
+        "accountNameLabel": "ACCOUNT NAME",
+        "accountNumberLabel": "ACCOUNT NUMBER",
+        "mobileNumberLabel": "MOBILE NUMBER",
+        "or": "or",
+        "bankTransfer": "Bank Transfer: Details available upon request.",
+        "philippinesQrAlt": "BDO QR code for wedding gift details",
+        "singaporeQrAlt": "PayNow QR code for wedding gift details",
+        "qrPlaceholder": "QR code coming soon"
       },
       "AccomRecommendations": {
         "question": "Where can you suggest we stay?",

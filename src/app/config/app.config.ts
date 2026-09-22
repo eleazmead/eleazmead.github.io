@@ -17,6 +17,10 @@ export const APP_CONFIG = {
       church: 'venues/st-josephs-church.jpg',
       reception: 'venues/the-lighthouse-fullerton.jpg',
     },
+    giftQrCodes: {
+      philippines: 'gift/bdo-qr.jpg',
+      singapore: 'gift/paynow-qr.png',
+    },
   },
   mealChoices: {
     options: ['beef', 'fish'] as const,
@@ -24,7 +28,7 @@ export const APP_CONFIG = {
   whatToWear: {
     colorGuide: {
       ladies: ['#b69883', '#d8a3a2'] as const,
-      gentlemen: ['#A9A9A9','#b69883','#f6f5f5', '#d8a3a2'] as const,
+      gentlemen: ['#A9A9A9', '#b69883', '#f6f5f5', '#d8a3a2'] as const,
     },
   },
   whereToStay: {
@@ -43,7 +47,17 @@ export const APP_CONFIG = {
     deadlineDate: '2026-10-16',
   },
   questionsAndAnswers: {
-    items: ['plusOnes', 'kids', 'flightAccom'] as const,
+    items: ['plusOnes', 'kids', 'flightAccom', 'giftBlessing'] as const,
+    giftBlessing: {
+      philippines: {
+        accountName: 'Eleaz Mead',
+        accountNumber: '0072 2009 3540',
+      },
+      singapore: {
+        accountName: 'Umandal Mead Rose Ann Inacay',
+        mobileNumber: '+65 9199 7736',
+      },
+    },
   },
   contacts: {
     whatsappUrl: 'https://wa.me/6582974687',

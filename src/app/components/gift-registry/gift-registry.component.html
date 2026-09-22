@@ -11,7 +11,16 @@
       <h2 class="section-heading">{{ 'giftRegistry.heading' | translate }}</h2>
       <div class="gift-registry__message">
         <p>{{ 'giftRegistry.body' | translate }}</p>
-        <p>{{ 'giftRegistry.closing' | translate }}</p>
+        <p>
+          {{ 'giftRegistry.closing' | translate }}
+          <span>{{ 'giftRegistry.detailsPromptPrefix' | translate }}</span
+          ><a
+            class="gift-registry__details-link"
+            href="#gift-blessing"
+            (click)="openGiftDetails($event)"
+            >{{ 'giftRegistry.detailsPromptLink' | translate }}</a
+          ><span>{{ 'giftRegistry.detailsPromptSuffix' | translate }}</span>
+        </p>
       </div>
     </div>
   </div>
