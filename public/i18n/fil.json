@@ -101,6 +101,28 @@
       }
     }
   },
+  "withGratitude": {
+    "heading": "With Gratitude",
+    "body": "With grateful hearts, hinonor namin ang special people na ang love, guidance, and support ay humubog sa buhay namin at patuloy pang gagabay sa amin. Thank you sa lahat ng nagawa ninyo para sa amin, at sa patuloy na pag-bless sa journey namin together.",
+    "items": {
+      "groomsParents": {
+        "role": "Parents ng Groom",
+        "names": "Sam & Flor Arcilla"
+      },
+      "bridesParents": {
+        "role": "Parents ng Bride",
+        "names": "Roni & Helen Umandal"
+      },
+      "witnesses": {
+        "role": "Witnesses",
+        "names": "Ron Zhong\n·\nErika Panganiban"
+      },
+      "ringBearer": {
+        "role": "Ring Bearer",
+        "names": "Marius Umandal"
+      }
+    }
+  },
   "venues": {
     "heading": "Mga Venue",
     "body": "Dalawang beautiful places ang magiging setting ng pinaka-meaningful parts ng araw namin: isang sacred beginning at isang celebration by the bay.",
@@ -109,7 +131,7 @@
     "items": {
       "church": {
         "name": "St. Joseph's Church Victoria Street 2:00 PM",
-        "description": "Isang historic Catholic church sa heart ng Singapore, kung saan magsisimula ang married life namin with beauty, tradition, and prayer.",
+        "description": "Isang historic Catholic church sa heart ng Singapore, kung saan quiet beauty and prayer ang magiging frame ng simula ng married life namin.",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
@@ -281,7 +303,7 @@
   "giftRegistry": {
     "heading": "A Note on Gifts",
     "body": "If you would like to bless us with a wedding gift, ",
-    "closing": "we would sincerely appreciate a monetary contribution toward our future together. ",
+    "closing": "we would sincerely appreciate a contribution toward our future together.",
     "detailsPromptPrefix": "Makikita ninyo ang gift details namin ",
     "detailsPromptLink": "dito",
     "detailsPromptSuffix": "."
@@ -316,10 +338,10 @@
       },
       "giftBlessing": {
         "question": "Paano ninyo kami mabibigyan ng gift?",
-        "answer": "Para sa mga nagtanong at gustong mag-bless pa sa amin, pwede ninyong ibigay personally ang gifts during the celebration or ipadala electronically gamit ang details below.",
-        "philippinesHeaderLine1": "Para sa guests namin from the Philippines",
+        "answer": "Para sa mga nagtanong at gusto pa rin kaming i-bless further, grateful kami sa monetary contribution habang sinisimulan namin ang new chapter na ito together. Pwede ninyo itong iabot sa amin personally during the celebration or ipadala electronically. Piliin lang kung alin ang mas convenient para sa inyo.",
+        "philippinesHeaderLine1": "Philippines",
         "philippinesHeaderLine2": "BDO",
-        "singaporeHeaderLine1": "Para sa guests namin from Singapore",
+        "singaporeHeaderLine1": "Singapore",
         "singaporeHeaderLine2": "PayNow",
         "accountNameLabel": "ACCOUNT NAME",
         "accountNumberLabel": "ACCOUNT NUMBER",

@@ -101,6 +101,28 @@
       }
     }
   },
+  "withGratitude": {
+    "heading": "With Gratitude",
+    "body": "With grateful hearts, we honor these special people whose love, guidance, and support have shaped our lives and will continue to do so. Thank you for all that you have done for us, and for continuing to bless our journey together.",
+    "items": {
+      "groomsParents": {
+        "role": "Groom's Parents",
+        "names": "Sam & Flor Arcilla"
+      },
+      "bridesParents": {
+        "role": "Bride's Parents",
+        "names": "Roni & Helen Umandal"
+      },
+      "witnesses": {
+        "role": "Witnesses",
+        "names": "Ron Zhong\n·\nErika Panganiban"
+      },
+      "ringBearer": {
+        "role": "Ring Bearer",
+        "names": "Marius Umandal"
+      }
+    }
+  },
   "venues": {
     "heading": "Venues",
     "body": "Two beautiful places will hold the most meaningful parts of our day: a sacred beginning and a celebration by the bay.",
@@ -109,7 +131,7 @@
     "items": {
       "church": {
         "name": "St. Joseph's Church Victoria Street 2:00 PM",
-        "description": "A historic Catholic church in the heart of Singapore, where quiet beauty, tradition, and prayer will frame the beginning of our married life.",
+        "description": "A historic Catholic church in the heart of Singapore, where quiet beauty and prayer will frame the beginning of our married life.",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
@@ -281,7 +303,7 @@
   "giftRegistry": {
     "heading": "A note on gifts",
     "body": "Should you wish to bless us with a wedding gift, ",
-    "closing": "a monetary contribution toward our future together would be sincerely appreciated. ",
+    "closing": "a contribution toward our future together would be sincerely appreciated.",
     "detailsPromptPrefix": "You may view our gift details ",
     "detailsPromptLink": "here",
     "detailsPromptSuffix": "."
@@ -316,10 +338,10 @@
       },
       "giftBlessing": {
         "question": "How can we bless you with a gift?",
-        "answer": "For those who have kindly asked and wish to bless us further, gifts may be personally handed to us during the celebration or sent electronically using the details below.",
-        "philippinesHeaderLine1": "For our guests from the Philippines",
+        "answer": "For those who have kindly asked and still like to bless us further, we would be grateful for a monetary contribution as we begin this new chapter together. You may personally hand it to us during the celebration or send it electronically. Please use the option most convenient for you.",
+        "philippinesHeaderLine1": "Philippines",
         "philippinesHeaderLine2": "(BDO)",
-        "singaporeHeaderLine1": "For our guests from Singapore",
+        "singaporeHeaderLine1": "Singapore",
         "singaporeHeaderLine2": "(PayNow)",
         "accountNameLabel": "ACCOUNT NAME",
         "accountNumberLabel": "ACCOUNT NUMBER",

@@ -3,6 +3,7 @@ import { NgIf } from '@angular/common';
 import { HeroComponent } from '../hero/hero.component';
 import { GuestLetterComponent } from '../guest-letter/guest-letter.component';
 import { OurStoryComponent } from '../our-story/our-story.component';
+import { WithGratitudeComponent } from '../with-gratitude/with-gratitude.component';
 import { VenuesComponent } from '../venues/venues.component';
 import { RsvpComponent } from '../rsvp/rsvp.component';
 import { WeddingTimelineComponent } from '../wedding-timeline/wedding-timeline.component';
@@ -22,6 +23,7 @@ import { LanguageToggleComponent } from '../../shared/language-toggle/language-t
     HeroComponent,
     GuestLetterComponent,
     OurStoryComponent,
+    WithGratitudeComponent,
     VenuesComponent,
     RsvpComponent,
     WeddingTimelineComponent,
