@@ -101,6 +101,28 @@
       }
     }
   },
+  "withGratitude": {
+    "heading": "滿心感謝",
+    "body": "我們懷著感恩的心，向這些特別的人致敬。他們的愛、指引與支持塑造了我們的生命，也將繼續陪伴我們前行。感謝你們為我們所做的一切，也感謝你們繼續祝福我們共同的旅程。",
+    "items": {
+      "groomsParents": {
+        "role": "新郎父母",
+        "names": "Sam & Flor Arcilla"
+      },
+      "bridesParents": {
+        "role": "新娘父母",
+        "names": "Roni & Helen Umandal"
+      },
+      "witnesses": {
+        "role": "見證人",
+        "names": "Ron Zhong\n·\nErika Panganiban"
+      },
+      "ringBearer": {
+        "role": "戒指小童",
+        "names": "Marius Umandal"
+      }
+    }
+  },
   "venues": {
     "heading": "婚禮場地",
     "body": "兩個美麗的地方，將承載我們這一天最有意義的部分：神聖的開始，以及海灣旁的慶祝。",
@@ -109,7 +131,7 @@
     "items": {
       "church": {
         "name": "St. Joseph's Church Victoria Street 下午2:00",
-        "description": "位於新加坡市中心的一座歷史悠久的天主教堂，寧靜之美、傳統與祈禱，將見證我們婚姻生活的開始。",
+        "description": "位於新加坡市中心的一座歷史悠久的天主教堂，寧靜之美與祈禱，將見證我們婚姻生活的開始。",
         "address": "143 Victoria Street, Singapore 188020"
       },
       "reception": {
@@ -281,7 +303,7 @@
   "giftRegistry": {
     "heading": "關於禮物的小提醒",
     "body": "若您希望以新婚禮物祝福我們，",
-    "closing": "我們將由衷感謝您以禮金的方式，支持我們共同的未來。",
+    "closing": "我們將由衷感謝您為我們共同的未來獻上的一份心意。",
     "detailsPromptPrefix": "您可以在",
     "detailsPromptLink": "這裡",
     "detailsPromptSuffix": "查看我們的禮物詳情。"
@@ -316,10 +338,10 @@
       },
       "giftBlessing": {
         "question": "可以如何用禮物祝福我們？",
-        "answer": "感謝有心詢問並希望進一步祝福我們的親友。禮物可在慶祝當天親手交給我們，也可使用以下詳情以電子方式送上。",
-        "philippinesHeaderLine1": "給來自菲律賓的賓客",
+        "answer": "感謝有心詢問並仍希望進一步祝福我們的親友。在我們一起開始人生新篇章之際，若您願意以禮金祝福我們，我們將由衷感謝。您可以在慶祝當天親手交給我們，也可以透過電子方式送上。請選擇對您最方便的方式。",
+        "philippinesHeaderLine1": "Philippines",
         "philippinesHeaderLine2": "BDO",
-        "singaporeHeaderLine1": "給來自新加坡的賓客",
+        "singaporeHeaderLine1": "Singapore",
         "singaporeHeaderLine2": "PayNow",
         "accountNameLabel": "帳戶名稱",
         "accountNumberLabel": "帳戶號碼",

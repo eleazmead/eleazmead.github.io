@@ -169,8 +169,6 @@
 }
 
 .gift-registry__message {
-  display: grid;
-  gap: 1rem;
   color: rgba(255, 255, 255, 0.88);
   font-family: var(--font-body);
   font-size: clamp(1rem, 2vw, 1.08rem);

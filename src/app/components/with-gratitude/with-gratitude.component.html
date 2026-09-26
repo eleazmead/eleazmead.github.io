@@ -1,0 +1,20 @@
+<section class="with-gratitude" id="with-gratitude">
+  <div class="with-gratitude__container">
+    <div class="with-gratitude__intro">
+      <h2 class="section-heading" appFadeUp>{{ 'withGratitude.heading' | translate }}</h2>
+      <p class="with-gratitude__body">{{ 'withGratitude.body' | translate }}</p>
+      <div class="with-gratitude__ornament" aria-hidden="true">
+        <span></span>
+      </div>
+    </div>
+
+    <div class="with-gratitude__list">
+      @for (itemId of itemIds; track itemId) {
+        <div class="with-gratitude__item" appFadeUp>
+          <p class="with-gratitude__role">{{ textKey(itemId, 'role') | translate }}</p>
+          <p class="with-gratitude__names">{{ textKey(itemId, 'names') | translate }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
