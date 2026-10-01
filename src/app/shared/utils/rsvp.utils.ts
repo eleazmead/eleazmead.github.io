@@ -16,5 +16,5 @@ export function buildEventString(submission: RsvpSubmission): string {
   const parts: string[] = [];
   if (accepted) parts.push(`attending: ${accepted}`);
   if (declined) parts.push(`not attending: ${declined}`);
-  return `${submission.initiatorFullName} responded on ${date} — ${parts.join('; ')}. Group total: ${submission.rsvpTotal} attending (${submission.rsvpBeefCount} beef, ${submission.rsvpFishCount} fish).`;
+  return `${submission.initiatorFullName} responded on ${date} - ${parts.join('; ')}. Group total: ${submission.rsvpTotal} attending (${submission.rsvpBeefCount} beef, ${submission.rsvpFishCount} fish).`;
 }

@@ -11,7 +11,7 @@
 /node_modules/
 /yarn.lock
 
-# Environment files — real values stay local, commit only *.example templates
+# Environment files: real values stay local, commit only *.example templates
 /.env
 src/environments/environment.ts
 src/environments/environment.staging.ts

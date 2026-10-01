@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { PolaroidPhotoComponent } from '../../shared/polaroid-photo/polaroid-photo.component';
+import { StoryManifestEntry, groupStoryPhotosByPrefix } from '../../shared/utils/story-photo.utils';
 
-const STORY_TIMELINE_ITEMS = [
+export const STORY_TIMELINE_ITEMS = [
   { id: 'metAtWork', filePrefix: 'Sep_2016' },
   { id: 'coffeeRuns', filePrefix: 'Apr_2017' },
   { id: 'programming', filePrefix: 'Dec_2018' },
@@ -16,14 +17,8 @@ const STORY_TIMELINE_ITEMS = [
   { id: 'bigDay', filePrefix: 'Jan_2027' },
 ] as const;
 
-type StoryTimelineItem = (typeof STORY_TIMELINE_ITEMS)[number];
-type StoryTimelineItemId = StoryTimelineItem['id'];
-
-interface OurStoryManifestEntry {
-  file: string;
-  width: number;
-  height: number;
-}
+export type StoryTimelineItem = (typeof STORY_TIMELINE_ITEMS)[number];
+export type StoryTimelineItemId = StoryTimelineItem['id'];
 
 @Component({
   selector: 'app-our-story',
@@ -37,23 +32,8 @@ export class OurStoryComponent implements OnInit {
 
   readonly timelineItems = STORY_TIMELINE_ITEMS;
   readonly failedPhotos = signal<Set<string>>(new Set());
-  readonly photoManifest = signal<OurStoryManifestEntry[]>([]);
-  readonly photosByPrefix = computed(() => {
-    const grouped = new Map<string, string[]>();
-
-    for (const entry of this.photoManifest()) {
-      const match = entry.file.match(/^([a-z]{3}_\d{4})_([12])\.(jpe?g|png|webp)$/i);
-      if (!match) continue;
-
-      const prefix = match[1].toLowerCase();
-      const imageNumber = Number(match[2]);
-      const existing = grouped.get(prefix) ?? [];
-      existing[imageNumber - 1] = `our-story/${entry.file}`;
-      grouped.set(prefix, existing);
-    }
-
-    return grouped;
-  });
+  readonly photoManifest = signal<StoryManifestEntry[]>([]);
+  readonly photosByPrefix = computed(() => groupStoryPhotosByPrefix(this.photoManifest()));
 
   // Actual intrinsic pixel dimensions per photo URL, from the manifest
   // (populated at build time by generate-gallery-manifest.mjs via the
@@ -74,7 +54,7 @@ export class OurStoryComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.http.get<OurStoryManifestEntry[]>('our-story/manifest.json').subscribe({
+    this.http.get<StoryManifestEntry[]>('our-story/manifest.json').subscribe({
       next: (entries) => this.photoManifest.set(entries),
       error: () => this.photoManifest.set([]),
     });

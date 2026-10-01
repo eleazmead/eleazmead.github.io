@@ -61,6 +61,23 @@ export const APP_CONFIG = {
   },
   contacts: {
     whatsappUrl: 'https://wa.me/6582974687',
+    // A static exported image/PDF has no clickable link, so the export
+    // invitation's RSVP-status box needs the number as plain readable text
+    // too, not just the wa.me deep link.
+    whatsappDisplayNumber: '+65 8297 4687',
+  },
+  exportInvitation: {
+    // 2:3 portrait, rasterized at html2canvas scale 1.5 (see CAPTURE_SCALE) as JPEG.
+    pageWidth: 1080,
+    pageHeight: 1620,
+    coverStoryItemId: 'bigDay',
+  },
+  calendarEvent: {
+    // 1:00 PM - 10:00 PM SGT (Asia/Singapore, UTC+8, no DST) on 16 Jan 2027.
+    timeZone: 'Asia/Singapore',
+    start: '20270116T130000',
+    end: '20270116T220000',
+    location: "St. Joseph's Church, 143 Victoria Street, Singapore 188020",
   },
   i18n: {
     defaultLocale: 'en',

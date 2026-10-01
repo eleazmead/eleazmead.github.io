@@ -43,15 +43,9 @@ export class WhatToWearComponent implements OnDestroy {
   readonly ladiesColorGuide = APP_CONFIG.whatToWear.colorGuide.ladies;
   readonly gentlemenColorGuide = APP_CONFIG.whatToWear.colorGuide.gentlemen;
   readonly imageFailed = signal(false);
-  // Conceals the inline board image the instant focus mode opens (mirrors
-  // PolaroidPhotoComponent.focused) so it isn't visible behind the backdrop
-  // while the overlay is open - the FLIP animation below is what makes it
-  // read as that same inline image growing into the overlay, rather than a
-  // separate copy appearing on top of it.
+  // Hides the inline board image while focused (mirrors PolaroidPhotoComponent.focused); the FLIP animation makes it read as the same image growing.
   readonly focused = signal(false);
-  // Separate from `focused` so the overlay can stay mounted for the full
-  // duration of the closing shrink-back-to-page animation, instead of
-  // vanishing the instant the close button/backdrop is clicked.
+  // Separate from `focused` so the overlay stays mounted for the closing animation.
   readonly overlayVisible = signal(false);
 
   private flipOrigin?: DOMRect;
@@ -74,26 +68,15 @@ export class WhatToWearComponent implements OnDestroy {
   open(): void {
     if (!this.shouldShowImage()) return;
 
-    // Capture the inline button's exact on-page position/size before
-    // anything changes, so the overlay can grow FROM there instead of just
-    // popping in centered - see playOpenFlip.
+    // Capture the inline button's rect first so the overlay can grow from it (see playOpenFlip).
     const button = this.imageButtonRef?.nativeElement;
     this.flipOrigin = button?.getBoundingClientRect();
 
     this.focused.set(true);
     this.overlayVisible.set(true);
     this.document.body.style.overflow = 'hidden';
-    // <main> establishes its own stacking context (position: relative;
-    // z-index: 1 in styles.scss, needed to layer its decorative ::before/
-    // ::after pseudo-elements) - any position: fixed overlay left inside it
-    // gets capped at that z-index of 1 for STACKING purposes no matter how
-    // high its own z-index is set, even though position: fixed positions it
-    // relative to the viewport for LAYOUT purposes. That let the fixed
-    // language toggle (a sibling of <main>, z-index: 1000) render on top of
-    // this overlay's close button. Reparenting to <body> escapes <main>'s
-    // stacking context entirely - the same fix already used by the polaroid
-    // focus overlay for the same underlying reason (see
-    // PolaroidPhotoComponent.moveOverlayToBody).
+    // <main> has its own stacking context (z-index: 1), which would cap this fixed overlay below the language toggle.
+    // Reparenting to <body> escapes it (same fix as PolaroidPhotoComponent.moveOverlayToBody).
     afterNextRender(
       () => {
         this.moveOverlayToBody();
@@ -129,23 +112,14 @@ export class WhatToWearComponent implements OnDestroy {
     if (this.focused()) this.close();
   }
 
-  // FLIP (First-Last-Invert-Play): the overlay content is rendered at its
-  // natural centered/full size (the "last" state), then we measure that,
-  // compute the transform delta from the inline button's captured "first"
-  // state, and apply that delta instantly (so it visually looks identical to
-  // the inline image) before animating it back to identity. The result reads
-  // as the board image growing from its on-page spot into focus, rather than
-  // a separate overlay popping in from nowhere on top of the (still visible)
-  // inline image.
+  // FLIP: render the overlay at its final size, measure it, invert it onto the inline image's rect,
+  // then animate to identity so the image appears to grow into focus.
   private playOpenFlip(): void {
     const origin = this.flipOrigin;
     const overlayContent = this.overlayContentRef?.nativeElement;
     if (!origin || !overlayContent) return;
 
-    // Inline styles set below would override the stylesheet's own
-    // prefers-reduced-motion rules, so that preference is checked directly
-    // here - skip the motion entirely and let the content sit at its resting
-    // centered position with no transform to animate away.
+    // Inline styles override the stylesheet's reduced-motion rules, so check the preference here and skip the motion.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const lastRect = overlayContent.getBoundingClientRect();
@@ -159,10 +133,7 @@ export class WhatToWearComponent implements OnDestroy {
       this.flipTransform(deltaX, deltaY, scaleX, scaleY),
     );
 
-    // Force a reflow so the browser commits the inverted starting state
-    // above before the transition (and target value) below is applied -
-    // otherwise the two style writes would be batched together and there
-    // would be nothing to animate from.
+    // Force a reflow so the inverted start state is committed before the transition is applied.
     void overlayContent.offsetWidth;
 
     this.renderer.setStyle(overlayContent, 'transition', this.flipTransitionCss(FLIP_OPEN_EASING));
@@ -174,11 +145,7 @@ export class WhatToWearComponent implements OnDestroy {
     }, FLIP_TRANSITION_MS);
   }
 
-  // Reverse of playOpenFlip: animates the overlay content FROM its current
-  // resting/centered state back down to the inline button's on-page rect, so
-  // closing reads as the image shrinking back to exactly where it's about to
-  // reappear, instead of just vanishing. The backdrop fades out over the same
-  // duration so the page is visible again right as the image lands.
+  // Reverse of playOpenFlip: shrinks the overlay back to the inline image while the backdrop fades out.
   private playCloseFlip(button: HTMLElement, overlayContent: HTMLElement): void {
     const targetRect = button.getBoundingClientRect();
     const currentRect = overlayContent.getBoundingClientRect();
@@ -192,11 +159,7 @@ export class WhatToWearComponent implements OnDestroy {
       this.flipTransform(deltaX, deltaY, scaleX, scaleY),
     );
 
-    // Fades the backdrop's own painted background, NOT the overlay root's
-    // opacity - opacity cascades to children via compositing, which would
-    // fade the image itself to transparent as a side effect of dimming the
-    // backdrop, right as it's landing. background-color only affects the
-    // box's own paint, so the image stays fully solid throughout.
+    // Fade the backdrop's background-color, not the root's opacity, which would fade the image too.
     const overlayRoot = this.overlayRootRef?.nativeElement;
     if (overlayRoot) {
       this.renderer.setStyle(
@@ -217,12 +180,8 @@ export class WhatToWearComponent implements OnDestroy {
       this.unlockBodyScroll();
     };
 
-    // A fixed setTimeout isn't frame-accurate against the actual CSS
-    // transition - if it fires even slightly before the shrink visually
-    // finishes landing, the overlay gets swapped out mid-motion, which reads
-    // as a flash/pop right at the end. The real transitionend event is
-    // exact, so it's the primary completion signal; the timer below is only
-    // a safety net in case it never fires.
+    // Primary completion signal is the real transitionend event: a fixed timer can fire early and pop the overlay mid-shrink.
+    // The timer below is only a safety net.
     overlayContent.addEventListener(
       'transitionend',
       (event) => {
@@ -235,9 +194,7 @@ export class WhatToWearComponent implements OnDestroy {
     this.flipCleanupTimer = setTimeout(finish, FLIP_TRANSITION_MS + 120);
   }
 
-  // Shared delta math for both directions: the transform (translate + scale)
-  // that would make an element currently occupying `fromRect` visually
-  // appear at `toRect` instead.
+  // Transform (translate + scale) that makes an element at `fromRect` appear at `toRect`.
   private flipDelta(
     toRect: DOMRect,
     fromRect: DOMRect,
@@ -250,11 +207,7 @@ export class WhatToWearComponent implements OnDestroy {
     };
   }
 
-  // A single combined `transform` (translate3d + scale) rather than separate
-  // translate/scale CSS properties - translate3d's explicit Z component is
-  // the classic cross-browser trick to force a hardware-accelerated
-  // compositor layer, notably on Safari/WebKit (see the same choice, with
-  // the same reasoning, in PolaroidPhotoComponent.flipTransform).
+  // Single combined `transform` with translate3d to force a GPU layer (same choice as PolaroidPhotoComponent.flipTransform).
   private flipTransform(deltaX: number, deltaY: number, scaleX: number, scaleY: number): string {
     return `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
   }

@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { downloadWeddingCalendar } from '../../shared/utils/calendar.utils';
 import { APP_CONFIG } from '../../config/app.config';
 import {
   GuestSearchService,
@@ -83,9 +84,13 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     // so the browser has already evaluated the sources (as empty) by the time
     // bindings run. load() tells it to re-read the now-populated sources.
     video.load();
-    video.addEventListener('canplay', () => {
-      if (video.paused) video.play().catch(() => {});
-    }, { once: true });
+    video.addEventListener(
+      'canplay',
+      () => {
+        if (video.paused) video.play().catch(() => {});
+      },
+      { once: true },
+    );
     // iOS Safari stops looping silently after 1-2 cycles without firing 'ended'.
     // Seeking back just before the video reaches its end preempts the stop
     // entirely, so the browser never gets a chance to exit the loop.
@@ -95,14 +100,8 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // The backdrop is purely decorative and only visible while the hero
-    // section itself is on screen - once the user scrolls past it, the
-    // <video> keeps decoding frames in the background regardless (browsers
-    // don't auto-pause off-screen video in a normal scrolling page), which
-    // costs real CPU/GPU work on mobile for zero visual benefit and
-    // competes with everything else on the page, including the Our Story
-    // polaroid scroll physics further down. Pausing while off-screen and
-    // resuming on return removes that cost entirely when it can't matter.
+    // The decorative backdrop keeps decoding off-screen (browsers don't auto-pause it), costing mobile CPU/GPU;
+    // pause it while the hero is out of view and resume on return.
     if (typeof IntersectionObserver === 'undefined') return;
     this.visibilityObserver = new IntersectionObserver(
       ([entry]) => {
@@ -132,5 +131,10 @@ export class HeroComponent implements OnInit, AfterViewInit, OnDestroy {
     window.setTimeout(() => {
       rsvpContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 450);
+  }
+
+  addToCalendar(event: Event): void {
+    event.preventDefault();
+    downloadWeddingCalendar(this.ts.t('hero.calendarTitle'), this.ts.t('hero.calendarDescription'));
   }
 }

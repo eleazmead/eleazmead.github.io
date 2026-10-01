@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, inject, signal } from 
 import { TranslatePipe } from '../../shared/translate.pipe';
 
 const FRAME_COUNT = 3;
-const FRAME_INTERVAL_MS = 400;
+const FRAME_INTERVAL_MS = 800;
 const LOOP_COUNT = 6;
 const SCROLL_TOP_RESET_PX = 4;
 

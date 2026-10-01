@@ -41,14 +41,29 @@
         </p>
       </div>
     </div>
+    @if (!hasInvitationHash()) {
+      <a class="hero__calendar hero__calendar--above" href="#" (click)="addToCalendar($event)">{{
+        'hero.addToCalendar' | translate
+      }}</a>
+    }
     @if (showHeroCta()) {
       <a href="#rsvp" class="hero__cta fade-in fade-in--d4" (click)="scrollToRsvp($event)">
         {{ 'hero.cta' | translate }}
       </a>
     }
+    @if (hasInvitationHash()) {
+      <a class="hero__calendar" href="#" (click)="addToCalendar($event)">{{
+        'hero.addToCalendar' | translate
+      }}</a>
+    }
   </div>
 
-  <a [attr.href]="shouldMoveRsvpCta() ? '#guest-letter' : '#our-story'" class="hero__scroll-cue" aria-label="Scroll down to see more" (click)="scrollDown($event)">
+  <a
+    [attr.href]="shouldMoveRsvpCta() ? '#guest-letter' : '#our-story'"
+    class="hero__scroll-cue"
+    aria-label="Scroll down to see more"
+    (click)="scrollDown($event)"
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
