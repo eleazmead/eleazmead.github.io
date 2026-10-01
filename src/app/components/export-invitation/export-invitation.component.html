@@ -1,0 +1,514 @@
+<section class="export-invitation" id="export-invitation">
+  <div class="export-invitation__container">
+    <h2 class="section-heading" appFadeUp>{{ 'exportInvitation.heading' | translate }}</h2>
+    <p class="export-invitation__body" appFadeUp>{{ 'exportInvitation.body' | translate }}</p>
+
+    <div class="export-toggle" appFadeUp>
+      <button
+        class="export-toggle__trigger"
+        type="button"
+        (click)="toggleMenu()"
+        [disabled]="status() === 'preparing'"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="isMenuOpen()"
+      >
+        <span class="export-toggle__label">{{
+          (status() === 'preparing' ? 'exportInvitation.generating' : 'exportInvitation.button')
+            | translate
+        }}</span>
+        @if (status() === 'preparing') {
+          <span class="export-toggle__spinner" aria-hidden="true"></span>
+        } @else {
+          <svg
+            class="export-toggle__chevron"
+            [class.export-toggle__chevron--open]="isMenuOpen()"
+            viewBox="0 0 12 8"
+            aria-hidden="true"
+          >
+            <path d="M1 1.5L6 6.5L11 1.5" fill="none" stroke="currentColor" stroke-width="1.4" />
+          </svg>
+        }
+      </button>
+
+      @if (isMenuOpen()) {
+        <ul class="export-toggle__menu" role="listbox">
+          <li role="presentation">
+            <button
+              type="button"
+              role="option"
+              class="export-toggle__option"
+              (click)="selectFormat('images')"
+            >
+              {{ 'exportInvitation.optionImages' | translate }}
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              type="button"
+              role="option"
+              class="export-toggle__option"
+              (click)="selectFormat('pdf')"
+            >
+              {{ 'exportInvitation.optionPdf' | translate }}
+            </button>
+          </li>
+        </ul>
+      }
+    </div>
+
+    @if (pendingImages()) {
+      <div class="export-invitation__ready">
+        <p>{{ 'exportInvitation.saveReady' | translate }}</p>
+        <button type="button" class="export-toggle__trigger" (click)="savePendingImages()">
+          {{ 'exportInvitation.saveButton' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (status() === 'error') {
+      <p class="export-invitation__error" role="alert">
+        {{ 'exportInvitation.error' | translate }}
+      </p>
+      @if (errorDetail()) {
+        <p class="export-invitation__error-detail">{{ errorDetail() }}</p>
+      }
+    }
+  </div>
+
+  @if (showPages()) {
+    <!-- Off-screen render host: html2canvas needs real layout, not
+         display:none, so these pages are positioned far outside the
+         viewport instead of hidden. -->
+    <div class="export-invitation__pages" aria-hidden="true">
+      <!-- Page 1: Front cover -->
+      <section
+        #pageEl
+        class="export-page export-page--cover"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame export-page__frame--cover">
+          <p class="export-page__eyebrow">{{ 'couple.weddingDate' | translate }}</p>
+          <div class="export-page__cover-image-wrap">
+            @if (coverPhotoUrl(); as url) {
+              <div
+                class="export-page__cover-image"
+                role="img"
+                [style.background-image]="'url(' + url + ')'"
+              ></div>
+            } @else {
+              <div class="export-page__cover-placeholder"></div>
+            }
+          </div>
+          <h1 class="export-page__cover-names">
+            {{ 'couple.name1' | translate }}
+            <span class="export-page__amp">&amp;</span>
+            {{ 'couple.name2' | translate }}
+          </h1>
+        </div>
+      </section>
+
+      <!-- Page 2: Guest letter (optional - only when this visitor has one) -->
+      @if (shouldShowLetterPage()) {
+        <section
+          #pageEl
+          class="export-page export-page--letter"
+          [style.width.px]="pageWidth"
+          [style.height.px]="pageHeight"
+        >
+          <div class="export-page__frame export-page__frame--letter">
+            <!-- Torn/scorched paper is an SVG background (html2canvas ignores clip-path). -->
+            <div
+              class="export-letter-paper"
+              [class.export-letter-paper--with-photo]="letterPhotoData() && !letterPhotoFailed()"
+              [style.background-image]="'url(' + letterPaperImage + ')'"
+            >
+              @if (letterPhotoData() && !letterPhotoFailed()) {
+                <div class="export-letter-paper__photo-wrap">
+                  <div
+                    class="export-letter-paper__photo"
+                    role="img"
+                    [style.background-image]="'url(' + letterPhotoData() + ')'"
+                  ></div>
+                </div>
+              }
+              <div class="export-letter-paper__body export-fit">
+                <p class="export-letter-paper__salutation">
+                  {{ 'guestLetter.dear' | translate }} {{ letterRow()?.letterAddress }},
+                </p>
+                <p class="export-letter-paper__message">{{ letterRow()?.letterMessage }}</p>
+                <p class="export-letter-paper__signature-line">
+                  {{ 'guestLetter.signatureLine' | translate }},
+                </p>
+                <p class="export-letter-paper__signature-name">{{ signatureName() }}</p>
+              </div>
+
+              @if (letterRsvpEntry(); as entry) {
+                <div class="export-letter-rsvp-box">
+                  <p class="export-letter-rsvp-box__heading">
+                    {{ 'exportInvitation.rsvpStatus.heading' | translate }}
+                  </p>
+                  <p class="export-letter-rsvp-box__status">
+                    {{
+                      (entry.RSVP
+                        ? 'exportInvitation.rsvpStatus.attending'
+                        : 'exportInvitation.rsvpStatus.notAttending'
+                      ) | translate
+                    }}
+                  </p>
+                  @if (entry.RSVP && entry.MealChoice) {
+                    <p class="export-letter-rsvp-box__meal">
+                      {{ 'exportInvitation.rsvpStatus.mealPrefix' | translate }}
+                      {{ mealLabel(entry.MealChoice) }}
+                    </p>
+                  }
+                </div>
+              } @else {
+                <div class="export-letter-rsvp-box export-letter-rsvp-box--pending">
+                  <p class="export-letter-rsvp-box__heading">
+                    {{ 'exportInvitation.rsvpStatus.notYetHeading' | translate }}
+                  </p>
+                  <p class="export-letter-rsvp-box__body">
+                    {{ 'exportInvitation.rsvpStatus.notYetBody' | translate }}
+                  </p>
+                  <p class="export-letter-rsvp-box__whatsapp">
+                    {{ 'exportInvitation.rsvpStatus.whatsappLabel' | translate }}
+                    {{ whatsappDisplayNumber }}
+                  </p>
+                  <p class="export-letter-rsvp-box__options-heading">
+                    {{ 'exportInvitation.rsvpStatus.optionsHeading' | translate }}
+                  </p>
+                  <ul class="export-letter-rsvp-box__options">
+                    @for (choice of mainCourseOptions; track choice) {
+                      <li>{{ mealLabel(choice) }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Page 3: Our Story, winding path -->
+      <section
+        #pageEl
+        class="export-page export-page--story"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame">
+          <h2 class="export-page__heading">{{ 'ourStory.heading' | translate }}</h2>
+          <div class="export-story-path" [style.background-image]="'url(' + storyPathImage + ')'">
+            @for (item of storyItems; track item.id; let i = $index) {
+              <div
+                class="export-story-stop"
+                [style.left.%]="storyStops[i].x / 10"
+                [style.top.%]="storyStops[i].y / 13.5"
+              >
+                <span class="export-story-stop__pin"></span>
+                <div
+                  class="export-story-stop__card"
+                  [style.transform]="'rotate(' + storyStops[i].tilt + 'deg)'"
+                >
+                  @if (storyPhotoUrl(item); as url) {
+                    <div
+                      class="export-story-stop__photo"
+                      role="img"
+                      [style.padding-top.%]="storyPhotoRatioPercent(item)"
+                      [style.background-image]="'url(' + url + ')'"
+                    ></div>
+                  } @else {
+                    <div class="export-story-stop__placeholder"></div>
+                  }
+                  <div class="export-story-stop__caption">
+                    <span class="export-story-stop__date">{{
+                      storyTextKey(item.id, 'date') | translate
+                    }}</span>
+                    <span class="export-story-stop__title">{{
+                      storyTextKey(item.id, 'title') | translate
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 4: Timing & Venues -->
+      <section
+        #pageEl
+        class="export-page export-page--venues"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame">
+          <h2 class="export-page__heading">
+            {{ 'exportInvitation.timingVenues.heading' | translate }}
+          </h2>
+          @for (venueId of venueIds; track venueId; let i = $index) {
+            <div class="export-venue" [class.export-venue--reverse]="i % 2 === 1">
+              <div class="export-venue__photo-wrap">
+                <div
+                  class="export-venue__photo"
+                  role="img"
+                  [style.padding-top.%]="venuePhotoRatioPercent(venueId)"
+                  [style.background-image]="'url(' + venuePhotos[venueId] + ')'"
+                ></div>
+              </div>
+              <div class="export-venue__copy">
+                <p class="export-venue__event">
+                  @let parts = venueEventParts(venueId);
+                  {{ parts.before }}<span class="export-venue__time">{{ parts.time }}</span
+                  >{{ parts.after }}
+                </p>
+                <h3 class="export-venue__name">
+                  {{
+                    (venueId === 'church' ? 'couple.ceremonyVenue' : 'couple.receptionVenue')
+                      | translate
+                  }}
+                </h3>
+                <p class="export-venue__description">
+                  {{ venueKey(venueId, 'description') | translate }}
+                </p>
+                <p class="export-venue__address">{{ venueKey(venueId, 'address') | translate }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Page 5: With Gratitude + a note on gifts -->
+      <section
+        #pageEl
+        class="export-page export-page--gratitude"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame">
+          <h2 class="export-page__heading">{{ 'withGratitude.heading' | translate }}</h2>
+          <p class="export-gratitude__body">{{ 'withGratitude.body' | translate }}</p>
+          <div class="export-gratitude__ornament" aria-hidden="true"><span></span></div>
+          <div class="export-gratitude__grid">
+            @for (id of gratitudeIds; track id) {
+              <div class="export-gratitude__card">
+                <p class="export-gratitude__role">{{ gratitudeKey(id, 'role') | translate }}</p>
+                <p class="export-gratitude__names">{{ gratitudeKey(id, 'names') | translate }}</p>
+              </div>
+            }
+          </div>
+          <div class="export-gift-card" [style.background-image]="'url(' + giftCardImage + ')'">
+            @for (tape of tapeStrips; track $index) {
+              <span
+                class="export-gift-card__tape"
+                [style.left]="tape.left"
+                [style.right]="tape.right"
+                [style.top]="tape.top"
+                [style.bottom]="tape.bottom"
+                [style.transform]="'rotate(' + tape.rot + 'deg)'"
+                [style.background-image]="'url(' + tapeImage + ')'"
+              ></span>
+            }
+            <h3 class="export-gift-card__heading">{{ 'giftRegistry.heading' | translate }}</h3>
+            <p class="export-gift-card__text">
+              {{ 'giftRegistry.body' | translate }}{{ 'giftRegistry.closing' | translate }}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 6: Wedding timeline -->
+      <section
+        #pageEl
+        class="export-page export-page--timeline"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame">
+          <h2 class="export-page__heading">{{ 'weddingTimeline.heading' | translate }}</h2>
+          <ol class="export-timeline-list export-fit">
+            @for (eventId of timelineEventIds; track eventId) {
+              <li class="export-timeline-list__event">
+                <time class="export-timeline-list__time">{{
+                  timelineTextKey(eventId, 'time') | translate
+                }}</time>
+                <div class="export-timeline-list__copy">
+                  <h3 class="export-timeline-list__title">
+                    {{ timelineTextKey(eventId, 'title') | translate }}
+                  </h3>
+                  <p class="export-timeline-list__description">
+                    {{ timelineTextKey(eventId, 'description') | translate }}
+                  </p>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+      </section>
+
+      <!-- Page 7: Attire -->
+      <section
+        #pageEl
+        class="export-page export-page--attire"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame export-page__frame--attire">
+          <h2 class="export-page__heading">{{ 'whatToWear.heading' | translate }}</h2>
+          <p class="export-page__lead">{{ 'whatToWear.lead' | translate }}</p>
+
+          <div class="export-attire-body">
+            @if (attireGuideImage && !attireImageFailed()) {
+              <div
+                class="export-attire-image"
+                role="img"
+                [style.padding-top.%]="photoRatioPercent(attireGuideImage) * 0.58"
+                [style.background-image]="'url(' + attireGuideImage + ')'"
+              ></div>
+            }
+
+            <div class="export-attire-groups">
+              <div class="export-attire-groups__group">
+                <h3>{{ 'whatToWear.ladies.heading' | translate }}</h3>
+                <p>{{ 'whatToWear.ladies.body' | translate }}</p>
+                <div class="export-attire-groups__swatches">
+                  @for (color of ladiesColorGuide; track color) {
+                    <span
+                      class="export-attire-groups__swatch"
+                      [style.background-color]="color"
+                    ></span>
+                  }
+                </div>
+              </div>
+
+              <div class="export-attire-groups__group">
+                <h3>{{ 'whatToWear.gentlemen.heading' | translate }}</h3>
+                <p>{{ 'whatToWear.gentlemen.body' | translate }}</p>
+                <div class="export-attire-groups__swatches">
+                  @for (color of gentlemenColorGuide; track color) {
+                    <span
+                      class="export-attire-groups__swatch"
+                      [style.background-color]="color"
+                    ></span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 8: Where to Stay -->
+      <section
+        #pageEl
+        class="export-page export-page--stay"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame export-page__frame--stay">
+          <h2 class="export-page__heading export-page__heading--medium">
+            {{ 'whereToStay.heading' | translate }}
+          </h2>
+          <p class="export-stay__recommendation">
+            {{ 'whereToStay.recommendation.prefix' | translate
+            }}<strong>{{ 'whereToStay.recommendation.locations.bencoolen' | translate }}</strong
+            >{{ 'whereToStay.recommendation.afterBencoolen' | translate
+            }}<strong>{{ 'whereToStay.recommendation.locations.bugis' | translate }}</strong
+            >{{ 'whereToStay.recommendation.afterBugis' | translate
+            }}<strong>{{ 'whereToStay.recommendation.locations.cityHall' | translate }}</strong
+            >{{ 'whereToStay.recommendation.suffix' | translate }}
+          </p>
+          <div class="export-stay__groups export-fit">
+            @for (group of hotelGroups; track group.id) {
+              <div class="export-stay__group">
+                <h3 class="export-stay__subheading">
+                  {{ hotelGroupHeadingKey(group.id) | translate }}
+                </h3>
+                <ul class="export-stay__hotels">
+                  @for (hotel of group.hotels; track hotel) {
+                    <li>{{ hotelNameKey(group.id, hotel) | translate }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+          <p class="export-stay__closing">{{ 'whereToStay.closing' | translate }}</p>
+        </div>
+      </section>
+
+      <!-- Page 9: Q&A, all expanded, with gift QR codes -->
+      <section
+        #pageEl
+        class="export-page export-page--qa"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <div class="export-page__frame">
+          <h2 class="export-page__heading">{{ 'questionsAndAnswers.heading' | translate }}</h2>
+          <div class="export-qa-list export-fit">
+            @for (itemId of qaItemIds; track itemId) {
+              <div class="export-qa-list__item">
+                <h3 class="export-qa-list__question">
+                  {{ qaTextKey(itemId, 'question') | translate }}
+                </h3>
+                <div class="export-qa-list__rule" aria-hidden="true"></div>
+                <p class="export-qa-list__answer">{{ qaTextKey(itemId, 'answer') | translate }}</p>
+
+                @if (isGiftBlessingItem(itemId)) {
+                  <div class="export-qa-list__gift-options">
+                    <div class="export-qa-list__gift-option">
+                      <h4>
+                        {{
+                          'questionsAndAnswers.items.giftBlessing.philippinesHeaderLine1'
+                            | translate
+                        }}
+                        {{
+                          'questionsAndAnswers.items.giftBlessing.philippinesHeaderLine2'
+                            | translate
+                        }}
+                      </h4>
+                      @if (shouldShowGiftQrCode('philippines')) {
+                        <div
+                          class="export-qa-list__qr"
+                          role="img"
+                          [style.background-image]="'url(' + giftQrCodeUrl('philippines') + ')'"
+                        ></div>
+                      }
+                      <p>
+                        {{ giftDetails.philippines.accountName }} ·
+                        {{ giftDetails.philippines.accountNumber }}
+                      </p>
+                    </div>
+
+                    <div class="export-qa-list__gift-option">
+                      <h4>
+                        {{
+                          'questionsAndAnswers.items.giftBlessing.singaporeHeaderLine1' | translate
+                        }}
+                        {{
+                          'questionsAndAnswers.items.giftBlessing.singaporeHeaderLine2' | translate
+                        }}
+                      </h4>
+                      @if (shouldShowGiftQrCode('singapore')) {
+                        <div
+                          class="export-qa-list__qr"
+                          role="img"
+                          [style.background-image]="'url(' + giftQrCodeUrl('singapore') + ')'"
+                        ></div>
+                      }
+                      <p>
+                        {{ giftDetails.singapore.accountName }} ·
+                        {{ giftDetails.singapore.mobileNumber }}
+                      </p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+</section>

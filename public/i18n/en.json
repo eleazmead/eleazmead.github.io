@@ -23,6 +23,9 @@
     "ceremonyTime": "",
     "receptionLabel": "Wedding Dinner Reception 6:00 PM",
     "receptionTime": "",
+    "addToCalendar": "Add to your calendar",
+    "calendarTitle": "Eleaz & Mead Wedding",
+    "calendarDescription": "Wedding Mass at St. Joseph's Church (2:00 PM) and dinner reception at The Lighthouse Fullerton (6:00 PM).",
     "cta": "RSVP Now"
   },
   "guestLetter": {
@@ -356,6 +359,30 @@
         "question": "Where can you suggest we stay?",
         "answer": "We recommend staying around Bencoolen, Bugis, or City Hall, as these areas are conveniently located between St. Joseph’s Church and our reception venue at The Fullerton Hotel. Some suitable options include Hotel Mi Bencoolen, V Hotel Bencoolen, and ibis Singapore on Bencoolen for more budget-conscious stays, as well as lyf Funan Singapore and Carlton Hotel Singapore for guests who prefer additional comfort and convenience. These hotels are located in central, well-connected areas with easy access to public transportation, dining, and other amenities. Accommodation will not be arranged by the couple, so we kindly encourage guests to compare rates and book early, as prices and availability may vary."
       }
+    }
+  },
+  "exportInvitation": {
+    "heading": "Save a Copy of This Invitation",
+    "body": "Keep a beautifully designed copy of our invitation for yourself, save it to your phone, or print it out.",
+    "button": "Save a Copy of the Invitation",
+    "generating": "Preparing...",
+    "optionImages": "As Images",
+    "optionPdf": "As PDF",
+    "saveReady": "Your images are ready. Tap to save them.",
+    "saveButton": "Save images",
+    "error": "Something went wrong preparing your invitation. Please try again.",
+    "rsvpStatus": {
+      "heading": "Your RSVP",
+      "attending": "Attending",
+      "notAttending": "Not Attending",
+      "mealPrefix": "Main course:",
+      "notYetHeading": "Haven't RSVP-ed yet?",
+      "notYetBody": "Please let us know by messaging the couple on WhatsApp with your name, whether you can attend, and your main course choice if you are.",
+      "whatsappLabel": "WhatsApp us at",
+      "optionsHeading": "Main course options:"
+    },
+    "timingVenues": {
+      "heading": "Timing & Venues"
     }
   },
   "footer": {

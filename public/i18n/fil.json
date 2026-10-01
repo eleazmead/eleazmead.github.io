@@ -23,6 +23,9 @@
     "ceremonyTime": "",
     "receptionLabel": "Wedding Dinner Reception 6:00 PM",
     "receptionTime": "",
+    "addToCalendar": "Idagdag sa iyong kalendaryo",
+    "calendarTitle": "Kasal nina Eleaz at Mead",
+    "calendarDescription": "Wedding Mass sa St. Joseph's Church (2:00 PM) at dinner reception sa The Lighthouse Fullerton (6:00 PM).",
     "cta": "Mag-RSVP Ngayon"
   },
   "guestLetter": {
@@ -356,6 +359,30 @@
         "question": "Saan ninyo suggest mag-stay?",
         "answer": "We recommend staying around Bencoolen, Bugis, or City Hall, kasi convenient ang areas na ito between St. Joseph’s Church and our reception venue at The Fullerton Hotel. Good options include Hotel Mi Bencoolen, V Hotel Bencoolen, and ibis Singapore on Bencoolen for more budget-friendly stays, plus lyf Funan Singapore and Carlton Hotel Singapore for guests who prefer more comfort and convenience. These hotels are central, well-connected, and near public transport, food, and other amenities. Hindi kami ang mag-a-arrange ng accommodation, so we suggest comparing rates and booking early since prices and availability can change."
       }
+    }
+  },
+  "exportInvitation": {
+    "heading": "I-save ang Kopya ng Imbitasyong Ito",
+    "body": "Panatilihin ang isang magandang disenyong kopya ng aming imbitasyon para sa iyo, i-save ito sa iyong telepono, o i-print.",
+    "button": "I-save ang Kopya ng Imbitasyon",
+    "generating": "Inihahanda...",
+    "optionImages": "Bilang mga Larawan",
+    "optionPdf": "Bilang PDF",
+    "saveReady": "Handa na ang iyong mga larawan. I-tap para i-save.",
+    "saveButton": "I-save ang mga larawan",
+    "error": "May naganap na problema sa paghahanda ng imbitasyon. Subukan muli.",
+    "rsvpStatus": {
+      "heading": "Iyong RSVP",
+      "attending": "Dadalo",
+      "notAttending": "Hindi Makakadalo",
+      "mealPrefix": "Pangunahing ulam:",
+      "notYetHeading": "Hindi ka pa nag-RSVP?",
+      "notYetBody": "Paki-message lang ang couple sa WhatsApp kasama ang iyong pangalan, kung makakadalo ka, at ang iyong napiling pangunahing ulam kung oo.",
+      "whatsappLabel": "I-WhatsApp kami sa",
+      "optionsHeading": "Mga pagpipilian sa pangunahing ulam:"
+    },
+    "timingVenues": {
+      "heading": "Oras at Lugar"
     }
   },
   "footer": {

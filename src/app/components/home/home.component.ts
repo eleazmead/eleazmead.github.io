@@ -11,6 +11,7 @@ import { WhatToWearComponent } from '../what-to-wear/what-to-wear.component';
 import { WhereToStayComponent } from '../where-to-stay/where-to-stay.component';
 import { GiftRegistryComponent } from '../gift-registry/gift-registry.component';
 import { QuestionsAnswersComponent } from '../questions-answers/questions-answers.component';
+import { ExportInvitationComponent } from '../export-invitation/export-invitation.component';
 import { MadeWithLoveComponent } from '../made-with-love/made-with-love.component';
 import { FooterComponent } from '../footer/footer.component';
 import { LanguageToggleComponent } from '../../shared/language-toggle/language-toggle.component';
@@ -31,6 +32,7 @@ import { LanguageToggleComponent } from '../../shared/language-toggle/language-t
     WhereToStayComponent,
     GiftRegistryComponent,
     QuestionsAnswersComponent,
+    ExportInvitationComponent,
     MadeWithLoveComponent,
     FooterComponent,
     LanguageToggleComponent,

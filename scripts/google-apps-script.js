@@ -1,5 +1,5 @@
 /**
- * Google Apps Script — EleazMead RSVP Web App
+ * Google Apps Script - EleazMead RSVP Web App
  *
  * HOW TO DEPLOY:
  * 1. Open the Google Sheet → Extensions → Apps Script
@@ -18,22 +18,22 @@
  * 4. Update gasWebAppUrl in sheets.config.ts if the URL changed
  *
  * SHEET COLUMN MAPPING (GuestList tab):
- *   A (1) — FullName
- *   B (2) — Guest1Name
- *   C (3) — Guest2Name
- *   D (4) — RSVP_Raw       (JSON)
- *   E (5) — RSVPTotal      (attending count, computed from merged entries)
- *   F (6) — RSVPBeef_Count
- *   G (7) — RSVPFish_Count
- *   H (8) — RSVPSubmittedAt
- *   I (9) — RSVPSubmittedBy
- *   J (10) — FullNameHash_MD5
- *   K (11) — Guest1FullName_MD5
- *   L (12) — Guest2FullName_MD5
- *   M (13) — LetterAddress
- *   N (14) — LetterMessage
- *   O (15) — LetterShowForAll
- *   P (16) — LetterSignedBy
+ *   A (1) - FullName
+ *   B (2) - Guest1Name
+ *   C (3) - Guest2Name
+ *   D (4) - RSVP_Raw       (JSON)
+ *   E (5) - RSVPTotal      (attending count, computed from merged entries)
+ *   F (6) - RSVPBeef_Count
+ *   G (7) - RSVPFish_Count
+ *   H (8) - RSVPSubmittedAt
+ *   I (9) - RSVPSubmittedBy
+ *   J (10) - FullNameHash_MD5
+ *   K (11) - Guest1FullName_MD5
+ *   L (12) - Guest2FullName_MD5
+ *   M (13) - LetterAddress
+ *   N (14) - LetterMessage
+ *   O (15) - LetterShowForAll
+ *   P (16) - LetterSignedBy
  *   Q (17) - IPAddress       (written by trackAccess)
  *   R (18) - LastAccessedAt  (written by trackAccess)
  *   S (19) - UserAgent       (written by trackAccess)
@@ -41,11 +41,11 @@
  *   U (21) - ImageCaption    (short polaroid caption; blank = no caption)
  *
  * LOG COLUMN MAPPING (Log tab):
- *   A (1) — id
- *   B (2) — name
- *   C (3) — event
- *   D (4) — count
- *   E (5) — createdAt
+ *   A (1) - id
+ *   B (2) - name
+ *   C (3) - event
+ *   D (4) - count
+ *   E (5) - createdAt
  */
 
 // Bumped to v2 when ImageUrl/ImageCaption (columns T/U) were added, so entries cached
@@ -305,12 +305,12 @@ function doPost(e) {
       const allEntries = Object.values(JSON.parse(payload.rsvpRaw)).flat();
       const grandTotal = allEntries.filter((e) => e.RSVP).length;
 
-      guestSheet.getRange(row, 4).setValue(payload.rsvpRaw); // D — RSVP_Raw
-      guestSheet.getRange(row, 5).setValue(grandTotal); // E — RSVPTotal
-      guestSheet.getRange(row, 6).setValue(payload.rsvpBeefCount); // F — RSVPBeef_Count
-      guestSheet.getRange(row, 7).setValue(payload.rsvpFishCount); // G — RSVPFish_Count
-      guestSheet.getRange(row, 8).setValue(payload.rsvpSubmittedAt); // H — RSVPSubmittedAt
-      guestSheet.getRange(row, 9).setValue(payload.rsvpSubmittedBy); // I — RSVPSubmittedBy
+      guestSheet.getRange(row, 4).setValue(payload.rsvpRaw); // D - RSVP_Raw
+      guestSheet.getRange(row, 5).setValue(grandTotal); // E - RSVPTotal
+      guestSheet.getRange(row, 6).setValue(payload.rsvpBeefCount); // F - RSVPBeef_Count
+      guestSheet.getRange(row, 7).setValue(payload.rsvpFishCount); // G - RSVPFish_Count
+      guestSheet.getRange(row, 8).setValue(payload.rsvpSubmittedAt); // H - RSVPSubmittedAt
+      guestSheet.getRange(row, 9).setValue(payload.rsvpSubmittedBy); // I - RSVPSubmittedBy
 
       // Append log row
       const logSheet = ss.getSheetByName('Log');

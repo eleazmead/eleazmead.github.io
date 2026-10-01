@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(2rem, 5vw, 7rem) 1.5rem clamp(1rem, 3vw, 4rem);
+  padding: clamp(2rem, 5vw, 7rem) 1.5rem clamp(4.5rem, 6vw, 5.5rem);
   overflow: hidden;
 
   @media (min-width: 1024px) {
@@ -340,6 +340,54 @@
 
   .hero__scroll-cue {
     opacity: 0.72;
+    animation: none;
+  }
+}
+
+.hero__calendar {
+  display: block;
+  width: fit-content;
+  margin: 1.1rem auto 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  cursor: pointer;
+  // Shimmer: a light band sweeps across dark text (clipped to the glyphs).
+  color: transparent;
+  background: linear-gradient(
+      110deg,
+      var(--color-text) 0%,
+      var(--color-text) 40%,
+      #b8957e 50%,
+      var(--color-text) 60%,
+      var(--color-text) 100%
+    )
+    0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: heroCalendarShimmer 3s linear infinite;
+}
+
+// Above the RSVP button (no invitation hash): space below instead of above.
+.hero__calendar--above {
+  margin: 0 auto 1.1rem;
+}
+
+@keyframes heroCalendarShimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__calendar {
     animation: none;
   }
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 
-const WEDDING_TIMELINE_EVENT_IDS = [
+export const WEDDING_TIMELINE_EVENT_IDS = [
   'partyAssembles',
   'ceremonyBegins',
   'massConcludes',
@@ -13,7 +13,7 @@ const WEDDING_TIMELINE_EVENT_IDS = [
   'receptionConcludes',
 ] as const;
 
-type WeddingTimelineEventId = (typeof WEDDING_TIMELINE_EVENT_IDS)[number];
+export type WeddingTimelineEventId = (typeof WEDDING_TIMELINE_EVENT_IDS)[number];
 
 @Component({
   selector: 'app-wedding-timeline',

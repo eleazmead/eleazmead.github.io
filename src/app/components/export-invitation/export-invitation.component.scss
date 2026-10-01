@@ -1,0 +1,1133 @@
+.export-invitation {
+  padding: 3.75rem 1.25rem;
+
+  @media (min-width: 1024px) {
+    padding: 5rem 4rem;
+  }
+}
+
+.export-invitation__container {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.export-invitation__body {
+  color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.export-invitation__error {
+  margin-top: 1rem;
+  color: #a0392f;
+  font-size: 0.85rem;
+}
+
+// Trigger + dropdown - mirrors LanguageToggleComponent's pattern (same
+// chevron transition/easing, menu animation, outside-click/escape close),
+// but positioned inline in this section rather than fixed to the viewport.
+.export-toggle {
+  position: relative;
+  display: inline-block;
+}
+
+.export-toggle__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+  color: var(--color-surface);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.6rem;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-secondary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+.export-toggle__chevron {
+  width: 0.65rem;
+  height: 0.55rem;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.export-toggle__spinner {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: export-toggle-spin 0.8s linear infinite;
+}
+
+@keyframes export-toggle-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.export-toggle__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 12rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid rgba(184, 149, 126, 0.45);
+  border-radius: 0.35rem;
+  box-shadow:
+    0 4px 10px rgba(18, 18, 18, 0.08),
+    0 14px 28px rgba(18, 18, 18, 0.14);
+  animation: exportMenuIn 0.16s ease both;
+  z-index: 5;
+}
+
+.export-toggle__option {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  border-radius: 0.25rem;
+  color: var(--color-secondary);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(184, 149, 126, 0.14);
+    color: var(--color-text);
+  }
+}
+
+@keyframes exportMenuIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .export-toggle__chevron {
+    transition: none;
+  }
+
+  .export-toggle__menu {
+    animation: none;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Off-screen export pages. Rasterized by html2canvas, never seen directly
+// by a visitor - positioned far outside the viewport rather than hidden
+// so they keep real layout.
+// ---------------------------------------------------------------------
+
+.export-invitation__pages {
+  // iOS Safari auto-inflates text in wide blocks on a narrow viewport, which grew
+  // every page's text past its fixed height and clipped content (seen on a
+  // real iPhone). The export pages must render at their authored sizes.
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  position: absolute;
+  left: -99999px;
+  top: 0;
+}
+
+.export-page {
+  overflow: hidden;
+  background: #fbf7f2;
+  background-image:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.82), rgba(251, 247, 242, 0.28) 48%),
+    linear-gradient(160deg, rgba(217, 160, 168, 0.16), transparent 34%),
+    linear-gradient(25deg, transparent 62%, rgba(184, 149, 126, 0.16));
+}
+
+.export-page__frame {
+  // Minus the frame's own top+bottom margin (1.25rem each) so it fits the page
+  // instead of overflowing it and clipping the bottom edge.
+  height: calc(100% - 2.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.25rem 2.5rem;
+  border: 1px solid rgba(184, 149, 126, 0.35);
+  margin: 1.25rem;
+  box-sizing: border-box;
+}
+
+.export-page__heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 4.6rem;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin-bottom: 2.25rem;
+
+  &--small {
+    font-size: 3.2rem;
+    margin-top: 0;
+  }
+}
+
+.export-page__lead {
+  font-family: var(--font-body);
+  font-size: 1.85rem;
+  line-height: 1.75;
+  color: var(--color-muted);
+  text-align: center;
+
+  &--center {
+    margin-top: auto;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.export-page__divider {
+  height: 1px;
+  margin: 2.5rem 0;
+  background: rgba(184, 149, 126, 0.35);
+}
+
+.export-page__amp {
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+.export-page__cover-names {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 5rem;
+  text-align: center;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+// Page 1 - Cover
+
+.export-page__frame--cover {
+  align-items: center;
+  justify-content: center;
+  gap: 2.75rem;
+  text-align: center;
+}
+
+.export-page__eyebrow {
+  font-family: var(--font-body);
+  font-size: 1.9rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #6b4a36;
+  position: relative;
+  top: -2.5rem;
+}
+
+.export-page__cover-image-wrap {
+  width: 100%;
+  flex: 0 0 auto;
+  max-width: 41.6rem;
+  height: 63rem;
+  overflow: hidden;
+  border: 8px solid var(--color-surface);
+  box-shadow: 0 18px 40px rgba(18, 18, 18, 0.18);
+}
+
+.export-page__cover-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.export-page__cover-placeholder {
+  width: 100%;
+  height: 100%;
+  // html2canvas can't parse color-mix() (throws "unsupported color
+  // function"), so every color inside a captured export page is a plain
+  // hex/rgba value - never color-mix()/color-contrast()/etc, even though
+  // the live site uses color-mix() freely elsewhere. This is 22% #b8957e
+  // over #ffffff.
+  background: #efe8e3;
+}
+
+// Page 2 - Our Story as a winding path
+//
+// A serpentine line (public/export/story-path.svg, background stretched over the
+// container so the stop percentages always line up with it) with nine stops; each
+// polaroid is pinned to its stop and hangs below the line. Photos keep their natural
+// ratio (clamped) via a padding-top box + background-image, never <img>/aspect-ratio
+// (html2canvas). Stop x/y live in ExportInvitationComponent.storyStops.
+
+.export-story-path {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.export-story-stop {
+  position: absolute;
+  width: 15.5rem;
+  margin-left: -7.75rem;
+}
+
+.export-story-stop__pin {
+  position: absolute;
+  z-index: 2;
+  top: -0.95rem;
+  left: 50%;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin-left: -0.95rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f6c9cf 0%, #d9a0a8 45%, #a9606b 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 6px rgba(30, 15, 5, 0.35);
+}
+
+.export-story-stop__card {
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.5rem 0;
+  background: var(--color-surface);
+  box-shadow: 0 8px 18px rgba(18, 18, 18, 0.2);
+}
+
+.export-story-stop__photo {
+  width: 100%;
+  height: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.export-story-stop__placeholder {
+  width: 100%;
+  padding-top: 75%;
+  background-color: #f2ece8;
+}
+
+.export-story-stop__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.3rem 0.8rem;
+  text-align: center;
+}
+
+.export-story-stop__date {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.export-story-stop__title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+// Page 3 - Guest letter on scorched, torn paper.
+//
+// html2canvas ignores clip-path (the live letter's torn edge came out as a flat
+// rectangle), so the paper is an SVG background asset (public/export/
+// burnt-paper.svg: jagged torn outline, blurred charred inner edge, ember rim,
+// corner scorch) drawn with background-size: 100% 100%. Content stays inside
+// the scorch band via generous padding. Everything is centered; the optional
+// guest photo sits in the upper right corner like a pinned snapshot.
+
+.export-page__frame--letter {
+  padding: 0.5rem;
+  border: none;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.export-letter-paper {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 9rem 8.5rem 8rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-align: center;
+
+  &--with-photo {
+    padding-top: 15rem;
+  }
+}
+
+.export-letter-paper__photo-wrap {
+  position: absolute;
+  top: 6.5rem;
+  right: 6.5rem;
+  width: 15rem;
+  padding: 0.55rem 0.55rem 1.6rem;
+  background: var(--color-surface);
+  box-shadow: 0 10px 24px rgba(30, 15, 5, 0.35);
+  transform: rotate(4deg);
+}
+
+.export-letter-paper__photo {
+  width: 100%;
+  height: 0;
+  padding-top: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.export-letter-paper__body {
+  flex: 0 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.export-letter-paper__salutation,
+.export-letter-paper__message,
+.export-letter-paper__signature-line,
+.export-letter-paper__signature-name {
+  color: #2a1a10;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.export-letter-paper__salutation {
+  margin: 0 0 1.6rem;
+  font-size: 3rem;
+}
+
+.export-letter-paper__message {
+  margin: 0 0 2.4rem;
+  font-size: 2.5rem;
+  white-space: pre-line;
+}
+
+.export-letter-paper__signature-line {
+  margin: 0;
+  font-size: 2.3rem;
+}
+
+.export-letter-paper__signature-name {
+  margin: 0;
+  font-size: 2.8rem;
+  color: #8a5a34;
+}
+
+// The RSVP note sits on the paper itself (a parchment slip with a solid
+// border), sized to read at a glance - it was a tiny low-contrast box that
+// felt detached from the letter.
+.export-letter-rsvp-box {
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 44rem;
+  padding: 1.4rem 2rem;
+  border: 2px dashed rgba(90, 50, 22, 0.65);
+  border-radius: 1rem;
+  background: rgba(255, 252, 245, 0.8);
+  text-align: center;
+
+  &--pending {
+    background: rgba(255, 246, 232, 0.85);
+  }
+}
+
+.export-letter-rsvp-box__heading {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a5a34;
+  margin-bottom: 0.5rem;
+}
+
+.export-letter-rsvp-box__status {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: #2a1a10;
+}
+
+.export-letter-rsvp-box__meal,
+.export-letter-rsvp-box__body,
+.export-letter-rsvp-box__whatsapp,
+.export-letter-rsvp-box__options-heading {
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: #4a3324;
+  margin-top: 0.45rem;
+}
+
+.export-letter-rsvp-box__whatsapp {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2a1a10;
+}
+
+// Page 4 - Wedding timeline
+//
+// A proper vertical timeline - a continuous line down the page with a dot
+// marker per event - ported from `wedding-timeline.component.scss`'s own
+// live design (the earlier dashed "Time ---- Event" connector read as too
+// small/insubstantial), with color-mix() swapped for static rgba/hex
+// equivalents (html2canvas can't parse color-mix()'s computed output) and
+// everything sized up for a page far taller than a browser viewport.
+
+.export-timeline-list {
+  position: relative;
+  flex: 1;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2.1rem;
+  justify-content: space-evenly;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    left: 7.9rem;
+    width: 2px;
+    // 64% #b8957e over white, matching the live timeline's line gradient.
+    background: linear-gradient(180deg, transparent, #d2bbac, transparent);
+  }
+}
+
+.export-timeline-list__event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 2rem;
+  align-items: start;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.35em;
+    left: 7.45rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 3px solid #fbf7f2;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 6px rgba(217, 160, 168, 0.22);
+    z-index: 1;
+  }
+}
+
+.export-timeline-list__time {
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text);
+}
+
+.export-timeline-list__copy {
+  padding-left: 2rem;
+  border-left: 1px solid rgba(184, 149, 126, 0.42);
+  text-align: left;
+}
+
+.export-timeline-list__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2.35rem;
+  color: var(--color-text);
+  margin-bottom: 0.4rem;
+}
+
+.export-timeline-list__description {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  max-width: 48rem;
+}
+
+// Page 5 - Attire + note on gifts
+//
+// Order: heading, lead, reference image, then For Ladies / For Gentlemen side
+// by side, then the gift note. The image is `flex: 1` with background-size:
+// contain, so it grows into whatever vertical space the rest of the page
+// leaves (content-aware) instead of a fixed size with blank bands above/below,
+// and it is never cropped.
+
+.export-page__frame--attire {
+  justify-content: flex-start;
+}
+
+// Image + For Ladies / For Gentlemen share one flex box that fills the rest of
+// the page: space-evenly spreads them out (no dead bands), and .export-fit
+// scales it down if a device renders text taller, so nothing is ever cropped.
+.export-attire-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.export-attire-image {
+  flex: 0 0 auto;
+  height: 0;
+  margin: 0 auto;
+  width: 58%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.export-attire-groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.export-attire-groups__group {
+  text-align: center;
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 3.1rem;
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+  }
+
+  p {
+    font-family: var(--font-body);
+    font-size: 1.85rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+}
+
+.export-attire-groups__swatches {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.export-attire-groups__swatch {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  border: 1px solid rgba(18, 18, 18, 0.15);
+  display: inline-block;
+}
+
+// Page 6 - Q&A
+//
+// "[Bold] Question? / rule / Answer" (reported as easier to read than
+// centered paragraphs) - each question is bold, a short rule underlines it,
+// then the answer reads as a normal left-aligned paragraph below. The block
+// as a whole still centers on the page via max-width + margin auto and the
+// frame's justify-content: center; only the text within each item is
+// left-aligned, since centered multi-line body text is harder to read.
+
+.export-qa-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 1.5rem;
+  overflow: hidden;
+  // Wide enough to actually use the page's side margins (was 42rem, well
+  // short of the ~60.5rem the frame has to give - reported directly as
+  // wasted space) - every answer wraps to fewer lines at this width, which
+  // is also what gives the vertical headroom that fixed the clipped first
+  // question below, not just the spacing trims nearby.
+  max-width: 62rem;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.export-qa-list__question {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.3rem;
+  color: var(--color-text);
+  margin-bottom: 0.45rem;
+}
+
+.export-qa-list__rule {
+  width: 3.5rem;
+  height: 3px;
+  background: var(--color-primary);
+  margin-bottom: 0.85rem;
+}
+
+.export-qa-list__answer {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+.export-qa-list__gift-options {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 0.85rem;
+}
+
+.export-qa-list__gift-option {
+  flex: 1;
+  max-width: 16rem;
+  text-align: center;
+
+  h4 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 0.7rem;
+  }
+
+  p {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--color-muted);
+    margin-top: 0.7rem;
+  }
+}
+
+// Enlarged from an earlier, phone-scan-unfriendly size (reported directly)
+// - a QR code needs real pixel density to scan reliably, especially once
+// downscaled from the source html2canvas capture into a shared JPEG/PDF.
+.export-qa-list__qr {
+  width: 10.5rem;
+  height: 10.5rem;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  border: 1px solid rgba(18, 18, 18, 0.1);
+}
+
+// Hand-drawn bullets (not list-style) so the dot rasterizes identically everywhere.
+.export-letter-rsvp-box__options {
+  list-style: none;
+  display: inline-block;
+  margin-top: 0.3rem;
+  text-align: left;
+
+  li {
+    position: relative;
+    padding-left: 1.4rem;
+    font-family: var(--font-body);
+    font-size: 1.3rem;
+    line-height: 1.7;
+    color: #4a3324;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7em;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: #8a5a34;
+    }
+  }
+}
+
+// Medium heading for long titles (e.g. "Where To Stay (For Our Overseas Guests)").
+.export-page__heading--medium {
+  font-size: 3.4rem;
+  line-height: 1.15;
+}
+
+// Timing & Venues: two rows (photo + copy), the second mirrored. Photos are
+// natural-ratio (clamped) background-image boxes, like every other photo.
+.export-venue {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+
+  &--reverse {
+    flex-direction: row-reverse;
+  }
+
+  & + & {
+    border-top: 1px solid rgba(184, 149, 126, 0.35);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+}
+
+.export-venue__photo-wrap {
+  flex: 0 0 50%;
+  border: 8px solid var(--color-surface);
+  box-shadow: 0 14px 30px rgba(18, 18, 18, 0.18);
+}
+
+.export-venue__photo {
+  width: 100%;
+  height: 0;
+  // contain in a box of the photo's own ratio (never cover in a mismatched box:
+  // html2canvas mis-sizes cover against the zero-height content box and stretches).
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.export-venue__copy {
+  flex: 1;
+  text-align: left;
+}
+
+.export-venue__event {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a5a34;
+  margin-bottom: 0.8rem;
+}
+
+.export-venue__time {
+  // A border, not text-decoration: html2canvas ignores text-underline-offset,
+  // so a real underline is drawn touching the glyphs.
+  display: inline-block;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid currentColor;
+}
+
+.export-venue__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 3.3rem;
+  line-height: 1.15;
+  color: var(--color-text);
+  margin-bottom: 1.1rem;
+}
+
+.export-venue__description {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+  margin-bottom: 1.1rem;
+}
+
+.export-venue__address {
+  font-family: var(--font-body);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+// With Gratitude: 2x2 cards in the live site's card design (static colors, no
+// color-mix), then the gift note as a taped black notecard (SVG assets, since
+// html2canvas ignores mask/clip-path).
+.export-gratitude__body {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.export-gratitude__ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 9rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(184, 149, 126, 0.7));
+  }
+
+  &::after {
+    transform: scaleX(-1);
+  }
+
+  span {
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1px solid #b8957e;
+    transform: rotate(45deg);
+    background: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.export-page--gratitude .export-page__frame {
+  justify-content: space-evenly;
+}
+
+// Cards are a fixed 19rem tall (20% under the ~379px they stretched to when the
+// grid was flex: 1); the freed height is spread evenly by the frame above.
+.export-gratitude__grid {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 19rem;
+  gap: 1.4rem;
+}
+
+.export-gratitude__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.4rem 1rem;
+  border: 1px solid rgba(184, 149, 126, 0.3);
+  border-radius: 0.6rem;
+  background:
+    linear-gradient(135deg, rgba(217, 160, 168, 0.12), transparent 50%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(251, 247, 242, 0.75));
+  box-shadow: 0 12px 26px rgba(18, 18, 18, 0.1);
+  text-align: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    border: 1px solid rgba(184, 149, 126, 0.16);
+    border-radius: 0.4rem;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 5rem;
+    height: 3px;
+    margin-left: -2.5rem;
+    background: #d3a598;
+  }
+}
+
+.export-gratitude__role {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.7rem;
+  line-height: 1.15;
+  color: var(--color-secondary);
+}
+
+.export-gratitude__names {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 2.15rem;
+  line-height: 1.4;
+  color: var(--color-secondary);
+  white-space: pre-line;
+}
+
+.export-gift-card {
+  position: relative;
+  margin: 1.6rem -1.5rem 0;
+  min-height: 25rem;
+  padding: 3.6rem 6.5rem 3.4rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  transform: rotate(0.4deg);
+}
+
+.export-gift-card__tape {
+  position: absolute;
+  z-index: 2;
+  width: 7rem;
+  height: 1.7rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.export-gift-card__heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 3.3rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1rem;
+}
+
+.export-gift-card__text {
+  font-family: var(--font-body);
+  font-size: 1.75rem;
+  line-height: 2.35rem;
+}
+
+// Where to Stay
+// Top-aligned (title near the top like the other text pages); the groups get
+// the leftover height evenly so larger text fills the page without dead bands.
+.export-page__frame--stay {
+  justify-content: flex-start;
+  padding-top: 5rem;
+}
+
+.export-stay__recommendation {
+  font-family: var(--font-body);
+  font-size: 2.15rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  strong {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+}
+
+.export-stay__groups {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2.5rem;
+}
+
+.export-stay__group {
+  padding: 2.4rem 2rem;
+  border: 1px solid rgba(184, 149, 126, 0.3);
+  border-radius: 0.6rem;
+  // No box-shadow: html2canvas paints it as a solid grey rectangle behind the card.
+  background: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+.export-stay__subheading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 3.3rem;
+  color: #8a5a34;
+  margin-bottom: 1.1rem;
+}
+
+.export-stay__hotels {
+  list-style: none;
+  display: inline-block;
+  text-align: left;
+
+  li {
+    position: relative;
+    padding-left: 1.6rem;
+    font-family: var(--font-body);
+    font-size: 2.5rem;
+    line-height: 1.9;
+    color: var(--color-text);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.85em;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: #b8957e;
+    }
+  }
+}
+
+.export-stay__closing {
+  margin-top: 2.5rem;
+  padding: 1.4rem 1.6rem;
+  border-top: 1px solid rgba(184, 149, 126, 0.5);
+  border-bottom: 1px solid rgba(184, 149, 126, 0.5);
+  font-family: var(--font-body);
+  font-size: 1.95rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.export-invitation__error-detail {
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  text-align: center;
+  word-break: break-word;
+}
+
+.export-invitation__ready {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
