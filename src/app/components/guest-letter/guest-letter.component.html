@@ -2,8 +2,7 @@
   <section class="guest-letter" [class.guest-letter--with-photo]="!!photoUrl()" id="guest-letter">
     <div class="guest-letter__sheet" appFadeUp>
       @if (photoUrl(); as url) {
-        <!-- A sibling of the paper, not a child: the paper's clip-path (torn
-             edges) would otherwise crop the polaroid where it overhangs. -->
+        <!-- A sibling of the paper, not a child, so it can overhang the paper without being clipped. -->
         <div class="guest-letter__photo">
           <app-polaroid-photo
             variant="taped"
@@ -16,6 +15,11 @@
         </div>
       }
       <div class="guest-letter__paper" [class.guest-letter__paper--with-photo]="!!photoUrl()">
+        <div
+          class="guest-letter__paper-bg"
+          aria-hidden="true"
+          [style.border-image-source]="'url(' + paperImage + ')'"
+        ></div>
         <p class="guest-letter__salutation">
           {{ 'guestLetter.dear' | translate }} {{ matchedRow()!.letterAddress }},
         </p>

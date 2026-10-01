@@ -368,6 +368,7 @@
     "generating": "准备中...",
     "optionImages": "导出为图片",
     "optionPdf": "导出为PDF",
+    "shieldsHint": "您的浏览器正在阻止生成图片(例如 Brave 的 Shields)。请为本网站关闭 Shields 后重试。",
     "saveReady": "图片已准备好,点击保存。",
     "saveButton": "保存图片",
     "error": "准备请柬时出现问题,请重试。",
@@ -377,9 +378,8 @@
       "notAttending": "无法出席",
       "mealPrefix": "主菜:",
       "notYetHeading": "还没有回复吗?",
-      "notYetBody": "请通过WhatsApp告知新人您的姓名、是否出席以及主菜选择(如出席)。",
-      "whatsappLabel": "WhatsApp联系我们:",
-      "optionsHeading": "主菜选项:"
+      "notYetBody": "请于{0}前联系新郎或新娘回复,确认您是否出席,并选择晚宴的主菜。",
+      "optionsHeading": "主菜选择"
     },
     "timingVenues": {
       "heading": "时间与地点"

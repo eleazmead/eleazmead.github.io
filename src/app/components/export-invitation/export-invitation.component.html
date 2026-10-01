@@ -56,6 +56,12 @@
       }
     </div>
 
+    @if (shieldsHint()) {
+      <p class="export-invitation__error" role="alert">
+        {{ 'exportInvitation.shieldsHint' | translate }}
+      </p>
+    }
+
     @if (pendingImages()) {
       <div class="export-invitation__ready">
         <p>{{ 'exportInvitation.saveReady' | translate }}</p>
@@ -169,11 +175,7 @@
                     {{ 'exportInvitation.rsvpStatus.notYetHeading' | translate }}
                   </p>
                   <p class="export-letter-rsvp-box__body">
-                    {{ 'exportInvitation.rsvpStatus.notYetBody' | translate }}
-                  </p>
-                  <p class="export-letter-rsvp-box__whatsapp">
-                    {{ 'exportInvitation.rsvpStatus.whatsappLabel' | translate }}
-                    {{ whatsappDisplayNumber }}
+                    {{ notYetBody() }}
                   </p>
                   <p class="export-letter-rsvp-box__options-heading">
                     {{ 'exportInvitation.rsvpStatus.optionsHeading' | translate }}
@@ -279,7 +281,7 @@
         </div>
       </section>
 
-      <!-- Page 5: With Gratitude + a note on gifts -->
+      <!-- Page 5: With Gratitude -->
       <section
         #pageEl
         class="export-page export-page--gratitude"
@@ -297,23 +299,6 @@
                 <p class="export-gratitude__names">{{ gratitudeKey(id, 'names') | translate }}</p>
               </div>
             }
-          </div>
-          <div class="export-gift-card" [style.background-image]="'url(' + giftCardImage + ')'">
-            @for (tape of tapeStrips; track $index) {
-              <span
-                class="export-gift-card__tape"
-                [style.left]="tape.left"
-                [style.right]="tape.right"
-                [style.top]="tape.top"
-                [style.bottom]="tape.bottom"
-                [style.transform]="'rotate(' + tape.rot + 'deg)'"
-                [style.background-image]="'url(' + tapeImage + ')'"
-              ></span>
-            }
-            <h3 class="export-gift-card__heading">{{ 'giftRegistry.heading' | translate }}</h3>
-            <p class="export-gift-card__text">
-              {{ 'giftRegistry.body' | translate }}{{ 'giftRegistry.closing' | translate }}
-            </p>
           </div>
         </div>
       </section>

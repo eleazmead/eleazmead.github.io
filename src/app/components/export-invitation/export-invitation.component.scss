@@ -316,15 +316,15 @@
 .export-story-stop__pin {
   position: absolute;
   z-index: 2;
-  top: -0.95rem;
+  top: -0.6rem;
   left: 50%;
-  width: 1.9rem;
-  height: 1.9rem;
-  margin-left: -0.95rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: -0.6rem;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #f6c9cf 0%, #d9a0a8 45%, #a9606b 100%);
+  background: radial-gradient(circle at 35% 30%, #e7c9a6 0%, #b8957e 55%, #8f6a52 100%);
   border: 2px solid #ffffff;
-  box-shadow: 0 3px 6px rgba(30, 15, 5, 0.35);
+  box-shadow: 0 2px 4px rgba(30, 15, 5, 0.25);
 }
 
 .export-story-stop__card {
@@ -507,19 +507,12 @@
 
 .export-letter-rsvp-box__meal,
 .export-letter-rsvp-box__body,
-.export-letter-rsvp-box__whatsapp,
 .export-letter-rsvp-box__options-heading {
   font-family: var(--font-body);
   font-size: 1.3rem;
   line-height: 1.5;
   color: #4a3324;
   margin-top: 0.45rem;
-}
-
-.export-letter-rsvp-box__whatsapp {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: #2a1a10;
 }
 
 // Page 4 - Wedding timeline
@@ -884,12 +877,10 @@
   color: var(--color-text);
 }
 
-// With Gratitude: 2x2 cards in the live site's card design (static colors, no
-// color-mix), then the gift note as a taped black notecard (SVG assets, since
-// html2canvas ignores mask/clip-path).
+// With Gratitude: 2x2 cards in the live site's card design (static colors, no color-mix).
 .export-gratitude__body {
   font-family: var(--font-body);
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: 300;
   line-height: 1.6;
   color: var(--color-text);
@@ -929,29 +920,27 @@
   justify-content: space-evenly;
 }
 
-// Cards are a fixed 19rem tall (20% under the ~379px they stretched to when the
-// grid was flex: 1); the freed height is spread evenly by the frame above.
+// Compact 2x2 cards; the frame spreads the leftover height around them.
 .export-gratitude__grid {
   flex: 0 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-auto-rows: 19rem;
-  gap: 1.4rem;
+  grid-auto-rows: 25rem;
+  gap: 2rem;
 }
 
 .export-gratitude__card {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  padding: 1.4rem 1rem;
+  justify-content: flex-start;
+  padding: 2.6rem 1rem 1.4rem;
   border: 1px solid rgba(184, 149, 126, 0.3);
   border-radius: 0.6rem;
   background:
     linear-gradient(135deg, rgba(217, 160, 168, 0.12), transparent 50%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(251, 247, 242, 0.75));
-  box-shadow: 0 12px 26px rgba(18, 18, 18, 0.1);
+  // No box-shadow: html2canvas paints it as a grey rectangle.
   text-align: center;
 
   &::before {
@@ -980,53 +969,28 @@
 .export-gratitude__role {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 2.7rem;
+  font-size: 3.4rem;
   line-height: 1.15;
   color: var(--color-secondary);
 }
 
+// Names sit in the vertical centre of the card (the highlight), with the title above them.
 .export-gratitude__names {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  bottom: 0;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 2.15rem;
+  font-size: 3rem;
   line-height: 1.4;
   color: var(--color-secondary);
   white-space: pre-line;
-}
-
-.export-gift-card {
-  position: relative;
-  margin: 1.6rem -1.5rem 0;
-  min-height: 25rem;
-  padding: 3.6rem 6.5rem 3.4rem;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.9);
-  transform: rotate(0.4deg);
-}
-
-.export-gift-card__tape {
-  position: absolute;
-  z-index: 2;
-  width: 7rem;
-  height: 1.7rem;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-}
-
-.export-gift-card__heading {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 3.3rem;
-  color: rgba(255, 255, 255, 0.95);
-  margin-bottom: 1rem;
-}
-
-.export-gift-card__text {
-  font-family: var(--font-body);
-  font-size: 1.75rem;
-  line-height: 2.35rem;
 }
 
 // Where to Stay

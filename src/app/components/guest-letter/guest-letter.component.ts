@@ -30,6 +30,9 @@ export class GuestLetterComponent implements OnInit, OnDestroy {
   private readonly guestSearch = inject(GuestSearchService);
   private readonly ts = inject(TranslationService);
 
+  // Pre-rendered burnt paper (see CLAUDE.md): a live SVG filter made scrolling laggy on iOS.
+  readonly paperImage = 'letter/burnt-paper.webp';
+
   readonly matchedRow = signal<GuestRow | null>(null);
   readonly matchedField = signal<GuestHashMatchField | null>(null);
   readonly shouldShowLetter = computed(() => {
