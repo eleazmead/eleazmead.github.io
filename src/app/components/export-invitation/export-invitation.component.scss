@@ -374,11 +374,10 @@
 
 // Page 3 - Guest letter on scorched, torn paper.
 //
-// html2canvas ignores clip-path (the live letter's torn edge came out as a flat
-// rectangle), so the paper is an SVG background asset (public/export/
-// burnt-paper.svg: jagged torn outline, blurred charred inner edge, ember rim,
-// corner scorch) drawn with background-size: 100% 100%. Content stays inside
-// the scorch band via generous padding. Everything is centered; the optional
+// html2canvas ignores clip-path, so the paper is a pre-rendered image background
+// (public/letter/burnt-paper.webp, shared with the live letter) drawn with
+// background-size: 100% 100%. Content stays inside the scorch band via generous
+// padding. Everything is centered; the optional
 // guest photo sits in the upper right corner like a pinned snapshot.
 
 .export-page__frame--letter {

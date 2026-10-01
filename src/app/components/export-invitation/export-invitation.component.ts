@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   QueryList,
   ViewChildren,
   computed,
@@ -15,6 +16,7 @@ import { APP_CONFIG } from '../../config/app.config';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
+import { cloudinaryResized } from '../../shared/utils/cloudinary.utils';
 import { GuestRow, MealChoice, RsvpEntry } from '../../shared/models/guest.model';
 import {
   GuestHashMatchField,
@@ -34,6 +36,9 @@ import {
 } from '../wedding-timeline/wedding-timeline.component';
 
 type ExportFormat = 'images' | 'pdf';
+// Longest side for photos used in the export pages.
+const MAX_PHOTO_SIDE = 900;
+
 type ExportStatus = 'idle' | 'preparing' | 'error';
 type GiftQrCodeId = keyof typeof APP_CONFIG.assets.giftQrCodes;
 type QuestionAnswerId = (typeof APP_CONFIG.questionsAndAnswers.items)[number];
@@ -45,7 +50,7 @@ type QuestionAnswerId = (typeof APP_CONFIG.questionsAndAnswers.items)[number];
   templateUrl: './export-invitation.component.html',
   styleUrl: './export-invitation.component.scss',
 })
-export class ExportInvitationComponent {
+export class ExportInvitationComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly guestSearch = inject(GuestSearchService);
   private readonly http = inject(HttpClient);
@@ -66,6 +71,8 @@ export class ExportInvitationComponent {
   readonly showPages = signal(false);
   readonly letterPhotoFailed = signal(false);
   readonly letterPhotoData = signal('');
+  // Downscaled copies (object URLs) of large photos: decoding full-size photos made iOS exports crawl or time out.
+  private readonly resizedByUrl = signal(new Map<string, string>());
   private readonly naturalSizeByUrl = signal<Map<string, { width: number; height: number }>>(
     new Map(),
   );
@@ -106,7 +113,8 @@ export class ExportInvitationComponent {
   readonly venuePhotos = APP_CONFIG.assets.venuePhotos;
   readonly gratitudeIds = ['groomsParents', 'bridesParents', 'witnesses', 'ringBearer'] as const;
   readonly hotelGroups = APP_CONFIG.whereToStay.hotelGroups;
-  readonly letterPaperImage = 'export/burnt-paper.svg';
+  // Pre-rendered raster of export/burnt-paper.svg: rasterizing the live SVG filters inside html2canvas timed out on iPadOS.
+  readonly letterPaperImage = 'letter/burnt-paper.webp';
   readonly mainCourseOptions = APP_CONFIG.mealChoices.options;
 
   private readonly matchedRow = signal<GuestRow | null>(null);
@@ -170,6 +178,10 @@ export class ExportInvitationComponent {
 
   // Height as a % of width for a padding-top box (not CSS `aspect-ratio`, which html2canvas may mis-size).
   // Uses the size recorded by preloadOne, so it works for photos outside the Our Story manifest.
+  photoSrc(url: string): string {
+    return this.resizedByUrl().get(url) ?? url;
+  }
+
   photoRatioPercent(url: string, fallbackPercent = 75): number {
     const size = this.naturalSizeByUrl().get(url);
     if (!size || size.width <= 0) return fallbackPercent;
@@ -236,9 +248,17 @@ export class ExportInvitationComponent {
     this.failedGiftQrCodes.set(failed);
   }
 
+  ngOnInit(): void {
+    // The guest lookup is shared (memoized) with the hero and letter, so starting it now costs nothing extra
+    // and the export no longer waits for the Sheets round trip after the tap.
+    if (this.route.snapshot.paramMap.get('rsvpHash')?.trim()) void this.ensureData();
+  }
+
   toggleMenu(): void {
     if (this.status() === 'preparing') return;
     this.isMenuOpen.update((open) => !open);
+    // Opening the menu is a strong hint the guest will export: start loading photos and the letter photo now.
+    if (this.isMenuOpen()) void this.warm();
   }
 
   @HostListener('document:click', ['$event'])
@@ -262,16 +282,8 @@ export class ExportInvitationComponent {
     this.shieldsHint.set(false);
     this.pendingImages.set(null);
 
-    if (await this.canvasReadbackBlocked()) {
-      this.shieldsHint.set(true);
-      this.status.set('idle');
-      return;
-    }
-
     try {
-      await this.settleWithin(this.ensureData(), 20_000);
-      // Photos are CSS backgrounds (html2canvas ignores object-fit), so preload them via Image() to avoid blank captures.
-      await this.settleWithin(this.preloadPhotos(), 25_000);
+      await this.warm();
       this.showPages.set(true);
       await this.settleWithin(this.waitForRender(), 2_000);
       // Fonts swapping in change text metrics; measure only after they settle.
@@ -294,9 +306,14 @@ export class ExportInvitationComponent {
       // Keep the console trace: export failures are otherwise undebuggable.
       console.error('Invitation export failed:', err);
       this.errorDetail.set(err instanceof Error ? `${err.name}: ${err.message}` : String(err));
+      // Only now (export actually failed) check for scrambled canvas pixels, so a false positive can never block an export.
+      if (await this.canvasReadbackBlocked()) this.shieldsHint.set(true);
       this.status.set('error');
     } finally {
       this.showPages.set(false);
+      this.resizedByUrl().forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
+      this.resizedByUrl.set(new Map());
+      this.warmPromise = undefined;
     }
   }
 
@@ -376,11 +393,9 @@ export class ExportInvitationComponent {
     ]).then(() => undefined);
   }
 
-  // Cloudinary originals are often 4000px+; request a 900px JPEG so iOS doesn't run out of memory. Other hosts are unchanged.
+  // Cloudinary originals are often 4000px+; request a 900px JPEG so iOS doesn't run out of memory.
   private exportPhotoUrl(url: string): string {
-    const marker = '/image/upload/';
-    if (!/^https?:\/\/res\.cloudinary\.com\//i.test(url) || !url.includes(marker)) return url;
-    return url.replace(marker, `${marker}w_900,c_limit,q_auto:good,f_jpg/`);
+    return cloudinaryResized(url, 'w_900,c_limit,q_auto:good,f_jpg');
   }
 
   // Inlined as a data URL: a remote background-image can taint the canvas when Safari reuses a cached
@@ -406,6 +421,29 @@ export class ExportInvitationComponent {
     }
   }
 
+  // Photos larger than MAX_PHOTO_SIDE are redrawn smaller (the pages show them at ~250-500px wide anyway).
+  private async downscale(url: string, image: HTMLImageElement): Promise<void> {
+    const side = Math.max(image.naturalWidth, image.naturalHeight);
+    if (side <= MAX_PHOTO_SIDE || url.endsWith('.svg') || url.startsWith('data:')) return;
+    try {
+      const ratio = MAX_PHOTO_SIDE / side;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(image.naturalWidth * ratio);
+      canvas.height = Math.round(image.naturalHeight * ratio);
+      canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88),
+      );
+      canvas.width = canvas.height = 0;
+      if (!blob) return;
+      const map = new Map(this.resizedByUrl());
+      map.set(url, URL.createObjectURL(blob));
+      this.resizedByUrl.set(map);
+    } catch {
+      // Keep the original URL if resizing is unavailable.
+    }
+  }
+
   private preloadOne(url: string): Promise<void> {
     return new Promise((resolve) => {
       const image = new Image();
@@ -416,7 +454,7 @@ export class ExportInvitationComponent {
         const sizes = new Map(this.naturalSizeByUrl());
         sizes.set(url, { width: image.naturalWidth, height: image.naturalHeight });
         this.naturalSizeByUrl.set(sizes);
-        resolve();
+        void this.downscale(url, image).then(resolve);
       };
       image.onerror = () => {
         if (url === this.letterPhotoUrl()) {
@@ -435,7 +473,26 @@ export class ExportInvitationComponent {
     });
   }
 
+  // Data + photo preloading, started once (on menu open or export) and shared by both.
+  private warmPromise?: Promise<void>;
+
+  private warm(): Promise<void> {
+    // Photos are CSS backgrounds (html2canvas ignores object-fit), so preload them via Image() to avoid blank captures.
+    this.warmPromise ??= (async () => {
+      await this.settleWithin(this.ensureData(), 20_000);
+      await this.settleWithin(this.preloadPhotos(), 25_000);
+    })();
+    return this.warmPromise;
+  }
+
+  private dataPromise?: Promise<void>;
+
   private ensureData(): Promise<void> {
+    this.dataPromise ??= this.loadData();
+    return this.dataPromise;
+  }
+
+  private loadData(): Promise<void> {
     const tasks: Promise<void>[] = [];
 
     if (!this.manifestFetched) {
