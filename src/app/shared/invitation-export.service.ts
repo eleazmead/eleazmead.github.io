@@ -12,9 +12,9 @@ const CAPTURE_SCALE = 1.5;
 const IOS_CAPTURE_SCALE = 1;
 // Per-page limit for rendering/encoding; beyond this something is blocked, not slow.
 const PAGE_TIMEOUT_MS = 60_000;
-// Rendering is retried: 3 attempts of 25s each.
-const RENDER_TIMEOUT_MS = 25_000;
-const RENDER_ATTEMPTS = 3;
+// Rendering is retried once; 70s per attempt because iPads can take 30s+ on photo-heavy pages.
+const RENDER_TIMEOUT_MS = 70_000;
+const RENDER_ATTEMPTS = 2;
 
 type ShareableNavigator = Navigator & {
   canShare?: (data: { files: File[] }) => boolean;
@@ -41,6 +41,12 @@ export class InvitationExportService {
     return blobs;
   }
 
+  // True for nodes that are neither the page, its ancestors, its descendants nor <head> content (styles must stay).
+  private isOutsideBranch(node: Element, page: HTMLElement): boolean {
+    if (node === page || page.contains(node) || node.contains(page)) return false;
+    return !node.closest('head');
+  }
+
   // html2canvas occasionally stalls on mobile (seen in Brave iOS); a stalled page is retried rather than failing the export.
   private async renderPage(
     html2canvas: (el: HTMLElement, opts: object) => Promise<HTMLCanvasElement>,
@@ -52,7 +58,15 @@ export class InvitationExportService {
     for (let attempt = 1; attempt <= RENDER_ATTEMPTS; attempt++) {
       try {
         return await this.withTimeout(
-          html2canvas(element, { scale, backgroundColor: '#fbf7f2', useCORS: true }),
+          html2canvas(element, {
+            // The retry renders smaller: if the first attempt stalled the device is short on memory.
+            scale: attempt === 1 ? scale : scale * 0.75,
+            backgroundColor: '#fbf7f2',
+            useCORS: true,
+            // html2canvas clones the whole document per page; leaving out everything except this page's
+            // branch (hero video, polaroids, the other 8 pages...) is the biggest speed and memory win.
+            ignoreElements: (node: Element) => this.isOutsideBranch(node, element),
+          }),
           RENDER_TIMEOUT_MS,
           `Rendering page ${pageNumber}`,
         );

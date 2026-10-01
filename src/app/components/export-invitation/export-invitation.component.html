@@ -100,7 +100,7 @@
               <div
                 class="export-page__cover-image"
                 role="img"
-                [style.background-image]="'url(' + url + ')'"
+                [style.background-image]="'url(' + photoSrc(url) + ')'"
               ></div>
             } @else {
               <div class="export-page__cover-placeholder"></div>
@@ -218,7 +218,7 @@
                       class="export-story-stop__photo"
                       role="img"
                       [style.padding-top.%]="storyPhotoRatioPercent(item)"
-                      [style.background-image]="'url(' + url + ')'"
+                      [style.background-image]="'url(' + photoSrc(url) + ')'"
                     ></div>
                   } @else {
                     <div class="export-story-stop__placeholder"></div>
@@ -256,7 +256,7 @@
                   class="export-venue__photo"
                   role="img"
                   [style.padding-top.%]="venuePhotoRatioPercent(venueId)"
-                  [style.background-image]="'url(' + venuePhotos[venueId] + ')'"
+                  [style.background-image]="'url(' + photoSrc(venuePhotos[venueId]) + ')'"
                 ></div>
               </div>
               <div class="export-venue__copy">
@@ -349,7 +349,7 @@
                 class="export-attire-image"
                 role="img"
                 [style.padding-top.%]="photoRatioPercent(attireGuideImage) * 0.58"
-                [style.background-image]="'url(' + attireGuideImage + ')'"
+                [style.background-image]="'url(' + photoSrc(attireGuideImage) + ')'"
               ></div>
             }
 

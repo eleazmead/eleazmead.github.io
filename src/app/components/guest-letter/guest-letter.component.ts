@@ -10,6 +10,7 @@ import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { PolaroidPhotoComponent } from '../../shared/polaroid-photo/polaroid-photo.component';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
+import { cloudinaryResized } from '../../shared/utils/cloudinary.utils';
 
 // Matches the desktop layout breakpoint in guest-letter.component.scss.
 const DESKTOP_QUERY = '(min-width: 1024px)';
@@ -46,7 +47,8 @@ export class GuestLetterComponent implements OnInit, OnDestroy {
   // and is bound to an <img src>. A blank cell means no polaroid at all.
   readonly photoUrl = computed(() => {
     const url = this.matchedRow()?.imageUrl.trim() ?? '';
-    return /^https?:\/\//i.test(url) ? url : '';
+    // Cloudinary originals can be several MB; the polaroid shows at most ~900px.
+    return /^https?:\/\//i.test(url) ? cloudinaryResized(url, 'w_900,c_limit,q_auto,f_auto') : '';
   });
   private readonly isDesktop = signal(false);
   readonly photoTiltDeg = computed(() =>
