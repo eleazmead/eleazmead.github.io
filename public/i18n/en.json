@@ -368,6 +368,7 @@
     "generating": "Preparing...",
     "optionImages": "As Images",
     "optionPdf": "As PDF",
+    "shieldsHint": "Your browser is blocking image creation (for example Brave Shields). Please turn off Shields for this site and try again.",
     "saveReady": "Your images are ready. Tap to save them.",
     "saveButton": "Save images",
     "error": "Something went wrong preparing your invitation. Please try again.",
@@ -377,9 +378,8 @@
       "notAttending": "Not Attending",
       "mealPrefix": "Main course:",
       "notYetHeading": "Haven't RSVP-ed yet?",
-      "notYetBody": "Please let us know by messaging the couple on WhatsApp with your name, whether you can attend, and your main course choice if you are.",
-      "whatsappLabel": "WhatsApp us at",
-      "optionsHeading": "Main course options:"
+      "notYetBody": "Kindly RSVP by {0} by messaging the groom or bride to confirm your attendance and your preferred main course for the dinner reception.",
+      "optionsHeading": "Main Course Selection"
     },
     "timingVenues": {
       "heading": "Timing & Venues"

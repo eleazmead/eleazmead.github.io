@@ -10,6 +10,11 @@ const IMAGE_EXT = 'jpg';
 const CAPTURE_SCALE = 1.5;
 // iOS Safari caps total canvas memory; 1x (1080x1620) stays readable on a phone.
 const IOS_CAPTURE_SCALE = 1;
+// Per-page limit for rendering/encoding; beyond this something is blocked, not slow.
+const PAGE_TIMEOUT_MS = 60_000;
+// Rendering is retried: 3 attempts of 25s each.
+const RENDER_TIMEOUT_MS = 25_000;
+const RENDER_ATTEMPTS = 3;
 
 type ShareableNavigator = Navigator & {
   canShare?: (data: { files: File[] }) => boolean;
@@ -26,11 +31,7 @@ export class InvitationExportService {
     const scale = this.isIos() ? IOS_CAPTURE_SCALE : CAPTURE_SCALE;
 
     for (const element of elements) {
-      const canvas = await html2canvas(element, {
-        scale,
-        backgroundColor: '#fbf7f2',
-        useCORS: true,
-      });
+      const canvas = await this.renderPage(html2canvas, element, scale, blobs.length + 1);
       blobs.push(await this.canvasToBlob(canvas));
       // Shrinking to 0x0 frees the backing store immediately on WebKit.
       canvas.width = 0;
@@ -38,6 +39,30 @@ export class InvitationExportService {
     }
 
     return blobs;
+  }
+
+  // html2canvas occasionally stalls on mobile (seen in Brave iOS); a stalled page is retried rather than failing the export.
+  private async renderPage(
+    html2canvas: (el: HTMLElement, opts: object) => Promise<HTMLCanvasElement>,
+    element: HTMLElement,
+    scale: number,
+    pageNumber: number,
+  ): Promise<HTMLCanvasElement> {
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= RENDER_ATTEMPTS; attempt++) {
+      try {
+        return await this.withTimeout(
+          html2canvas(element, { scale, backgroundColor: '#fbf7f2', useCORS: true }),
+          RENDER_TIMEOUT_MS,
+          `Rendering page ${pageNumber}`,
+        );
+      } catch (err) {
+        lastError = err;
+        console.warn(`Page ${pageNumber} render attempt ${attempt} failed:`, err);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+    throw lastError;
   }
 
   // Uses the native share sheet where available (phones), else a zip download.
@@ -110,7 +135,28 @@ export class InvitationExportService {
     return /iPad|iPhone|iPod/.test(ua) || (ua.includes('Mac') && navigator.maxTouchPoints > 1);
   }
 
+  // Turns a silent hang (e.g. a privacy mode blocking canvas reads) into a visible error.
+  private withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+      promise.then(
+        (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        (err) => {
+          clearTimeout(timer);
+          reject(err);
+        },
+      );
+    });
+  }
+
   private canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+    return this.withTimeout(this.canvasToBlobRaw(canvas), PAGE_TIMEOUT_MS, 'Encoding page');
+  }
+
+  private canvasToBlobRaw(canvas: HTMLCanvasElement): Promise<Blob> {
     return new Promise((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
@@ -128,7 +174,12 @@ export class InvitationExportService {
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = filename;
+    // Attached to the DOM and revoked late: iOS Chrome/Brave start the download asynchronously.
+    document.body.appendChild(anchor);
     anchor.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }, 60_000);
   }
 }

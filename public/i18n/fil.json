@@ -368,6 +368,7 @@
     "generating": "Inihahanda...",
     "optionImages": "Bilang mga Larawan",
     "optionPdf": "Bilang PDF",
+    "shieldsHint": "Hinaharang ng iyong browser ang paggawa ng larawan (halimbawa, Brave Shields). Paki-off ang Shields para sa site na ito at subukan muli.",
     "saveReady": "Handa na ang iyong mga larawan. I-tap para i-save.",
     "saveButton": "I-save ang mga larawan",
     "error": "May naganap na problema sa paghahanda ng imbitasyon. Subukan muli.",
@@ -377,9 +378,8 @@
       "notAttending": "Hindi Makakadalo",
       "mealPrefix": "Pangunahing ulam:",
       "notYetHeading": "Hindi ka pa nag-RSVP?",
-      "notYetBody": "Paki-message lang ang couple sa WhatsApp kasama ang iyong pangalan, kung makakadalo ka, at ang iyong napiling pangunahing ulam kung oo.",
-      "whatsappLabel": "I-WhatsApp kami sa",
-      "optionsHeading": "Mga pagpipilian sa pangunahing ulam:"
+      "notYetBody": "Paki-RSVP bago ang {0} sa pamamagitan ng pag-message sa groom o bride upang kumpirmahin ang iyong pagdalo at ang iyong napiling pangunahing ulam para sa dinner reception.",
+      "optionsHeading": "Pagpili ng Pangunahing Ulam"
     },
     "timingVenues": {
       "heading": "Oras at Lugar"

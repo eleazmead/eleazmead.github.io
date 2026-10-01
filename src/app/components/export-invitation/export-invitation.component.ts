@@ -59,6 +59,8 @@ export class ExportInvitationComponent {
   readonly status = signal<ExportStatus>('idle');
   // Shown under the error so phone failures (no console) are diagnosable.
   readonly errorDetail = signal('');
+  // Canvas readback is being scrambled (Brave Shields / privacy mode), so exports cannot work.
+  readonly shieldsHint = signal(false);
   // Pages waiting for a fresh tap (iOS share() needs a recent gesture).
   readonly pendingImages = signal<{ blobs: Blob[]; name: string } | null>(null);
   readonly showPages = signal(false);
@@ -100,21 +102,11 @@ export class ExportInvitationComponent {
     { x: 500, y: 960, tilt: 2.5 },
     { x: 835, y: 960, tilt: -2.5 },
   ];
-  readonly giftCardImage = 'export/gift-card.svg';
-  readonly tapeImage = 'export/tape.svg';
   readonly venueIds = ['church', 'reception'] as const;
   readonly venuePhotos = APP_CONFIG.assets.venuePhotos;
   readonly gratitudeIds = ['groomsParents', 'bridesParents', 'witnesses', 'ringBearer'] as const;
   readonly hotelGroups = APP_CONFIG.whereToStay.hotelGroups;
-  readonly tapeStrips = [
-    { left: '1.4rem', top: '0.9rem', rot: -32 },
-    { right: '1.4rem', top: '0.9rem', rot: 32 },
-    { left: '1.4rem', bottom: '1.1rem', rot: 32 },
-    { right: '1.4rem', bottom: '1.1rem', rot: -32 },
-  ];
   readonly letterPaperImage = 'export/burnt-paper.svg';
-  readonly whatsappUrl = APP_CONFIG.contacts.whatsappUrl;
-  readonly whatsappDisplayNumber = APP_CONFIG.contacts.whatsappDisplayNumber;
   readonly mainCourseOptions = APP_CONFIG.mealChoices.options;
 
   private readonly matchedRow = signal<GuestRow | null>(null);
@@ -146,6 +138,12 @@ export class ExportInvitationComponent {
     const entries = row.rsvpRaw[row.fullName] ?? [];
     return entries.find((entry) => entry.Guest === name);
   });
+
+  // Same deadline text the RSVP section shows, minus its trailing full stop, for the not-yet-RSVP-ed note.
+  notYetBody(): string {
+    const deadline = this.ts.t('rsvp.deadline.date').replace(/[.。]$/, '');
+    return this.ts.t('exportInvitation.rsvpStatus.notYetBody').replace('{0}', deadline);
+  }
 
   mealLabel(choice: MealChoice): string {
     return this.ts.t(`mainCourse.options.${choice}.label`);
@@ -261,30 +259,37 @@ export class ExportInvitationComponent {
 
     this.status.set('preparing');
     this.errorDetail.set('');
+    this.shieldsHint.set(false);
     this.pendingImages.set(null);
 
+    if (await this.canvasReadbackBlocked()) {
+      this.shieldsHint.set(true);
+      this.status.set('idle');
+      return;
+    }
+
     try {
-      await this.ensureData();
+      await this.settleWithin(this.ensureData(), 20_000);
       // Photos are CSS backgrounds (html2canvas ignores object-fit), so preload them via Image() to avoid blank captures.
-      await this.preloadPhotos();
+      await this.settleWithin(this.preloadPhotos(), 25_000);
       this.showPages.set(true);
-      await this.waitForRender();
+      await this.settleWithin(this.waitForRender(), 2_000);
       // Fonts swapping in change text metrics; measure only after they settle.
-      await document.fonts?.ready;
+      await this.settleWithin(document.fonts?.ready, 5_000);
       this.fitOverflowingContent();
 
       const elements = (this.pageElements?.toArray() ?? []).map((ref) => ref.nativeElement);
       const pages = await this.exporter.captureAsBlobs(elements);
 
       const fileBaseName = `EleazMead_Invitation_${this.dateStamp()}`;
+      // Preparing is over: some browsers never settle share() when the sheet is dismissed, which left the button spinning.
+      this.status.set('idle');
       if (format === 'images') {
         const result = await this.exporter.exportAsImages(pages, fileBaseName);
         if (result === 'needs-tap') this.pendingImages.set({ blobs: pages, name: fileBaseName });
       } else {
         await this.exporter.exportAsPdf(pages, fileBaseName, this.pageWidth, this.pageHeight);
       }
-
-      this.status.set('idle');
     } catch (err) {
       // Keep the console trace: export failures are otherwise undebuggable.
       console.error('Invitation export failed:', err);
@@ -292,6 +297,44 @@ export class ExportInvitationComponent {
       this.status.set('error');
     } finally {
       this.showPages.set(false);
+    }
+  }
+
+  // Brave Shields and similar privacy modes add noise to canvas pixels. A row of distinct exact colours
+  // (a single solid colour can slip through) must read back unchanged and encode to a blob promptly.
+  private async canvasReadbackBlocked(): Promise<boolean> {
+    try {
+      const size = 64;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = 4;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return true;
+      const expected: number[] = [];
+      for (let x = 0; x < size; x++) {
+        const r = (x * 37 + 11) % 256;
+        const g = (x * 91 + 53) % 256;
+        const b = (x * 17 + 201) % 256;
+        expected.push(r, g, b);
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fillRect(x, 0, 1, 4);
+      }
+      const data = ctx.getImageData(0, 0, size, 4).data;
+      for (let x = 0; x < size; x++) {
+        for (let c = 0; c < 3; c++) {
+          if (data[x * 4 + c] !== expected[x * 3 + c]) return true;
+        }
+      }
+      const blob = await new Promise<Blob | null>((resolve) => {
+        const timer = setTimeout(() => resolve(null), 3000);
+        canvas.toBlob((b) => {
+          clearTimeout(timer);
+          resolve(b);
+        }, 'image/jpeg');
+      });
+      return !blob;
+    } catch {
+      return true;
     }
   }
 
@@ -324,8 +367,6 @@ export class ExportInvitationComponent {
     if (this.attireGuideImage) urls.add(this.attireGuideImage);
     if (this.shouldShowLetterPage()) urls.add(this.letterPaperImage);
     urls.add(this.storyPathImage);
-    urls.add(this.giftCardImage);
-    urls.add(this.tapeImage);
     urls.add(this.venuePhotos.church);
     urls.add(this.venuePhotos.reception);
 
@@ -436,6 +477,23 @@ export class ExportInvitationComponent {
   }
 
   // Two frames: Angular renders the pages host, then the browser commits layout (one tick was sometimes too early).
+  // Resolves when `work` settles or after `ms`, whichever is first, so one stalled step cannot freeze the export.
+  private settleWithin(work: Promise<unknown> | undefined, ms: number): Promise<void> {
+    return new Promise((resolve) => {
+      const timer = setTimeout(resolve, ms);
+      (work ?? Promise.resolve()).then(
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+      );
+    });
+  }
+
   private waitForRender(): Promise<void> {
     return new Promise((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
