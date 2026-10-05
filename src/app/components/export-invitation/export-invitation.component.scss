@@ -173,6 +173,7 @@
 }
 
 .export-page {
+  position: relative;
   overflow: hidden;
   background: #fbf7f2;
   background-image:
@@ -182,6 +183,9 @@
 }
 
 .export-page__frame {
+  // Above the corner florals (z-index 0). No text-shadow glow: it showed as a pale halo on the venue frame's paper.
+  position: relative;
+  z-index: 1;
   // Minus the frame's own top+bottom margin (1.25rem each) so it fits the page
   // instead of overflowing it and clipping the bottom edge.
   height: calc(100% - 2.5rem);
@@ -192,21 +196,6 @@
   border: 1px solid rgba(184, 149, 126, 0.35);
   margin: 1.25rem;
   box-sizing: border-box;
-}
-
-.export-page__heading {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 4.6rem;
-  color: var(--color-text);
-  letter-spacing: 0.02em;
-  text-align: center;
-  margin-bottom: 2.25rem;
-
-  &--small {
-    font-size: 3.2rem;
-    margin-top: 0;
-  }
 }
 
 .export-page__lead {
@@ -291,85 +280,158 @@
   background: #efe8e3;
 }
 
-// Page 2 - Our Story as a winding path
-//
-// A serpentine line (public/export/story-path.svg, background stretched over the
-// container so the stop percentages always line up with it) with nine stops; each
-// polaroid is pinned to its stop and hangs below the line. Photos keep their natural
-// ratio (clamped) via a padding-top box + background-image, never <img>/aspect-ratio
-// (html2canvas). Stop x/y live in ExportInvitationComponent.storyStops.
+// Our Story pages: two-column grid of numbered tiles (badge on each tile's top edge, a fine line to the next
+// badge in the row). Photos are real-height `contain` boxes: html2canvas stretches them inside padding-top boxes.
+// Static colours only (no color-mix) because html2canvas rasterizes this page.
 
-.export-story-path {
-  position: relative;
+.export-page__frame--story {
+  padding: 0;
+  margin: 0;
+  border: none;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+// Pages other than the cover start below the shared header.
+.export-page {
+  --export-header-h: 7.5rem;
+}
+
+.export-page:not(.export-page--cover) .export-page__frame {
+  margin-top: calc(var(--export-header-h) + 0.6rem);
+  height: calc(100% - var(--export-header-h) - 1.85rem);
+  padding-top: 1.4rem;
+}
+
+.export-page:not(.export-page--cover) .export-page__frame--story {
+  margin: var(--export-header-h) 0 0;
+  height: calc(100% - var(--export-header-h));
+  padding-top: 0;
+}
+
+.export-story-grid {
+  // Two columns, so a page of 4 is 2x2 and a page of 5 ends with one centred photo.
+  --story-gap: 3.2rem;
+  --story-photo: 17rem;
+  --story-text: 1.3rem;
   flex: 1;
   min-height: 0;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  // Rows size to their story text, spread evenly down the page.
+  grid-auto-rows: auto;
+  align-content: space-evenly;
+  column-gap: var(--story-gap);
+  padding: 0.4rem 4.4rem 2.4rem;
+
+  // The 4-photo page has room for larger photos and text.
+  &--roomy {
+    --story-photo: 23rem;
+    --story-text: 1.6rem;
+  }
 }
 
-.export-story-stop {
-  position: absolute;
-  width: 15.5rem;
-  margin-left: -7.75rem;
+.export-story-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.export-story-stop__pin {
+// The odd last photo of the second page sits alone, centred under the pair above it.
+.export-story-cell--solo {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - var(--story-gap) / 2);
+}
+
+.export-story-cell__num {
   position: absolute;
   z-index: 2;
-  top: -0.6rem;
+  top: 0;
   left: 50%;
-  width: 1.2rem;
-  height: 1.2rem;
-  margin-left: -0.6rem;
+  width: 2.88rem;
+  height: 2.88rem;
+  margin-left: -1.44rem;
+  box-sizing: border-box;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e7c9a6 0%, #b8957e 55%, #8f6a52 100%);
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 4px rgba(30, 15, 5, 0.25);
-}
-
-.export-story-stop__card {
-  margin-top: 0.4rem;
-  padding: 0.5rem 0.5rem 0;
-  background: var(--color-surface);
-  box-shadow: 0 8px 18px rgba(18, 18, 18, 0.2);
-}
-
-.export-story-stop__photo {
-  width: 100%;
-  height: 0;
-  background-size: contain;
+  // The ring is the page colour, so the badge looks cut out of the photo it overlaps.
+  border: 0.24rem solid #fbf7f2;
+  // The circle and its 01-09 number are one pre-rendered image (export/badge-NN.png), inlined like every photo.
+  background-color: #b8957e;
+  background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-.export-story-stop__placeholder {
-  width: 100%;
-  padding-top: 75%;
-  background-color: #f2ece8;
+// Fine line from this badge to the next one in the row, with a small diamond midway.
+.export-story-cell__link {
+  position: absolute;
+  z-index: 1;
+  top: 1.44rem;
+  left: 50%;
+  width: calc(100% + var(--story-gap));
+  height: 1px;
+  background: rgba(184, 149, 126, 0.7);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -0.28rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-left: -0.28rem;
+    background: #b8957e;
+    transform: rotate(45deg);
+  }
 }
 
-.export-story-stop__caption {
+.export-story-cell__photo {
+  position: relative;
+  align-self: center;
+  // Badge is 2.88rem tall and starts at the cell top, so this overlaps the tile by only ~0.2rem.
+  margin-top: 2.7rem;
+  // Square tile: `contain` shows the whole photo (never cropped) and the leftover space stays
+  // transparent, so landscape and portrait shots both sit centred in the same square.
+  width: var(--story-photo);
+  height: var(--story-photo);
+  background-color: transparent;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &--empty {
+    background-color: #efe8e3;
+    border-radius: 0.5rem;
+  }
+}
+
+.export-story-cell__caption {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.6rem 0.3rem 0.8rem;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.8rem 0.2rem 0;
   text-align: center;
 }
 
-.export-story-stop__date {
+.export-story-cell__date {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  font-size: calc(var(--story-text) * 0.78);
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #a98468;
 }
 
-.export-story-stop__title {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--color-text);
+.export-story-cell__story {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--story-text);
+  line-height: 1.45;
+  color: #5d4e44;
 }
 
 // Page 3 - Guest letter on scorched, torn paper.
@@ -537,7 +599,7 @@
     position: absolute;
     top: 0.6rem;
     bottom: 0.6rem;
-    left: 7.9rem;
+    left: 10.3rem;
     width: 2px;
     // 64% #b8957e over white, matching the live timeline's line gradient.
     background: linear-gradient(180deg, transparent, #d2bbac, transparent);
@@ -547,15 +609,15 @@
 .export-timeline-list__event {
   position: relative;
   display: grid;
-  grid-template-columns: 7rem 1fr;
-  gap: 2rem;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 1.8rem;
   align-items: start;
 
   &::before {
     content: '';
     position: absolute;
     top: 0.35em;
-    left: 7.45rem;
+    left: 9.85rem;
     width: 1.1rem;
     height: 1.1rem;
     border: 3px solid #fbf7f2;
@@ -568,15 +630,16 @@
 
 .export-timeline-list__time {
   text-align: right;
+  white-space: nowrap;
   font-family: var(--font-body);
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--color-text);
 }
 
 .export-timeline-list__copy {
-  padding-left: 2rem;
+  padding-left: 1.4rem;
   border-left: 1px solid rgba(184, 149, 126, 0.42);
   text-align: left;
 }
@@ -584,14 +647,14 @@
 .export-timeline-list__title {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 2.35rem;
+  font-size: 2.4rem;
   color: var(--color-text);
   margin-bottom: 0.4rem;
 }
 
 .export-timeline-list__description {
   font-family: var(--font-body);
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   line-height: 1.5;
   color: var(--color-muted);
   max-width: 48rem;
@@ -607,6 +670,8 @@
 
 .export-page__frame--attire {
   justify-content: flex-start;
+  // Tighter top so the lead line sits right under the header and the freed height goes to the content.
+  padding-top: 0.2rem;
 }
 
 // Image + For Ladies / For Gentlemen share one flex box that fills the rest of
@@ -624,7 +689,7 @@
   flex: 0 0 auto;
   height: 0;
   margin: 0 auto;
-  width: 58%;
+  width: 48%;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -642,14 +707,14 @@
   h3 {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 3.1rem;
+    font-size: 2.8rem;
     margin-bottom: 0.8rem;
     color: var(--color-text);
   }
 
   p {
     font-family: var(--font-body);
-    font-size: 1.85rem;
+    font-size: 1.7rem;
     line-height: 1.55;
     color: var(--color-muted);
   }
@@ -699,7 +764,7 @@
 .export-qa-list__question {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 2.3rem;
+  font-size: 2.7rem;
   color: var(--color-text);
   margin-bottom: 0.45rem;
 }
@@ -713,7 +778,7 @@
 
 .export-qa-list__answer {
   font-family: var(--font-body);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   line-height: 1.45;
   color: var(--color-muted);
 }
@@ -751,8 +816,8 @@
 // - a QR code needs real pixel density to scan reliably, especially once
 // downscaled from the source html2canvas capture into a shared JPEG/PDF.
 .export-qa-list__qr {
-  width: 10.5rem;
-  height: 10.5rem;
+  width: 12rem;
+  height: 12rem;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -789,18 +854,13 @@
 }
 
 // Medium heading for long titles (e.g. "Where To Stay (For Our Overseas Guests)").
-.export-page__heading--medium {
-  font-size: 3.4rem;
-  line-height: 1.15;
-}
-
 // Timing & Venues: two rows (photo + copy), the second mirrored. Photos are
 // natural-ratio (clamped) background-image boxes, like every other photo.
 .export-venue {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 2.2rem;
 
   &--reverse {
     flex-direction: row-reverse;
@@ -813,8 +873,32 @@
   }
 }
 
+.export-venue__media {
+  flex: 0 0 42%;
+}
+
+.export-venue__parking {
+  margin-top: 1rem;
+  font-family: var(--font-body);
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.export-venue__directions {
+  margin-top: 0.9rem;
+  font-size: 1.3rem;
+
+  // html2canvas draws text a little lower than the badge, so nudge the badges down in the export only.
+  ::ng-deep .venue-directions__codes {
+    position: relative;
+    top: 0.18em;
+  }
+}
+
 .export-venue__photo-wrap {
-  flex: 0 0 50%;
   border: 8px solid var(--color-surface);
   box-shadow: 0 14px 30px rgba(18, 18, 18, 0.18);
 }
@@ -841,7 +925,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #8a5a34;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 .export-venue__time {
@@ -855,18 +939,18 @@
 .export-venue__name {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 3.3rem;
+  font-size: 2.9rem;
   line-height: 1.15;
   color: var(--color-text);
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.8rem;
 }
 
 .export-venue__description {
   font-family: var(--font-body);
-  font-size: 1.6rem;
-  line-height: 1.55;
+  font-size: 1.38rem;
+  line-height: 1.45;
   color: var(--color-muted);
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.7rem;
 }
 
 .export-venue__address {
@@ -997,12 +1081,11 @@
 // the leftover height evenly so larger text fills the page without dead bands.
 .export-page__frame--stay {
   justify-content: flex-start;
-  padding-top: 5rem;
 }
 
 .export-stay__recommendation {
   font-family: var(--font-body);
-  font-size: 2.15rem;
+  font-size: 2.2rem;
   line-height: 1.6;
   color: var(--color-muted);
   text-align: center;
@@ -1034,7 +1117,7 @@
 .export-stay__subheading {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 3.3rem;
+  font-size: 3.4rem;
   color: #8a5a34;
   margin-bottom: 1.1rem;
 }
@@ -1048,7 +1131,7 @@
     position: relative;
     padding-left: 1.6rem;
     font-family: var(--font-body);
-    font-size: 2.5rem;
+    font-size: 2.6rem;
     line-height: 1.9;
     color: var(--color-text);
 
@@ -1068,10 +1151,13 @@
 .export-stay__closing {
   margin-top: 2.5rem;
   padding: 1.4rem 1.6rem;
-  border-top: 1px solid rgba(184, 149, 126, 0.5);
-  border-bottom: 1px solid rgba(184, 149, 126, 0.5);
+  border-top: 1px solid rgba(184, 149, 126, 0.65);
+  border-bottom: 1px solid rgba(184, 149, 126, 0.65);
+  // Same emphasised note design as the website and the What to Wear weather note.
+  background: rgba(255, 255, 255, 0.45);
   font-family: var(--font-body);
   font-size: 1.95rem;
+  font-weight: 300;
   line-height: 1.6;
   color: var(--color-muted);
   text-align: center;
@@ -1085,6 +1171,70 @@
   word-break: break-word;
 }
 
+.export-save-hint__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(20, 15, 12, 0.55);
+}
+
+// Lifts the ready box above the backdrop (both live in <main>'s stacking context) and points at the button.
+.export-invitation__ready--spotlight {
+  position: relative;
+  z-index: 41;
+}
+
+.export-save-hint__bubble {
+  position: relative;
+  max-width: 17rem;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-radius: 0.6rem;
+  background: #fbf7f2;
+  color: #2a2420;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+
+  // Arrow pointing down at the Save button below.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -0.45rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    background: #fbf7f2;
+    transform: translateX(-50%) rotate(45deg);
+  }
+}
+
+.export-invitation__ready--spotlight .export-invitation__ready-text {
+  color: #fbf7f2;
+}
+
+.export-save-hint__button {
+  box-shadow: 0 0 0 4px rgba(217, 160, 168, 0.85);
+  animation: exportSaveHintPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes exportSaveHintPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(217, 160, 168, 0.85);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(217, 160, 168, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .export-save-hint__button {
+    animation: none;
+  }
+}
+
 .export-invitation__ready {
   margin-top: 1rem;
   display: flex;
@@ -1093,4 +1243,170 @@
   gap: 0.8rem;
   font-size: 0.85rem;
   color: var(--color-muted);
+}
+
+// Corner florals: bottom-left and bottom-right of every page except the cover. The artwork is drawn for the
+// top-left corner, so it is flipped for the bottom corners.
+.export-page__floral {
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  // Smaller and softened so body text that reaches the corners stays readable over the leaves.
+  width: 9.5rem;
+  height: 9.5rem;
+  opacity: 0.55;
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+
+  &--left {
+    left: 0;
+    transform: scaleY(-1);
+  }
+
+  &--right {
+    right: 0;
+    transform: scale(-1, -1);
+  }
+}
+
+.export-page__cover-subtitle {
+  max-width: 46rem;
+  margin: 0.4rem auto 0;
+  font-family: var(--font-body);
+  font-size: 1.9rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.export-page__subtitle {
+  max-width: 54rem;
+  margin: 1.6rem auto 2rem;
+  font-family: var(--font-body);
+  font-size: 1.7rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+// What to Wear: closing line, then the weather disclaimer in the emphasised note design
+// (static colours: html2canvas cannot parse color-mix).
+.export-attire-closing {
+  font-family: var(--font-body);
+  font-size: 1.55rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.export-attire-weather {
+  white-space: pre-line;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 1rem 1.6rem;
+  border-top: 1px solid rgba(184, 149, 126, 0.65);
+  border-bottom: 1px solid rgba(184, 149, 126, 0.65);
+  background: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+// Shared page header (every page except the cover): circles band, monogram left, title right.
+.export-page__header {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--export-header-h);
+  box-sizing: border-box;
+  border-bottom: 2px solid #b8957e;
+  background-color: #f6efe8;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.export-page__header-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: auto;
+  right: 3.2rem;
+  width: max-content;
+  max-width: calc(100% - 16rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  text-align: center;
+}
+
+.export-page__header-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 3.3rem;
+  line-height: 1.2;
+  padding-bottom: 0.1rem;
+  color: #2a2420;
+  white-space: nowrap;
+
+  // The long "Where To Stay (For Our Overseas Guests)" title wraps at a smaller size.
+  &--long {
+    font-size: 2.5rem;
+    white-space: normal;
+  }
+}
+
+.export-page__header-cont {
+  margin-top: 0.1rem;
+  font-family: var(--font-body);
+  line-height: 1;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #a98468;
+}
+
+.export-page__header-ornament {
+  position: relative;
+  align-self: flex-end;
+  margin-top: 0.7rem;
+  width: 9rem;
+  height: 1px;
+  background: linear-gradient(270deg, rgba(184, 149, 126, 0.9), rgba(184, 149, 126, 0));
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -0.28rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    background: #b8957e;
+    transform: rotate(45deg);
+  }
+}
+
+.export-page__header-mark {
+  position: absolute;
+  top: 50%;
+  left: 3rem;
+  width: 6.2rem;
+  height: 6.2rem;
+  margin-top: -3.1rem;
+  // Square, matching monogram.png (1:1), so 100% 100% never crops or distorts (contain misrounded in html2canvas).
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }

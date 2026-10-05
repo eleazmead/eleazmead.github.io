@@ -83,6 +83,9 @@ export class InvitationExportService {
   // Returns 'needs-tap' when share() was refused because the tap is too old (iOS allows it only briefly,
   // and rendering can outlast that); the caller then shows a button that calls shareImages().
   async exportAsImages(blobs: Blob[], fileBaseName: string): Promise<'done' | 'needs-tap'> {
+    // Android's share sheet has no "save to gallery" target, so Android guests get plain image downloads instead.
+    // They need a fresh tap (several downloads started after rendering would be blocked), hence 'needs-tap'.
+    if (this.usesDirectDownload()) return 'needs-tap';
     const files = this.toFiles(blobs, fileBaseName);
     const nav = navigator as ShareableNavigator;
     if (nav.share && nav.canShare?.({ files })) {
@@ -101,6 +104,10 @@ export class InvitationExportService {
 
   // Call straight from a click handler with no awaits before it.
   async shareImages(blobs: Blob[], fileBaseName: string): Promise<void> {
+    if (this.usesDirectDownload()) {
+      await this.downloadEach(blobs, fileBaseName);
+      return;
+    }
     const files = this.toFiles(blobs, fileBaseName);
     try {
       await (navigator as ShareableNavigator).share!({ files, title: fileBaseName });
@@ -108,6 +115,22 @@ export class InvitationExportService {
       if (err instanceof DOMException && err.name === 'AbortError') return;
       console.warn('Web Share failed, falling back to zip download:', err);
       await this.downloadZip(blobs, fileBaseName);
+    }
+  }
+
+  // True on Android only: iOS keeps the share sheet, which already offers "Save Images".
+  usesDirectDownload(): boolean {
+    return /Android/i.test(navigator.userAgent);
+  }
+
+  // One JPG per page into Downloads. Galleries sort newest first, so save last to first (page 1 ends up first),
+  // over a second apart for distinct timestamps, with zero-padded names. Chrome asks once to allow multiples.
+  private async downloadEach(blobs: Blob[], fileBaseName: string): Promise<void> {
+    const pad = String(blobs.length).length;
+    for (let i = blobs.length - 1; i >= 0; i--) {
+      const number = String(i + 1).padStart(pad, '0');
+      this.downloadBlob(blobs[i], `${fileBaseName}_${number}.${IMAGE_EXT}`);
+      if (i > 0) await new Promise((resolve) => setTimeout(resolve, 1100));
     }
   }
 

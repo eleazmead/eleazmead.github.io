@@ -146,3 +146,21 @@
     background-position: -200% 0;
   }
 }
+
+.venues__directions {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+}
+
+// Parking disclaimer under each venue photo.
+.venues__parking {
+  width: min(70%, 420px);
+  margin: -0.5rem auto 0;
+  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.6;
+  text-align: center;
+}

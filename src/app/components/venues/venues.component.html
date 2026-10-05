@@ -14,6 +14,7 @@
             <address class="venues__address">
               {{ textKey(venueId, 'address') | translate }}
             </address>
+            <app-venue-directions class="venues__directions" [venueId]="venueId" />
           </div>
 
           @if (shouldShowPhoto(venueId)) {
@@ -33,6 +34,7 @@
               <span>{{ 'venues.photoPlaceholder' | translate }}</span>
             </div>
           }
+          <p class="venues__parking">{{ textKey(venueId, 'parking') | translate }}</p>
         </article>
       }
     </div>

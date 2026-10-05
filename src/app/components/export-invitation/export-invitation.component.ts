@@ -9,6 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -16,6 +17,7 @@ import { APP_CONFIG } from '../../config/app.config';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
+import { VenueDirectionsComponent } from '../../shared/venue-directions/venue-directions.component';
 import { cloudinaryResized } from '../../shared/utils/cloudinary.utils';
 import { GuestRow, MealChoice, RsvpEntry } from '../../shared/models/guest.model';
 import {
@@ -46,7 +48,7 @@ type QuestionAnswerId = (typeof APP_CONFIG.questionsAndAnswers.items)[number];
 @Component({
   selector: 'app-export-invitation',
   standalone: true,
-  imports: [TranslatePipe, FadeUpDirective],
+  imports: [TranslatePipe, FadeUpDirective, NgTemplateOutlet, VenueDirectionsComponent],
   templateUrl: './export-invitation.component.html',
   styleUrl: './export-invitation.component.scss',
 })
@@ -67,12 +69,16 @@ export class ExportInvitationComponent implements OnInit {
   // Canvas readback is being scrambled (Brave Shields / privacy mode), so exports cannot work.
   readonly shieldsHint = signal(false);
   // Pages waiting for a fresh tap (iOS share() needs a recent gesture).
+  // Dims the page and points at the Save button while the share sheet waits for a tap.
+  readonly hintVisible = signal(false);
+  // Android saves images as downloads (no share sheet), so its hint and wording differ.
+  readonly directDownload = this.exporter.usesDirectDownload();
   readonly pendingImages = signal<{ blobs: Blob[]; name: string } | null>(null);
   readonly showPages = signal(false);
   readonly letterPhotoFailed = signal(false);
   readonly letterPhotoData = signal('');
-  // Downscaled copies (object URLs) of large photos: decoding full-size photos made iOS exports crawl or time out.
-  private readonly resizedByUrl = signal(new Map<string, string>());
+  // Inline data: copies of every export image (large photos shrunk): avoids tainted canvases and slow full-size decodes.
+  private readonly inlineByUrl = signal(new Map<string, string>());
   private readonly naturalSizeByUrl = signal<Map<string, { width: number; height: number }>>(
     new Map(),
   );
@@ -81,6 +87,11 @@ export class ExportInvitationComponent implements OnInit {
   readonly pageHeight = APP_CONFIG.exportInvitation.pageHeight;
 
   readonly storyItems = STORY_TIMELINE_ITEMS;
+  // Our Story spans two export pages (photos 1-4, then 5-9); the second adds "(cont.)" to the header.
+  readonly storyPages = [
+    { items: STORY_TIMELINE_ITEMS.slice(0, 4), start: 0, continued: false },
+    { items: STORY_TIMELINE_ITEMS.slice(4), start: 4, continued: true },
+  ];
   readonly coverStoryItem = STORY_TIMELINE_ITEMS.find(
     (item) => item.id === APP_CONFIG.exportInvitation.coverStoryItemId,
   )!;
@@ -95,20 +106,11 @@ export class ExportInvitationComponent implements OnInit {
 
   private readonly failedGiftQrCodes = signal<Set<GiftQrCodeId>>(new Set());
 
-  readonly storyPathImage = 'export/story-path.svg';
-  // Stop coordinates in the story-path.svg viewBox (1000x1350): three runs of the
-  // serpentine, alternating direction, three stops each, in chapter order.
-  readonly storyStops = [
-    { x: 165, y: 80, tilt: -2.5 },
-    { x: 500, y: 80, tilt: 2 },
-    { x: 835, y: 80, tilt: -1.5 },
-    { x: 835, y: 520, tilt: 2.5 },
-    { x: 500, y: 520, tilt: -2 },
-    { x: 165, y: 520, tilt: 1.5 },
-    { x: 165, y: 960, tilt: -2 },
-    { x: 500, y: 960, tilt: 2.5 },
-    { x: 835, y: 960, tilt: -2.5 },
-  ];
+  // Header band as a JPG (SVG images taint the canvas in Safari).
+  readonly storyHeaderImage = 'export/header-circles.jpg';
+  readonly storyFloralImage = 'export/floral-corner.png';
+  // E & M letters only, shown left of every page title.
+  readonly monogramImage = 'export/monogram.png';
   readonly venueIds = ['church', 'reception'] as const;
   readonly venuePhotos = APP_CONFIG.assets.venuePhotos;
   readonly gratitudeIds = ['groomsParents', 'bridesParents', 'witnesses', 'ringBearer'] as const;
@@ -179,7 +181,7 @@ export class ExportInvitationComponent implements OnInit {
   // Height as a % of width for a padding-top box (not CSS `aspect-ratio`, which html2canvas may mis-size).
   // Uses the size recorded by preloadOne, so it works for photos outside the Our Story manifest.
   photoSrc(url: string): string {
-    return this.resizedByUrl().get(url) ?? url;
+    return this.inlineByUrl().get(url) ?? url;
   }
 
   photoRatioPercent(url: string, fallbackPercent = 75): number {
@@ -188,18 +190,25 @@ export class ExportInvitationComponent implements OnInit {
     return (size.height / size.width) * 100;
   }
 
-  // Clamped so tall collage photos don't dominate the story path; `contain` still shows them uncropped.
-  storyPhotoRatioPercent(item: StoryTimelineItem): number {
-    const url = this.storyPhotoUrl(item);
-    const percent = this.photoRatioPercent(url);
-    return Math.min(115, Math.max(65, percent));
+  // 01, 02 ... 09 for the Our Story grid badges.
+  storyNumber(index: number): string {
+    return String(index + 1).padStart(2, '0');
+  }
+
+  // The number is baked into a PNG of the circle (centred by the digits' own ink box): text in a CSS circle
+  // sat visibly low on iOS, because browsers place the same font differently.
+  storyBadgeImage(index: number): string {
+    return `export/badge-${this.storyNumber(index)}.png`;
   }
 
   venuePhotoRatioPercent(id: 'church' | 'reception'): number {
     return Math.min(130, Math.max(55, this.photoRatioPercent(this.venuePhotos[id])));
   }
 
-  venueKey(id: 'church' | 'reception', field: 'name' | 'description' | 'address'): string {
+  venueKey(
+    id: 'church' | 'reception',
+    field: 'name' | 'description' | 'address' | 'parking',
+  ): string {
     return `venues.items.${id}.${field}`;
   }
 
@@ -215,7 +224,7 @@ export class ExportInvitationComponent implements OnInit {
     return `whereToStay.hotelGroups.${groupId}.hotels.${hotelId}`;
   }
 
-  storyTextKey(itemId: StoryTimelineItemId, field: 'date' | 'title'): string {
+  storyTextKey(itemId: StoryTimelineItemId, field: 'date' | 'title' | 'body'): string {
     return `ourStory.timeline.${itemId}.${field}`;
   }
 
@@ -281,6 +290,7 @@ export class ExportInvitationComponent implements OnInit {
     this.errorDetail.set('');
     this.shieldsHint.set(false);
     this.pendingImages.set(null);
+    this.hintVisible.set(false);
 
     try {
       await this.warm();
@@ -298,7 +308,11 @@ export class ExportInvitationComponent implements OnInit {
       this.status.set('idle');
       if (format === 'images') {
         const result = await this.exporter.exportAsImages(pages, fileBaseName);
-        if (result === 'needs-tap') this.pendingImages.set({ blobs: pages, name: fileBaseName });
+        if (result === 'needs-tap') {
+          this.pendingImages.set({ blobs: pages, name: fileBaseName });
+          this.hintVisible.set(true);
+          setTimeout(() => this.scrollReadyIntoView(), 60);
+        }
       } else {
         await this.exporter.exportAsPdf(pages, fileBaseName, this.pageWidth, this.pageHeight);
       }
@@ -311,8 +325,7 @@ export class ExportInvitationComponent implements OnInit {
       this.status.set('error');
     } finally {
       this.showPages.set(false);
-      this.resizedByUrl().forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-      this.resizedByUrl.set(new Map());
+      this.inlineByUrl.set(new Map());
       this.warmPromise = undefined;
     }
   }
@@ -355,10 +368,21 @@ export class ExportInvitationComponent implements OnInit {
     }
   }
 
+  dismissHint(): void {
+    this.hintVisible.set(false);
+  }
+
+  private scrollReadyIntoView(): void {
+    document
+      .querySelector('.export-invitation__ready')
+      ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
   // Must stay free of awaits before the share call so the tap still counts as a gesture.
   savePendingImages(): void {
     const pending = this.pendingImages();
     if (!pending) return;
+    this.hintVisible.set(false);
     void this.exporter.shareImages(pending.blobs, pending.name).then(() => {
       this.pendingImages.set(null);
     });
@@ -383,7 +407,10 @@ export class ExportInvitationComponent implements OnInit {
 
     if (this.attireGuideImage) urls.add(this.attireGuideImage);
     if (this.shouldShowLetterPage()) urls.add(this.letterPaperImage);
-    urls.add(this.storyPathImage);
+    urls.add(this.storyHeaderImage);
+    this.storyItems.forEach((_, i) => urls.add(this.storyBadgeImage(i)));
+    urls.add(this.storyFloralImage);
+    urls.add(this.monogramImage);
     urls.add(this.venuePhotos.church);
     urls.add(this.venuePhotos.reception);
 
@@ -421,56 +448,77 @@ export class ExportInvitationComponent implements OnInit {
     }
   }
 
-  // Photos larger than MAX_PHOTO_SIDE are redrawn smaller (the pages show them at ~250-500px wide anyway).
-  private async downscale(url: string, image: HTMLImageElement): Promise<void> {
+  // Every image the export pages use is fetched here and handed to html2canvas as an inline data: URL.
+  // Letting html2canvas request images itself (with CORS) left the canvas tainted on iOS Safari/Chrome/Brave
+  // ("SecurityError: The operation is insecure"); data: URLs can never taint. Large photos are shrunk on the way.
+  private async preloadOne(url: string): Promise<void> {
+    let source = url;
+    if (!url.startsWith('data:')) {
+      try {
+        source = await this.fetchAsDataUrl(url);
+      } catch {
+        this.markPreloadFailed(url);
+        return;
+      }
+    }
+    await new Promise<void>((resolve) => {
+      const image = new Image();
+      image.onload = () => {
+        const sizes = new Map(this.naturalSizeByUrl());
+        sizes.set(url, { width: image.naturalWidth, height: image.naturalHeight });
+        this.naturalSizeByUrl.set(sizes);
+        this.inlineByUrl.update((map) =>
+          new Map(map).set(url, this.shrinkIfLarge(url, source, image)),
+        );
+        resolve();
+      };
+      image.onerror = () => {
+        this.markPreloadFailed(url);
+        resolve();
+      };
+      image.src = source;
+    });
+  }
+
+  private async fetchAsDataUrl(url: string): Promise<string> {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+    const blob = await response.blob();
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  // Photos longer than MAX_PHOTO_SIDE are redrawn smaller as JPEG; SVGs and the letter paper (alpha) are kept as-is.
+  private shrinkIfLarge(url: string, source: string, image: HTMLImageElement): string {
     const side = Math.max(image.naturalWidth, image.naturalHeight);
-    if (side <= MAX_PHOTO_SIDE || url.endsWith('.svg') || url.startsWith('data:')) return;
+    if (side <= MAX_PHOTO_SIDE || url.endsWith('.svg') || url.includes('letter/')) return source;
     try {
       const ratio = MAX_PHOTO_SIDE / side;
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(image.naturalWidth * ratio);
       canvas.height = Math.round(image.naturalHeight * ratio);
       canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88),
-      );
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
       canvas.width = canvas.height = 0;
-      if (!blob) return;
-      const map = new Map(this.resizedByUrl());
-      map.set(url, URL.createObjectURL(blob));
-      this.resizedByUrl.set(map);
+      return dataUrl;
     } catch {
-      // Keep the original URL if resizing is unavailable.
+      return source;
     }
   }
 
-  private preloadOne(url: string): Promise<void> {
-    return new Promise((resolve) => {
-      const image = new Image();
-      // Only matters for the guest letter photo, which may be hosted on a
-      // third-party domain (Azure, S3, ...) - harmless for same-origin URLs.
-      image.crossOrigin = 'anonymous';
-      image.onload = () => {
-        const sizes = new Map(this.naturalSizeByUrl());
-        sizes.set(url, { width: image.naturalWidth, height: image.naturalHeight });
-        this.naturalSizeByUrl.set(sizes);
-        void this.downscale(url, image).then(resolve);
-      };
-      image.onerror = () => {
-        if (url === this.letterPhotoUrl()) {
-          // Almost always the photo host not sending CORS headers (Azure/S3
-          // need a CORS rule for this site's origin) - a tainted canvas can't
-          // be exported, so the photo is omitted rather than breaking the export.
-          console.warn('Guest letter photo could not be loaded for export (CORS?):', url);
-          this.letterPhotoFailed.set(true);
-        }
-        if (url === this.giftQrCodeUrl('philippines')) this.markGiftQrCodeFailed('philippines');
-        if (url === this.giftQrCodeUrl('singapore')) this.markGiftQrCodeFailed('singapore');
-        if (url === this.attireGuideImage) this.attireImageFailed.set(true);
-        resolve();
-      };
-      image.src = url;
-    });
+  private markPreloadFailed(url: string): void {
+    if (url === this.letterPhotoUrl()) {
+      // Almost always the photo host not sending CORS headers (Azure/S3 need a CORS rule for this site's origin).
+      console.warn('Guest letter photo could not be loaded for export (CORS?):', url);
+      this.letterPhotoFailed.set(true);
+    }
+    if (url === this.giftQrCodeUrl('philippines')) this.markGiftQrCodeFailed('philippines');
+    if (url === this.giftQrCodeUrl('singapore')) this.markGiftQrCodeFailed('singapore');
+    if (url === this.attireGuideImage) this.attireImageFailed.set(true);
   }
 
   // Data + photo preloading, started once (on menu open or export) and shared by both.

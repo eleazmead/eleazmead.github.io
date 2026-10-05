@@ -63,9 +63,28 @@
     }
 
     @if (pendingImages()) {
-      <div class="export-invitation__ready">
-        <p>{{ 'exportInvitation.saveReady' | translate }}</p>
-        <button type="button" class="export-toggle__trigger" (click)="savePendingImages()">
+      @if (hintVisible()) {
+        <div class="export-save-hint__backdrop" (click)="dismissHint()" aria-hidden="true"></div>
+      }
+      <div
+        class="export-invitation__ready"
+        [class.export-invitation__ready--spotlight]="hintVisible()"
+      >
+        @if (hintVisible()) {
+          <p class="export-save-hint__bubble" role="status">
+            {{
+              (directDownload ? 'exportInvitation.saveHintAndroid' : 'exportInvitation.saveHint')
+                | translate
+            }}
+          </p>
+        }
+        <p class="export-invitation__ready-text">{{ 'exportInvitation.saveReady' | translate }}</p>
+        <button
+          type="button"
+          class="export-toggle__trigger"
+          [class.export-save-hint__button]="hintVisible()"
+          (click)="savePendingImages()"
+        >
           {{ 'exportInvitation.saveButton' | translate }}
         </button>
       </div>
@@ -86,6 +105,45 @@
          display:none, so these pages are positioned far outside the
          viewport instead of hidden. -->
     <div class="export-invitation__pages" aria-hidden="true">
+      <!-- Header shared by every page except the cover: title on the left, the site monogram on the right. -->
+      <ng-template #pageHeader let-title="title" let-continued="continued" let-long="long">
+        <div
+          class="export-page__header"
+          [style.background-image]="'url(' + photoSrc(storyHeaderImage) + ')'"
+        >
+          <div class="export-page__header-text">
+            <h2 class="export-page__header-title" [class.export-page__header-title--long]="long">
+              {{ title | translate }}
+            </h2>
+            @if (continued) {
+              <span class="export-page__header-cont">{{
+                'exportInvitation.storyContinued' | translate
+              }}</span>
+            } @else {
+              <span class="export-page__header-ornament" aria-hidden="true"></span>
+            }
+          </div>
+          <div
+            class="export-page__header-mark"
+            role="img"
+            aria-label="E &amp; M"
+            [style.background-image]="'url(' + photoSrc(monogramImage) + ')'"
+          ></div>
+        </div>
+      </ng-template>
+
+      <!-- Corner florals on every page except the cover; rendered behind the page content. -->
+      <ng-template #floralCorners>
+        <div
+          class="export-page__floral export-page__floral--left"
+          [style.background-image]="'url(' + photoSrc(storyFloralImage) + ')'"
+        ></div>
+        <div
+          class="export-page__floral export-page__floral--right"
+          [style.background-image]="'url(' + photoSrc(storyFloralImage) + ')'"
+        ></div>
+      </ng-template>
+
       <!-- Page 1: Front cover -->
       <section
         #pageEl
@@ -111,6 +169,9 @@
             <span class="export-page__amp">&amp;</span>
             {{ 'couple.name2' | translate }}
           </h1>
+          <p class="export-page__cover-subtitle">
+            {{ 'exportInvitation.coverSubtitle' | translate }}
+          </p>
         </div>
       </section>
 
@@ -122,12 +183,16 @@
           [style.width.px]="pageWidth"
           [style.height.px]="pageHeight"
         >
+          <ng-container *ngTemplateOutlet="floralCorners" />
+          <ng-container
+            *ngTemplateOutlet="pageHeader; context: { title: 'exportInvitation.letterHeading' }"
+          />
           <div class="export-page__frame export-page__frame--letter">
             <!-- Torn/scorched paper is an SVG background (html2canvas ignores clip-path). -->
             <div
               class="export-letter-paper"
               [class.export-letter-paper--with-photo]="letterPhotoData() && !letterPhotoFailed()"
-              [style.background-image]="'url(' + letterPaperImage + ')'"
+              [style.background-image]="'url(' + photoSrc(letterPaperImage) + ')'"
             >
               @if (letterPhotoData() && !letterPhotoFailed()) {
                 <div class="export-letter-paper__photo-wrap">
@@ -192,72 +257,115 @@
         </section>
       }
 
-      <!-- Page 3: Our Story, winding path -->
-      <section
-        #pageEl
-        class="export-page export-page--story"
-        [style.width.px]="pageWidth"
-        [style.height.px]="pageHeight"
-      >
-        <div class="export-page__frame">
-          <h2 class="export-page__heading">{{ 'ourStory.heading' | translate }}</h2>
-          <div class="export-story-path" [style.background-image]="'url(' + storyPathImage + ')'">
-            @for (item of storyItems; track item.id; let i = $index) {
-              <div
-                class="export-story-stop"
-                [style.left.%]="storyStops[i].x / 10"
-                [style.top.%]="storyStops[i].y / 13.5"
-              >
-                <span class="export-story-stop__pin"></span>
+      @for (page of storyPages; track page.start) {
+        <!-- Pages 3-4: Our Story (photos 1-4, then 5-9 with "(cont.)" in the header) -->
+        <section
+          #pageEl
+          class="export-page export-page--story"
+          [style.width.px]="pageWidth"
+          [style.height.px]="pageHeight"
+        >
+          <ng-container *ngTemplateOutlet="floralCorners" />
+          <ng-container
+            *ngTemplateOutlet="
+              pageHeader;
+              context: { title: 'ourStory.heading', continued: page.continued }
+            "
+          />
+          <div class="export-page__frame export-page__frame--story">
+            <div class="export-story-grid" [class.export-story-grid--roomy]="!page.continued">
+              @for (item of page.items; track item.id; let i = $index) {
                 <div
-                  class="export-story-stop__card"
-                  [style.transform]="'rotate(' + storyStops[i].tilt + 'deg)'"
+                  class="export-story-cell"
+                  [class.export-story-cell--solo]="i % 2 === 0 && i === page.items.length - 1"
                 >
+                  @if (i % 2 === 0 && i + 1 < page.items.length) {
+                    <span class="export-story-cell__link" aria-hidden="true"></span>
+                  }
+                  <span
+                    class="export-story-cell__num"
+                    role="img"
+                    [attr.aria-label]="storyNumber(page.start + i)"
+                    [style.background-image]="
+                      'url(' + photoSrc(storyBadgeImage(page.start + i)) + ')'
+                    "
+                  ></span>
                   @if (storyPhotoUrl(item); as url) {
                     <div
-                      class="export-story-stop__photo"
+                      class="export-story-cell__photo"
                       role="img"
-                      [style.padding-top.%]="storyPhotoRatioPercent(item)"
                       [style.background-image]="'url(' + photoSrc(url) + ')'"
                     ></div>
                   } @else {
-                    <div class="export-story-stop__placeholder"></div>
+                    <div class="export-story-cell__photo export-story-cell__photo--empty"></div>
                   }
-                  <div class="export-story-stop__caption">
-                    <span class="export-story-stop__date">{{
+                  <div class="export-story-cell__caption">
+                    <span class="export-story-cell__date">{{
                       storyTextKey(item.id, 'date') | translate
                     }}</span>
-                    <span class="export-story-stop__title">{{
-                      storyTextKey(item.id, 'title') | translate
+                    <span class="export-story-cell__story">{{
+                      storyTextKey(item.id, 'body') | translate
                     }}</span>
                   </div>
                 </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Page 5: With Gratitude (after Our Story) -->
+      <section
+        #pageEl
+        class="export-page export-page--gratitude"
+        [style.width.px]="pageWidth"
+        [style.height.px]="pageHeight"
+      >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container *ngTemplateOutlet="pageHeader; context: { title: 'withGratitude.heading' }" />
+        <div class="export-page__frame">
+          <p class="export-gratitude__body">{{ 'withGratitude.body' | translate }}</p>
+          <div class="export-gratitude__ornament" aria-hidden="true"><span></span></div>
+          <div class="export-gratitude__grid">
+            @for (id of gratitudeIds; track id) {
+              <div class="export-gratitude__card">
+                <p class="export-gratitude__role">{{ gratitudeKey(id, 'role') | translate }}</p>
+                <p class="export-gratitude__names">{{ gratitudeKey(id, 'names') | translate }}</p>
               </div>
             }
           </div>
         </div>
       </section>
 
-      <!-- Page 4: Timing & Venues -->
+      <!-- Page 6: Timing & Venues -->
       <section
         #pageEl
         class="export-page export-page--venues"
         [style.width.px]="pageWidth"
         [style.height.px]="pageHeight"
       >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container
+          *ngTemplateOutlet="
+            pageHeader;
+            context: { title: 'exportInvitation.timingVenues.heading' }
+          "
+        />
         <div class="export-page__frame">
-          <h2 class="export-page__heading">
-            {{ 'exportInvitation.timingVenues.heading' | translate }}
-          </h2>
           @for (venueId of venueIds; track venueId; let i = $index) {
             <div class="export-venue" [class.export-venue--reverse]="i % 2 === 1">
-              <div class="export-venue__photo-wrap">
-                <div
-                  class="export-venue__photo"
-                  role="img"
-                  [style.padding-top.%]="venuePhotoRatioPercent(venueId)"
-                  [style.background-image]="'url(' + photoSrc(venuePhotos[venueId]) + ')'"
-                ></div>
+              <div class="export-venue__media">
+                <div class="export-venue__photo-wrap">
+                  <div
+                    class="export-venue__photo"
+                    role="img"
+                    [style.padding-top.%]="venuePhotoRatioPercent(venueId)"
+                    [style.background-image]="'url(' + photoSrc(venuePhotos[venueId]) + ')'"
+                  ></div>
+                </div>
+                <p class="export-venue__parking">
+                  {{ venueKey(venueId, 'parking') | translate }}
+                </p>
               </div>
               <div class="export-venue__copy">
                 <p class="export-venue__event">
@@ -275,43 +383,26 @@
                   {{ venueKey(venueId, 'description') | translate }}
                 </p>
                 <p class="export-venue__address">{{ venueKey(venueId, 'address') | translate }}</p>
+                <app-venue-directions class="export-venue__directions" [venueId]="venueId" />
               </div>
             </div>
           }
         </div>
       </section>
 
-      <!-- Page 5: With Gratitude -->
-      <section
-        #pageEl
-        class="export-page export-page--gratitude"
-        [style.width.px]="pageWidth"
-        [style.height.px]="pageHeight"
-      >
-        <div class="export-page__frame">
-          <h2 class="export-page__heading">{{ 'withGratitude.heading' | translate }}</h2>
-          <p class="export-gratitude__body">{{ 'withGratitude.body' | translate }}</p>
-          <div class="export-gratitude__ornament" aria-hidden="true"><span></span></div>
-          <div class="export-gratitude__grid">
-            @for (id of gratitudeIds; track id) {
-              <div class="export-gratitude__card">
-                <p class="export-gratitude__role">{{ gratitudeKey(id, 'role') | translate }}</p>
-                <p class="export-gratitude__names">{{ gratitudeKey(id, 'names') | translate }}</p>
-              </div>
-            }
-          </div>
-        </div>
-      </section>
-
-      <!-- Page 6: Wedding timeline -->
+      <!-- Page 7: Wedding timeline -->
       <section
         #pageEl
         class="export-page export-page--timeline"
         [style.width.px]="pageWidth"
         [style.height.px]="pageHeight"
       >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container
+          *ngTemplateOutlet="pageHeader; context: { title: 'weddingTimeline.heading' }"
+        />
         <div class="export-page__frame">
-          <h2 class="export-page__heading">{{ 'weddingTimeline.heading' | translate }}</h2>
+          <p class="export-page__subtitle">{{ 'exportInvitation.timelineSubtitle' | translate }}</p>
           <ol class="export-timeline-list export-fit">
             @for (eventId of timelineEventIds; track eventId) {
               <li class="export-timeline-list__event">
@@ -332,15 +423,16 @@
         </div>
       </section>
 
-      <!-- Page 7: Attire -->
+      <!-- Page 8: Attire -->
       <section
         #pageEl
         class="export-page export-page--attire"
         [style.width.px]="pageWidth"
         [style.height.px]="pageHeight"
       >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container *ngTemplateOutlet="pageHeader; context: { title: 'whatToWear.heading' }" />
         <div class="export-page__frame export-page__frame--attire">
-          <h2 class="export-page__heading">{{ 'whatToWear.heading' | translate }}</h2>
           <p class="export-page__lead">{{ 'whatToWear.lead' | translate }}</p>
 
           <div class="export-attire-body">
@@ -348,7 +440,7 @@
               <div
                 class="export-attire-image"
                 role="img"
-                [style.padding-top.%]="photoRatioPercent(attireGuideImage) * 0.58"
+                [style.padding-top.%]="photoRatioPercent(attireGuideImage) * 0.48"
                 [style.background-image]="'url(' + photoSrc(attireGuideImage) + ')'"
               ></div>
             }
@@ -380,21 +472,24 @@
                 </div>
               </div>
             </div>
+            <p class="export-attire-closing">{{ 'whatToWear.closing' | translate }}</p>
+            <p class="export-attire-weather">{{ 'whatToWear.weatherNote' | translate }}</p>
           </div>
         </div>
       </section>
 
-      <!-- Page 8: Where to Stay -->
+      <!-- Page 9: Where to Stay -->
       <section
         #pageEl
         class="export-page export-page--stay"
         [style.width.px]="pageWidth"
         [style.height.px]="pageHeight"
       >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container
+          *ngTemplateOutlet="pageHeader; context: { title: 'whereToStay.heading', long: true }"
+        />
         <div class="export-page__frame export-page__frame--stay">
-          <h2 class="export-page__heading export-page__heading--medium">
-            {{ 'whereToStay.heading' | translate }}
-          </h2>
           <p class="export-stay__recommendation">
             {{ 'whereToStay.recommendation.prefix' | translate
             }}<strong>{{ 'whereToStay.recommendation.locations.bencoolen' | translate }}</strong
@@ -422,15 +517,18 @@
         </div>
       </section>
 
-      <!-- Page 9: Q&A, all expanded, with gift QR codes -->
+      <!-- Page 10: Q&A, all expanded, with gift QR codes -->
       <section
         #pageEl
         class="export-page export-page--qa"
         [style.width.px]="pageWidth"
         [style.height.px]="pageHeight"
       >
+        <ng-container *ngTemplateOutlet="floralCorners" />
+        <ng-container
+          *ngTemplateOutlet="pageHeader; context: { title: 'questionsAndAnswers.heading' }"
+        />
         <div class="export-page__frame">
-          <h2 class="export-page__heading">{{ 'questionsAndAnswers.heading' | translate }}</h2>
           <div class="export-qa-list export-fit">
             @for (itemId of qaItemIds; track itemId) {
               <div class="export-qa-list__item">
@@ -457,7 +555,9 @@
                         <div
                           class="export-qa-list__qr"
                           role="img"
-                          [style.background-image]="'url(' + giftQrCodeUrl('philippines') + ')'"
+                          [style.background-image]="
+                            'url(' + photoSrc(giftQrCodeUrl('philippines')) + ')'
+                          "
                         ></div>
                       }
                       <p>
@@ -479,7 +579,9 @@
                         <div
                           class="export-qa-list__qr"
                           role="img"
-                          [style.background-image]="'url(' + giftQrCodeUrl('singapore') + ')'"
+                          [style.background-image]="
+                            'url(' + photoSrc(giftQrCodeUrl('singapore')) + ')'
+                          "
                         ></div>
                       }
                       <p>

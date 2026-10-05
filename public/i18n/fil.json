@@ -135,13 +135,24 @@
       "church": {
         "name": "St. Joseph's Church Victoria Street 2:00 PM",
         "description": "Isang historic Catholic church sa heart ng Singapore, kung saan quiet beauty and prayer ang magiging frame ng simula ng married life namin.",
-        "address": "143 Victoria Street, Singapore 188020"
+        "address": "143 Victoria Street, Singapore 188020",
+        "parking": "May paradahan, first-come, first-served ang basehan."
       },
       "reception": {
         "name": "The Lighthouse Fullerton 6:00 PM",
         "description": "Nasa 8th floor ng The Fullerton Hotel Singapore, isang elegant rooftop dining spot na tanaw ang Marina Bay. Dito magpapatuloy ang celebration with dinner, stories, and city lights.",
-        "address": "1 Fullerton Square, Singapore 049178"
+        "address": "1 Fullerton Square, Singapore 049178",
+        "parking": "May libreng parking coupon. Makipag-ugnayan sa couple kung kailangan mo ng isa. Maaari ding gamitin ang car park ng One Fullerton sa 1 Fullerton Road."
       }
+    },
+    "directions": {
+      "heading": "Paano pumunta",
+      "mrt": "Pinakamalapit na MRT station",
+      "mrtPlural": "Pinakamalapit na mga MRT station",
+      "bus": "Pinakamalapit na bus stop",
+      "walk": "{0} min na lakad",
+      "exit": "Lumabas sa Exit {0}",
+      "busStop": "{0} (Bus Stop {1})"
     }
   },
   "rsvp": {
@@ -269,7 +280,8 @@
     "imageButtonAriaLabel": "Open the attire guide in a larger view",
     "lightboxAriaLabel": "Enlarged attire guide",
     "closeAriaLabel": "Close attire guide",
-    "imagePlaceholder": "Attire guide coming soon"
+    "imagePlaceholder": "Attire guide coming soon",
+    "weatherNote": "Parehong may aircon ang simbahan at ang reception venue. Ngunit maaaring maalinsangan at mainit ang panahon sa labas sa Singapore, na may paminsan-minsang pag-ulan.\n\nPumili ng kasuotang komportable ka, at isipin ang panahon. Inirerekomenda naming magdala ng payong, para sigurado."
   },
   "whereToStay": {
     "heading": "Saan Mag-stay (Para sa mga Bisita Naming Galing Ibang Bansa)",
@@ -369,7 +381,13 @@
     "optionImages": "Bilang mga Larawan",
     "optionPdf": "Bilang PDF",
     "shieldsHint": "Hinaharang ng iyong browser ang paggawa ng larawan (halimbawa, Brave Shields). Paki-off ang Shields para sa site na ito at subukan muli.",
+    "storyContinued": "(karugtong)",
+    "coverSubtitle": "Ikakasal na kami sa puso ng Lion City, at sana makasama ka namin.",
+    "timelineSubtitle": "Sisikapin naming sundin ang schedule, pero maaaring bahagyang magbago ang oras sa mismong araw.",
+    "letterHeading": "Isang Liham Para Sa Iyo",
     "saveReady": "Handa na ang iyong mga larawan. I-tap para i-save.",
+    "saveHint": "I-tap ang \"I-save ang mga larawan\" para buksan ang share sheet at i-save ang iyong mga pahina.",
+    "saveHintAndroid": "I-tap ang \"I-save ang mga larawan\" para i-download ang iyong mga pahina sa iyong telepono. Lalabas ang mga ito sa iyong gallery.",
     "saveButton": "I-save ang mga larawan",
     "error": "May naganap na problema sa paghahanda ng imbitasyon. Subukan muli.",
     "rsvpStatus": {
