@@ -183,8 +183,7 @@
 }
 
 .export-page__frame {
-  // Above the corner florals (z-index 0). The florals are small and faint (see .export-page__floral), so
-  // text needs no glow: a white text-shadow showed as a pale halo on the venue frame's darker paper (iOS).
+  // Above the corner florals (z-index 0). No text-shadow glow: it showed as a pale halo on the venue frame's paper.
   position: relative;
   z-index: 1;
   // Minus the frame's own top+bottom margin (1.25rem each) so it fits the page
@@ -281,13 +280,8 @@
   background: #efe8e3;
 }
 
-// Page 3 - Our Story: header image, a 3x3 photo grid, floral footer
-//
-// Header: an image on the left fading into the page colour so the title can sit on the right.
-// Grid: nine equal tiles, left to right, each with a numbered badge (01-09) centred on its top
-// edge and a fine line joining it to the next badge in the row. Photos are fixed-height
-// background-image boxes with `contain` (a real height, unlike the old padding-top trick, so
-// html2canvas does not stretch them). Footer: corner florals plus the couple's name in script.
+// Our Story pages: two-column grid of numbered tiles (badge on each tile's top edge, a fine line to the next
+// badge in the row). Photos are real-height `contain` boxes: html2canvas stretches them inside padding-top boxes.
 // Static colours only (no color-mix) because html2canvas rasterizes this page.
 
 .export-page__frame--story {
@@ -1324,8 +1318,7 @@
   text-align: center;
 }
 
-// Shared page header (every page except the cover): hills image fading into the page colour so the
-// title sits on the left, the site monogram on the right. The image is inlined like every export image.
+// Shared page header (every page except the cover): circles band, monogram left, title right.
 .export-page__header {
   position: absolute;
   z-index: 2;

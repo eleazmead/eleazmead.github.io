@@ -106,10 +106,10 @@ export class ExportInvitationComponent implements OnInit {
 
   private readonly failedGiftQrCodes = signal<Set<GiftQrCodeId>>(new Set());
 
-  // Placeholder hills-at-sunset header (a JPG, not an SVG: Safari taints canvases for SVG images); replace with a real photo.
+  // Header band as a JPG (SVG images taint the canvas in Safari).
   readonly storyHeaderImage = 'export/header-circles.jpg';
   readonly storyFloralImage = 'export/floral-corner.png';
-  // The site favicon (the E & M monogram), upscaled from the 32px .ico: shown opposite every page title.
+  // E & M letters only, shown left of every page title.
   readonly monogramImage = 'export/monogram.png';
   readonly venueIds = ['church', 'reception'] as const;
   readonly venuePhotos = APP_CONFIG.assets.venuePhotos;

@@ -123,10 +123,8 @@ export class InvitationExportService {
     return /Android/i.test(navigator.userAgent);
   }
 
-  // One JPG per page into Downloads, which Android lists in the gallery. Galleries sort newest first, so the pages
-  // are saved last to first (page 1 ends up newest and opens first). Over a second apart so every file gets a
-  // distinct timestamp, and zero-padded names so file managers sort 01 to 10 correctly. Chrome asks once to
-  // allow multiple downloads.
+  // One JPG per page into Downloads. Galleries sort newest first, so save last to first (page 1 ends up first),
+  // over a second apart for distinct timestamps, with zero-padded names. Chrome asks once to allow multiples.
   private async downloadEach(blobs: Blob[], fileBaseName: string): Promise<void> {
     const pad = String(blobs.length).length;
     for (let i = blobs.length - 1; i >= 0; i--) {
