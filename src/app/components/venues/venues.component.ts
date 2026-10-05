@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { APP_CONFIG } from '../../config/app.config';
+import { VenueDirectionsComponent } from '../../shared/venue-directions/venue-directions.component';
 
 const VENUE_IDS = ['church', 'reception'] as const;
 type VenueId = (typeof VENUE_IDS)[number];
@@ -9,7 +10,7 @@ type VenueId = (typeof VENUE_IDS)[number];
 @Component({
   selector: 'app-venues',
   standalone: true,
-  imports: [TranslatePipe, FadeUpDirective],
+  imports: [TranslatePipe, FadeUpDirective, VenueDirectionsComponent],
   templateUrl: './venues.component.html',
   styleUrl: './venues.component.scss',
 })
@@ -17,7 +18,7 @@ export class VenuesComponent {
   readonly venueIds = VENUE_IDS;
   readonly failedPhotos = signal<Set<VenueId>>(new Set());
 
-  textKey(venueId: VenueId, field: 'name' | 'description' | 'address'): string {
+  textKey(venueId: VenueId, field: 'name' | 'description' | 'address' | 'parking'): string {
     return `venues.items.${venueId}.${field}`;
   }
 

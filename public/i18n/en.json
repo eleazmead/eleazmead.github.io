@@ -135,13 +135,24 @@
       "church": {
         "name": "St. Joseph's Church Victoria Street 2:00 PM",
         "description": "A historic Catholic church in the heart of Singapore, where quiet beauty and prayer will frame the beginning of our married life.",
-        "address": "143 Victoria Street, Singapore 188020"
+        "address": "143 Victoria Street, Singapore 188020",
+        "parking": "Parking is available on a first-come, first-served basis."
       },
       "reception": {
         "name": "The Lighthouse Fullerton 6:00 PM",
         "description": "Perched atop The Fullerton Hotel Singapore on the 8th floor, an elegant rooftop dining overlooking Marina Bay, where dinner, heartfelt stories, and the glow of the city lights will carry the celebration into the evening.",
-        "address": "1 Fullerton Square, Singapore 049178"
+        "address": "1 Fullerton Square, Singapore 049178",
+        "parking": "Free parking coupons are available. Please reach out to the couple if you need one. You may use the car park facilities at One Fullerton, located at 1 Fullerton Road."
       }
+    },
+    "directions": {
+      "heading": "How to get there",
+      "mrt": "Nearest MRT station",
+      "mrtPlural": "Nearest MRT stations",
+      "bus": "Nearest bus stop",
+      "walk": "{0} min walk",
+      "exit": "Exit via {0}",
+      "busStop": "{0} (Bus Stop {1})"
     }
   },
   "rsvp": {
@@ -269,7 +280,8 @@
     "imageButtonAriaLabel": "Open the attire guide in a larger view",
     "lightboxAriaLabel": "Enlarged attire guide",
     "closeAriaLabel": "Close attire guide",
-    "imagePlaceholder": "Attire guide coming soon"
+    "imagePlaceholder": "Attire guide coming soon",
+    "weatherNote": "Both the church and reception venue are air-conditioned. But Singapore’s weather can be warm and humid outdoors, with occasional shower.\n\nPlease choose attire that you’ll be comfortable in, with the weather in mind. We recommend bringing an umbrella, just in case."
   },
   "whereToStay": {
     "heading": "Where To Stay (For Our Overseas Guests)",
@@ -369,7 +381,13 @@
     "optionImages": "As Images",
     "optionPdf": "As PDF",
     "shieldsHint": "Your browser is blocking image creation (for example Brave Shields). Please turn off Shields for this site and try again.",
+    "storyContinued": "(cont.)",
+    "coverSubtitle": "We’re getting married in the heart of the Lion City, and we would love to have you there.",
+    "timelineSubtitle": "While we will do our best to follow the schedule, timings may vary slightly on the day.",
+    "letterHeading": "A Letter For You",
     "saveReady": "Your images are ready. Tap to save them.",
+    "saveHint": "Tap \"Save images\" to open the share sheet and save your pages.",
+    "saveHintAndroid": "Tap \"Save images\" to download your pages to your phone. They will appear in your gallery.",
     "saveButton": "Save images",
     "error": "Something went wrong preparing your invitation. Please try again.",
     "rsvpStatus": {

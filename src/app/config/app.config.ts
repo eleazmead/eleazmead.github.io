@@ -43,6 +43,61 @@ export const APP_CONFIG = {
       },
     ] as const,
   },
+  // Getting to each venue. Stop codes/services come from LTA bus data (bus services can change: re-check
+  // before the wedding); walking times are estimates. Line colours follow the official MRT map.
+  transport: {
+    mrtLineColors: {
+      EW: '#009645',
+      NS: '#d42e12',
+      NE: '#9900aa',
+      CC: '#fa9e0d',
+      DT: '#005ec4',
+      TE: '#9d5b25',
+    },
+    venues: {
+      church: {
+        mrt: [
+          { name: 'Bencoolen', walkMinutes: 4, exit: 'B', codes: [{ line: 'DT', number: 21 }] },
+          {
+            name: 'Bugis',
+            walkMinutes: 8,
+            exit: 'C',
+            codes: [
+              { line: 'EW', number: 12 },
+              { line: 'DT', number: 14 },
+            ],
+          },
+        ],
+        bus: [
+          {
+            name: "St. Joseph's Church",
+            code: '01013',
+            services: ['130', '133', '145', '197', '851', '851e', '960', '960e'],
+          },
+        ],
+      },
+      reception: {
+        mrt: [
+          {
+            name: 'Raffles Place',
+            walkMinutes: 5,
+            exit: 'I',
+            codes: [
+              { line: 'NS', number: 26 },
+              { line: 'EW', number: 14 },
+            ],
+          },
+        ],
+        bus: [
+          {
+            name: 'Fullerton Square',
+            code: '03011',
+            services: ['10', '10e', '57', '70', '100', '107', '130', '131', '167', '196', '196e'],
+          },
+        ],
+      },
+    },
+  },
   rsvp: {
     deadlineDate: '2026-10-16',
   },

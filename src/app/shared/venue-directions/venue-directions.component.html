@@ -1,0 +1,44 @@
+<div class="venue-directions">
+  <p class="venue-directions__heading">{{ 'venues.directions.heading' | translate }}</p>
+  <ul class="venue-directions__modes">
+    <li class="venue-directions__mode">
+      <span class="venue-directions__mode-label">{{
+        (directions().mrt.length > 1 ? 'venues.directions.mrtPlural' : 'venues.directions.mrt')
+          | translate
+      }}</span>
+      <ul class="venue-directions__stops">
+        @for (station of directions().mrt; track station.name) {
+          <li class="venue-directions__stop">
+            <span class="venue-directions__line">
+              <span class="venue-directions__codes">
+                @for (code of station.codes; track code.line + code.number) {
+                  <span
+                    class="venue-directions__code"
+                    role="img"
+                    [attr.aria-label]="code.line + ' ' + code.number"
+                    [style.background-image]="'url(' + chip(code).uri + ')'"
+                    [style.width.em]="chip(code).ratio * 1.45"
+                  ></span>
+                }
+              </span>
+              <span class="venue-directions__stop-name">{{ station.name }}</span>
+            </span>
+            <span class="venue-directions__muted"
+              >{{ walkText(station.walkMinutes) }}, {{ exitText(station.exit) }}</span
+            >
+          </li>
+        }
+      </ul>
+    </li>
+    <li class="venue-directions__mode">
+      <span class="venue-directions__mode-label">{{ 'venues.directions.bus' | translate }}</span>
+      <ul class="venue-directions__stops">
+        @for (stop of directions().bus; track stop.code) {
+          <li class="venue-directions__stop venue-directions__stop--bus">
+            <span class="venue-directions__stop-name">{{ busStopText(stop.name, stop.code) }}</span>
+          </li>
+        }
+      </ul>
+    </li>
+  </ul>
+</div>
