@@ -159,8 +159,8 @@
     "heading": "RSVP",
     "deadline": {
       "prefix": "Kindly RSVP by",
-      "date": "15 October 2026.",
-      "closedMessage": "RSVP updates are now closed. Thank you for your understanding."
+      "date": "16 December 2026.",
+      "closedMessage": "The RSVP period has ended. Your response has been finalised by the couple and can no longer be changed."
     },
     "note": "We understand that attending our wedding will involve travelling for some of you, and we truly appreciate the additional time, effort, and arrangements you will make. At the same time, please know that there is absolutely no pressure. While having you celebrate with us would make us very happy, your love and well wishes are equally cherished.",
     "yes": "Joyfully accepts",
@@ -198,7 +198,15 @@
     "alreadyRsvped": {
       "message": "This guest has already RSVP-ed by {initiator} on {date}.",
       "editPrompt": "You may update your RSVP response and main course below before the RSVP deadline.",
-      "notEditable": "RSVP responses can no longer be changed because the RSVP deadline has passed."
+      "notEditable": "RSVP responses can no longer be changed because the RSVP deadline has passed.",
+      "closed": {
+        "statusLabel": "Your response",
+        "attending": "Joyfully accepts",
+        "declined": "Regretfully declines",
+        "mealLabel": "Main course",
+        "updatedLabel": "Last updated",
+        "noResponse": "We did not receive your RSVP, so we have recorded you as not attending."
+      }
     }
   },
   "mainCourse": {
@@ -329,7 +337,7 @@
     "items": {
       "rsvpDeadline": {
         "question": "When should I RSVP?",
-        "answer": "Kindly send your RSVP by 15 October 2026 so we can make the final arrangements in time."
+        "answer": "Kindly send your RSVP by 16 December 2026 so we can make the final arrangements in time."
       },
       "plusOnes": {
         "question": "Can I bring a plus one?",

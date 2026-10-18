@@ -291,6 +291,23 @@ export class RsvpComponent implements OnInit {
     }
   }
 
+  formatDateTime(isoString: string): string {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return isoString;
+    return (
+      d.toLocaleString('en-GB', {
+        timeZone: 'Asia/Singapore',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      }) + ' SGT'
+    );
+  }
+
   mealLabel(choice: MealChoice): string {
     return this.ts.t(`mainCourse.options.${choice}.label`);
   }

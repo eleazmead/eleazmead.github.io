@@ -159,8 +159,8 @@
     "heading": "出席回覆",
     "deadline": {
       "prefix": "敬請於以下日期前回覆：",
-      "date": "2026年10月15日。",
-      "closedMessage": "出席回覆現已截止。感謝您的理解。"
+      "date": "2026年12月16日。",
+      "closedMessage": "RSVP 已截止。新人已确认您的回覆，现已无法更改。"
     },
     "note": "我們明白，出席我們的婚禮對部分賓客而言需要特地遠行，也衷心感謝您願意付出的額外時間、心力與安排。同時，也請您知道，這絕對沒有任何壓力。若能與您一同慶祝，我們會非常開心；而您的愛與祝福，對我們同樣珍貴。",
     "yes": "欣然接受",
@@ -198,7 +198,15 @@
     "alreadyRsvped": {
       "message": "此賓客已由 {initiator} 於 {date} 完成 RSVP。",
       "editPrompt": "您可以在下方更新 RSVP 回覆與主餐選擇，期限為 RSVP 截止日前。",
-      "notEditable": "由於 RSVP 截止日已過，回覆已無法再更改。"
+      "notEditable": "由於 RSVP 截止日已過，回覆已無法再更改。",
+      "closed": {
+        "statusLabel": "您的回覆",
+        "attending": "欣然出席",
+        "declined": "遗憾无法出席",
+        "mealLabel": "主餐",
+        "updatedLabel": "最后更新",
+        "noResponse": "我们未收到您的 RSVP，因此已将您记录为不出席。"
+      }
     }
   },
   "mainCourse": {
@@ -329,7 +337,7 @@
     "items": {
       "rsvpDeadline": {
         "question": "我應該何時 RSVP？",
-        "answer": "敬請於2026年10月15日前送出 RSVP，讓我們能及時完成最後安排。"
+        "answer": "敬請於2026年12月16日前送出 RSVP，讓我們能及時完成最後安排。"
       },
       "plusOnes": {
         "question": "我可以攜伴出席嗎？",

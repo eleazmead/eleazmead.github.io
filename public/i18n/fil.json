@@ -159,8 +159,8 @@
     "heading": "RSVP",
     "deadline": {
       "prefix": "Please mag-RSVP bago ang",
-      "date": "ika-15 ng Oktubre 2026.",
-      "closedMessage": "Closed na ang RSVP updates. Thank you for understanding."
+      "date": "ika-16 ng Disyembre 2026.",
+      "closedMessage": "Tapos na ang RSVP period. Final na ang iyong response ayon sa couple at hindi na ito mababago."
     },
     "note": "Alam naming may ilan sa inyo na kailangang bumiyahe para makapunta sa wedding namin, kaya super appreciated namin ang time, effort, at planning ninyo. At the same time, no pressure at all. Sobrang saya namin kung makakasama namin kayo, pero mahalaga rin sa amin ang love and well wishes ninyo.",
     "yes": "Yes, dadalo ako",
@@ -198,7 +198,15 @@
     "alreadyRsvped": {
       "message": "Nakapag-RSVP na ang guest na ito through {initiator} noong {date}.",
       "editPrompt": "Pwede mong i-update ang RSVP response at main course sa baba before the RSVP deadline.",
-      "notEditable": "Hindi na pwedeng baguhin ang RSVP responses dahil past na ang RSVP deadline."
+      "notEditable": "Hindi na pwedeng baguhin ang RSVP responses dahil past na ang RSVP deadline.",
+      "closed": {
+        "statusLabel": "Iyong response",
+        "attending": "Joyfully accepts",
+        "declined": "Regretfully declines",
+        "mealLabel": "Main course",
+        "updatedLabel": "Huling na-update",
+        "noResponse": "Hindi kami nakatanggap ng iyong RSVP, kaya itinala ka namin bilang hindi dadalo."
+      }
     }
   },
   "mainCourse": {
@@ -329,7 +337,7 @@
     "items": {
       "rsvpDeadline": {
         "question": "Kailan dapat mag-RSVP?",
-        "answer": "Please send your RSVP bago ang ika-15 Oktubre 2026 para ma-finalize namin ang arrangements on time."
+        "answer": "Please send your RSVP bago ang ika-16 Disyembre 2026 para ma-finalize namin ang arrangements on time."
       },
       "plusOnes": {
         "question": "Pwede ba akong magsama ng plus one?",

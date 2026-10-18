@@ -16,6 +16,11 @@
   @media (min-width: 1024px) {
     max-height: 82dvh;
   }
+
+  /* Short viewports: grow with content instead of clipping the calendar link and RSVP button. */
+  @media (max-height: 760px) {
+    max-height: none;
+  }
   background:
     linear-gradient(135deg, rgba(251, 247, 242, 0.7), rgba(236, 222, 211, 0.32)),
     radial-gradient(circle at 25% 18%, rgba(217, 160, 168, 0.14), transparent 34%),
@@ -372,7 +377,7 @@
   animation: heroCalendarShimmer 3s linear infinite;
 }
 
-// Above the RSVP button (no invitation hash): space below instead of above.
+// Above the RSVP button: space below instead of above.
 .hero__calendar--above {
   margin: 0 auto 1.1rem;
 }

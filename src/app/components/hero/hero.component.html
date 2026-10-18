@@ -41,20 +41,17 @@
         </p>
       </div>
     </div>
-    @if (!hasInvitationHash()) {
-      <a class="hero__calendar hero__calendar--above" href="#" (click)="addToCalendar($event)">{{
-        'hero.addToCalendar' | translate
-      }}</a>
-    }
+    <a
+      class="hero__calendar"
+      [class.hero__calendar--above]="showHeroCta()"
+      href="#"
+      (click)="addToCalendar($event)"
+      >{{ 'hero.addToCalendar' | translate }}</a
+    >
     @if (showHeroCta()) {
       <a href="#rsvp" class="hero__cta fade-in fade-in--d4" (click)="scrollToRsvp($event)">
         {{ 'hero.cta' | translate }}
       </a>
-    }
-    @if (hasInvitationHash()) {
-      <a class="hero__calendar" href="#" (click)="addToCalendar($event)">{{
-        'hero.addToCalendar' | translate
-      }}</a>
     }
   </div>
 
