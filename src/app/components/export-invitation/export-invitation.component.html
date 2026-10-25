@@ -201,6 +201,11 @@
                     role="img"
                     [style.background-image]="'url(' + letterPhotoData() + ')'"
                   ></div>
+                  @if (letterRow()?.imageCaption?.trim()) {
+                    <p class="export-letter-paper__photo-caption">
+                      {{ letterRow()?.imageCaption?.trim() }}
+                    </p>
+                  }
                 </div>
               }
               <div class="export-letter-paper__body export-fit">
