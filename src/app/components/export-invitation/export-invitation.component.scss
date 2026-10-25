@@ -478,6 +478,18 @@
   transform: rotate(4deg);
 }
 
+.export-letter-paper__photo-caption {
+  margin: 0.5rem 0 0;
+  padding: 0 0.3rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  text-align: center;
+  color: #3a2f28;
+  overflow-wrap: anywhere;
+}
+
 .export-letter-paper__photo {
   width: 100%;
   height: 0;
