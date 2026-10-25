@@ -465,6 +465,11 @@
   &--with-photo {
     padding-top: 15rem;
   }
+
+  // Polaroid bottom (top 6.5rem + photo + caption strip) must clear the salutation.
+  &--with-caption {
+    padding-top: 28rem;
+  }
 }
 
 .export-letter-paper__photo-wrap {

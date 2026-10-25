@@ -192,6 +192,9 @@
             <div
               class="export-letter-paper"
               [class.export-letter-paper--with-photo]="letterPhotoData() && !letterPhotoFailed()"
+              [class.export-letter-paper--with-caption]="
+                letterPhotoData() && !letterPhotoFailed() && !!letterRow()?.imageCaption?.trim()
+              "
               [style.background-image]="'url(' + photoSrc(letterPaperImage) + ')'"
             >
               @if (letterPhotoData() && !letterPhotoFailed()) {
