@@ -191,27 +191,23 @@
             <!-- Torn/scorched paper is an SVG background (html2canvas ignores clip-path). -->
             <div
               class="export-letter-paper"
-              [class.export-letter-paper--with-photo]="letterPhotoData() && !letterPhotoFailed()"
-              [class.export-letter-paper--with-caption]="
-                letterPhotoData() && !letterPhotoFailed() && !!letterRow()?.imageCaption?.trim()
-              "
               [style.background-image]="'url(' + photoSrc(letterPaperImage) + ')'"
             >
-              @if (letterPhotoData() && !letterPhotoFailed()) {
-                <div class="export-letter-paper__photo-wrap">
-                  <div
-                    class="export-letter-paper__photo"
-                    role="img"
-                    [style.background-image]="'url(' + letterPhotoData() + ')'"
-                  ></div>
-                  @if (letterRow()?.imageCaption?.trim()) {
-                    <p class="export-letter-paper__photo-caption">
-                      {{ letterRow()?.imageCaption?.trim() }}
-                    </p>
-                  }
-                </div>
-              }
               <div class="export-letter-paper__body export-fit">
+                @if (letterPhotoData() && !letterPhotoFailed()) {
+                  <div class="export-letter-paper__photo-wrap">
+                    <div
+                      class="export-letter-paper__photo"
+                      role="img"
+                      [style.background-image]="'url(' + letterPhotoData() + ')'"
+                    ></div>
+                    @if (letterRow()?.imageCaption?.trim()) {
+                      <p class="export-letter-paper__photo-caption">
+                        {{ letterRow()?.imageCaption?.trim() }}
+                      </p>
+                    }
+                  </div>
+                }
                 <p class="export-letter-paper__salutation">
                   {{ 'guestLetter.dear' | translate }} {{ letterRow()?.letterAddress }},
                 </p>
