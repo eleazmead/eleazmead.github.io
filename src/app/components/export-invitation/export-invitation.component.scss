@@ -455,29 +455,21 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 9rem 8.5rem 8rem;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   text-align: center;
-
-  &--with-photo {
-    padding-top: 15rem;
-  }
-
-  // Polaroid bottom (top 6.5rem + photo + caption strip) must clear the salutation.
-  &--with-caption {
-    padding-top: 28rem;
-  }
 }
 
 .export-letter-paper__photo-wrap {
-  position: absolute;
-  top: 6.5rem;
-  right: 6.5rem;
-  width: 15rem;
-  padding: 0.55rem 0.55rem 1.6rem;
+  // Floats right inside the body so the greeting and message start at the top of the
+  // paper and wrap around the photo instead of sitting below a reserved gap.
+  float: right;
+  width: 14rem;
+  margin: 0.5rem 0 1.5rem 2.5rem;
+  padding: 0.55rem 0.55rem 0.6rem;
   background: var(--color-surface);
   box-shadow: 0 10px 24px rgba(30, 15, 5, 0.35);
   transform: rotate(4deg);
@@ -508,10 +500,7 @@
   flex: 0 1 auto;
   min-height: 0;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: block;
 }
 
 .export-letter-paper__salutation,
@@ -523,7 +512,7 @@
   font-style: italic;
   font-weight: 500;
   line-height: 1.6;
-  text-align: center;
+  text-align: left;
 }
 
 .export-letter-paper__salutation {
