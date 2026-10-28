@@ -1,8 +1,10 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { isOnOrAfterDate, RsvpComponent } from './rsvp.component';
+import { RsvpComponent } from './rsvp.component';
+import { isAfterDeadline, RsvpDeadlineService } from '../../shared/rsvp-deadline.service';
 import { GuestSearchService } from '../../shared/guest-search.service';
 import { SheetsService } from '../../shared/sheets.service';
 import { TranslationService } from '../../shared/translation.service';
@@ -33,12 +35,14 @@ describe('RsvpComponent', () => {
           provide: SheetsService,
           useValue: {
             submitRsvp: () => of({ status: 'ok' }),
+            fetchRsvpDeadline: () => of({ deadline: null }),
           },
         },
         {
           provide: TranslationService,
           useValue: {
             t: (key: string) => key,
+            locale: signal('en'),
           },
         },
       ],
@@ -67,7 +71,7 @@ describe('RsvpComponent', () => {
     const fixture = TestBed.createComponent(RsvpComponent);
     const component = fixture.componentInstance;
 
-    component.rsvpDeadlineClosed.set(false);
+    TestBed.inject(RsvpDeadlineService).deadline.set('2999-12-31');
     prepareMatchedGuest(component, {
       ...guestRow,
       rsvpRaw: {
@@ -94,7 +98,7 @@ describe('RsvpComponent', () => {
     const fixture = TestBed.createComponent(RsvpComponent);
     const component = fixture.componentInstance;
 
-    component.rsvpDeadlineClosed.set(false);
+    TestBed.inject(RsvpDeadlineService).deadline.set('2999-12-31');
     prepareMatchedGuest(component, {
       ...guestRow,
       rsvpRaw: {
@@ -136,7 +140,7 @@ describe('RsvpComponent', () => {
       return 0;
     });
 
-    component.rsvpDeadlineClosed.set(false);
+    TestBed.inject(RsvpDeadlineService).deadline.set('2999-12-31');
     component.matchedRow.set(guestRow);
     component.initiatorName.set(guestRow.fullName);
     component.selections.set(new Map([[guestRow.fullName, { attending: false, included: true }]]));
@@ -166,7 +170,7 @@ describe('RsvpComponent', () => {
       return 0;
     });
 
-    component.rsvpDeadlineClosed.set(false);
+    TestBed.inject(RsvpDeadlineService).deadline.set('2999-12-31');
     component.matchedRow.set(guestRow);
     component.initiatorName.set(guestRow.fullName);
     component.selections.set(new Map([[guestRow.fullName, { attending: false, included: true }]]));
@@ -186,7 +190,7 @@ describe('RsvpComponent', () => {
     const fixture = TestBed.createComponent(RsvpComponent);
     const component = fixture.componentInstance;
 
-    component.rsvpDeadlineClosed.set(true);
+    TestBed.inject(RsvpDeadlineService).deadline.set('2000-01-01');
     component.selections.set(new Map([[guestRow.fullName, { attending: false, included: true }]]));
 
     component.onReview();
@@ -194,10 +198,14 @@ describe('RsvpComponent', () => {
     expect(component.state()).toBe('idle');
   });
 
-  it('treats the RSVP deadline date as closed at the start of that date in Singapore', () => {
-    expect(isOnOrAfterDate(new Date('2026-10-30T15:59:59Z'), '2026-10-31')).toBe(false);
-    expect(isOnOrAfterDate(new Date('2026-10-30T16:00:00Z'), '2026-10-31')).toBe(true);
-    expect(isOnOrAfterDate(new Date('2026-11-01T00:00:00+08:00'), '2026-10-31')).toBe(true);
+  it('keeps the deadline day open and closes RSVP from the next day in Singapore', () => {
+    expect(isAfterDeadline(new Date('2026-12-16T15:59:59Z'), '2026-12-16')).toBe(false);
+    expect(isAfterDeadline(new Date('2026-12-16T16:00:00Z'), '2026-12-16')).toBe(true);
+    expect(isAfterDeadline(new Date('2026-12-17T00:00:00+08:00'), '2026-12-16')).toBe(true);
+  });
+
+  it('ignores a malformed deadline', () => {
+    expect(isAfterDeadline(new Date('2030-01-01T00:00:00Z'), 'soon')).toBe(false);
   });
 });
 
