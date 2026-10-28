@@ -99,8 +99,8 @@ export const APP_CONFIG = {
     },
   },
   rsvp: {
-    // First closed date (SGT): RSVP stays open until the end of 16 Dec 2026.
-    deadlineDate: '2026-12-17',
+    // Fallback last day to RSVP (inclusive, SGT). The live value is the RSVP_DEADLINE script property.
+    deadlineDate: '2026-12-16',
   },
   questionsAndAnswers: {
     items: ['plusOnes', 'kids', 'flightAccom', 'giftBlessing'] as const,

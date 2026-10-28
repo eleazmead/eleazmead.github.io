@@ -52,10 +52,12 @@
 // before those columns existed are never served. The cache stores whole sheet rows
 // (getDataRange), so new columns flow through with no other change.
 const CACHE_KEY = 'guestList_v2';
+const RSVP_DEADLINE_CACHE_KEY = 'rsvpDeadline_v1';
 const ADMIN_HASH_CACHE_KEY = 'adminPasswordHash_v1';
 const HASH_INDEX_GEN_KEY = 'hashIndexGen_v2';
 const CACHE_TTL_SECONDS = 1800; // 30 minutes
 const ADMIN_HASH_CACHE_TTL_SECONDS = 21600; // 6 hours (CacheService maximum)
+const RSVP_DEADLINE_CACHE_TTL_SECONDS = 21600; // refreshed immediately when the deadline is set
 
 // Paste your spreadsheet ID from the URL:
 // https://docs.google.com/spreadsheets/d/<SPREADSHEET_ID>/edit
@@ -136,6 +138,18 @@ function getAdminPasswordHashCached() {
   return hash;
 }
 
+function getRsvpDeadlineCached() {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get(RSVP_DEADLINE_CACHE_KEY);
+  if (hit) return hit;
+  const value = PropertiesService.getScriptProperties().getProperty('RSVP_DEADLINE');
+  if (value && isValidIsoDate(value)) {
+    cache.put(RSVP_DEADLINE_CACHE_KEY, value, RSVP_DEADLINE_CACHE_TTL_SECONDS);
+    return value;
+  }
+  return null;
+}
+
 /**
  * Keep-warm. Set up a time-based trigger in the GAS editor:
  *   Triggers -> Add Trigger -> keepWarm -> Time-driven -> Minutes timer -> Every 5 minutes
@@ -156,6 +170,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Admin')
     .addItem('Set admin password', 'setupAdminPasswordHash')
+    .addItem('Set RSVP deadline', 'setupRsvpDeadline')
     .addToUi();
 }
 
@@ -180,6 +195,35 @@ function setupAdminPasswordHash() {
   CacheService.getScriptCache().put(ADMIN_HASH_CACHE_KEY, hash, ADMIN_HASH_CACHE_TTL_SECONDS);
   Logger.log('Stored ADMIN_PASSWORD_HASH: ' + hash);
   Browser.msgBox('Done', 'Admin password hash stored successfully.', Browser.Buttons.OK);
+}
+
+/**
+ * Triggered from the Admin menu in the Google Sheet.
+ * Stores the last day guests can RSVP (inclusive, until 23:59 SGT) as YYYY-MM-DD in Script Properties.
+ * The website locks RSVP submissions and updates once the Singapore date is after this day.
+ */
+function setupRsvpDeadline() {
+  const current = PropertiesService.getScriptProperties().getProperty('RSVP_DEADLINE') || 'not set';
+  const input = Browser.inputBox('RSVP Deadline', 'Enter the last day to RSVP (YYYY-MM-DD). Current: ' + current, Browser.Buttons.OK_CANCEL);
+  if (!input || input === 'cancel') {
+    Logger.log('Setup cancelled.');
+    return;
+  }
+  const value = String(input).trim();
+  if (!isValidIsoDate(value)) {
+    Browser.msgBox('Invalid date', 'Please use the format YYYY-MM-DD, e.g. 2026-12-16.', Browser.Buttons.OK);
+    return;
+  }
+  PropertiesService.getScriptProperties().setProperty('RSVP_DEADLINE', value);
+  CacheService.getScriptCache().put(RSVP_DEADLINE_CACHE_KEY, value, RSVP_DEADLINE_CACHE_TTL_SECONDS);
+  Logger.log('Stored RSVP_DEADLINE: ' + value);
+  Browser.msgBox('Done', 'RSVP deadline set to ' + value + ' (inclusive, SGT).', Browser.Buttons.OK);
+}
+
+function isValidIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(value + 'T00:00:00Z');
+  return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }
 
 function generateMd5Hash(input) {
@@ -261,6 +305,12 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ status: 'ok' })).setMimeType(
         ContentService.MimeType.JSON,
       );
+    }
+
+    if (payload.action === 'getRsvpDeadline') {
+      return ContentService.createTextOutput(
+        JSON.stringify({ deadline: getRsvpDeadlineCached() }),
+      ).setMimeType(ContentService.MimeType.JSON);
     }
 
     if (payload.action === 'verifyAdmin') {

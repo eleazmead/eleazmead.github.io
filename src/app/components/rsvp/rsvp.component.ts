@@ -1,9 +1,11 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { GuestSearchService } from '../../shared/guest-search.service';
+import { RsvpDeadlineService } from '../../shared/rsvp-deadline.service';
 import { SheetsService } from '../../shared/sheets.service';
 import { APP_CONFIG } from '../../config/app.config';
 import { GuestRow, RsvpEntry, MealChoice } from '../../shared/models/guest.model';
@@ -21,26 +23,6 @@ export type RsvpFlowState =
 
 type Selection = { attending: boolean; included: boolean };
 
-export function getSgtDateKey(date: Date): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Singapore',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(date);
-
-  const year = parts.find((part) => part.type === 'year')?.value ?? '';
-  const month = parts.find((part) => part.type === 'month')?.value ?? '';
-  const day = parts.find((part) => part.type === 'day')?.value ?? '';
-  return `${year}-${month}-${day}`;
-}
-
-export function isOnOrAfterDate(currentDate: Date, deadlineDate: string): boolean {
-  const normalizedDeadline = deadlineDate.trim();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(normalizedDeadline)) return false;
-  return getSgtDateKey(currentDate) >= normalizedDeadline;
-}
-
 @Component({
   selector: 'app-rsvp',
   standalone: true,
@@ -51,6 +33,7 @@ export function isOnOrAfterDate(currentDate: Date, deadlineDate: string): boolea
 export class RsvpComponent implements OnInit {
   private readonly guestSearch = inject(GuestSearchService);
   private readonly sheets = inject(SheetsService);
+  private readonly deadlineService = inject(RsvpDeadlineService);
   private readonly ts = inject(TranslationService);
   private readonly route = inject(ActivatedRoute);
 
@@ -66,7 +49,8 @@ export class RsvpComponent implements OnInit {
   readonly mealSelections = signal<Map<string, MealChoice>>(new Map());
   readonly mealError = signal('');
   readonly errorMessage = signal('');
-  readonly rsvpDeadlineClosed = signal(isOnOrAfterDate(new Date(), APP_CONFIG.rsvp.deadlineDate));
+  readonly rsvpDeadlineClosed = this.deadlineService.closed;
+  readonly deadlineDisplay = this.deadlineService.displayDate;
   readonly mainCourseOptions = APP_CONFIG.mealChoices.options;
 
   readonly initiatorAlreadyRsvped = computed(() => {
@@ -123,8 +107,8 @@ export class RsvpComponent implements OnInit {
 
     this.state.set('searching');
 
-    this.guestSearch.findByHash(hashInput).subscribe({
-      next: (result) => {
+    forkJoin([this.guestSearch.findByHash(hashInput), this.deadlineService.load()]).subscribe({
+      next: ([result]) => {
         if (!result) {
           this.state.set('not_found');
           return;

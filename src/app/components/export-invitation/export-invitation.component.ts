@@ -26,6 +26,7 @@ import {
   shouldShowGuestLetterForMatch,
 } from '../../shared/guest-search.service';
 import { InvitationExportService } from '../../shared/invitation-export.service';
+import { RsvpDeadlineService } from '../../shared/rsvp-deadline.service';
 import { StoryManifestEntry, groupStoryPhotosByPrefix } from '../../shared/utils/story-photo.utils';
 import {
   STORY_TIMELINE_ITEMS,
@@ -57,6 +58,7 @@ export class ExportInvitationComponent implements OnInit {
   private readonly guestSearch = inject(GuestSearchService);
   private readonly http = inject(HttpClient);
   private readonly ts = inject(TranslationService);
+  private readonly deadlineService = inject(RsvpDeadlineService);
   private readonly exporter = inject(InvitationExportService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
 
@@ -151,7 +153,7 @@ export class ExportInvitationComponent implements OnInit {
 
   // Same deadline text the RSVP section shows, minus its trailing full stop, for the not-yet-RSVP-ed note.
   notYetBody(): string {
-    const deadline = this.ts.t('rsvp.deadline.date').replace(/[.。]$/, '');
+    const deadline = this.deadlineService.displayDate();
     return this.ts.t('exportInvitation.rsvpStatus.notYetBody').replace('{0}', deadline);
   }
 
@@ -261,6 +263,7 @@ export class ExportInvitationComponent implements OnInit {
     // The guest lookup is shared (memoized) with the hero and letter, so starting it now costs nothing extra
     // and the export no longer waits for the Sheets round trip after the tap.
     if (this.route.snapshot.paramMap.get('rsvpHash')?.trim()) void this.ensureData();
+    this.deadlineService.load().subscribe();
   }
 
   toggleMenu(): void {

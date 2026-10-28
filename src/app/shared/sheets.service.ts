@@ -25,28 +25,36 @@ export class SheetsService {
   }
 
   fetchGuestByHash(hash: string): Observable<GuestRow | null> {
-    const prefetch = (window as Window & { __guestPrefetch__?: Promise<{ found: boolean; row?: string[]; rowIndex?: number } | null> }).__guestPrefetch__;
+    const prefetch = (
+      window as Window & {
+        __guestPrefetch__?: Promise<{ found: boolean; row?: string[]; rowIndex?: number } | null>;
+      }
+    ).__guestPrefetch__;
     if (prefetch) {
       delete (window as any).__guestPrefetch__;
       return from(prefetch).pipe(
         map((res) => (res?.found && res.row ? this.parseRow(res.row, res.rowIndex ?? 0) : null)),
         catchError(() => this.fetchGuestByHash(hash)),
-        tap((guest) => { if (guest) this.trackAccess(guest); }),
+        tap((guest) => {
+          if (guest) this.trackAccess(guest);
+        }),
       );
     }
     const body = JSON.stringify({ action: 'getGuestByHash', hash });
     return this.http
-      .post<{ found: boolean; row?: string[]; rowIndex?: number }>(
-        SHEETS_CONFIG.gasWebAppUrl,
-        body,
-        { headers: { 'Content-Type': 'text/plain' } },
-      )
+      .post<{
+        found: boolean;
+        row?: string[];
+        rowIndex?: number;
+      }>(SHEETS_CONFIG.gasWebAppUrl, body, { headers: { 'Content-Type': 'text/plain' } })
       .pipe(
         map((res) => {
           if (!res.found || !res.row) return null;
           return this.parseRow(res.row, res.rowIndex ?? 0);
         }),
-        tap((guest) => { if (guest) this.trackAccess(guest); }),
+        tap((guest) => {
+          if (guest) this.trackAccess(guest);
+        }),
       );
   }
 
@@ -103,11 +111,16 @@ export class SheetsService {
       })
       .pipe(
         switchMap((res) =>
-          res.status === 'ok'
-            ? [res]
-            : throwError(() => new Error(res.status ?? 'unknown_error')),
+          res.status === 'ok' ? [res] : throwError(() => new Error(res.status ?? 'unknown_error')),
         ),
       );
+  }
+
+  fetchRsvpDeadline(): Observable<{ deadline: string | null }> {
+    const body = JSON.stringify({ action: 'getRsvpDeadline' });
+    return this.http.post<{ deadline: string | null }>(SHEETS_CONFIG.gasWebAppUrl, body, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
   }
 
   verifyAdminPassword(passwordHash: string): Observable<{ authorized: boolean }> {
