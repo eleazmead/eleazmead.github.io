@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
 import { TranslatePipe } from '../../shared/translate.pipe';
-
-const ENTOURAGE_ITEMS = ['groomsParents', 'bridesParents', 'witnesses', 'ringBearer'] as const;
-type EntourageItemId = (typeof ENTOURAGE_ITEMS)[number];
+import { GRATITUDE_GROUPS, GratitudeItemId } from '../../shared/gratitude-groups';
 
 @Component({
   selector: 'app-with-gratitude',
@@ -13,9 +11,9 @@ type EntourageItemId = (typeof ENTOURAGE_ITEMS)[number];
   styleUrl: './with-gratitude.component.scss',
 })
 export class WithGratitudeComponent {
-  readonly itemIds = ENTOURAGE_ITEMS;
+  readonly groups = GRATITUDE_GROUPS;
 
-  textKey(itemId: EntourageItemId, field: 'role' | 'names'): string {
+  textKey(itemId: GratitudeItemId, field: 'role' | 'names'): string {
     return `withGratitude.items.${itemId}.${field}`;
   }
 }

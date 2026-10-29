@@ -1,7 +1,7 @@
 .hero {
   /* On mobile, fill most of the viewport (scroll cue handles the affordance).
-     On desktop, cap at 82dvh so the Our Story section's heading is always
-     partially visible below the fold, hinting that content continues. */
+     On desktop, leave room for the next section when the content fits,
+     and grow as needed to keep the names and calls to action clear. */
   min-height: 55dvh;
   max-height: 100dvh;
   position: relative;
@@ -14,7 +14,8 @@
   overflow: hidden;
 
   @media (min-width: 1024px) {
-    max-height: 82dvh;
+    min-height: 82dvh;
+    max-height: none;
   }
 
   /* Short viewports: grow with content instead of clipping the calendar link and RSVP button. */
@@ -64,6 +65,10 @@
   width: min(100%, 820px);
   padding: clamp(0.75rem, 3vw, 4rem) 0;
 
+  @media (min-width: 1024px) {
+    padding-block: 0;
+  }
+
   &::before,
   &::after {
     content: '';
@@ -92,18 +97,34 @@
 }
 
 .hero__names {
-  margin-bottom: clamp(1.25rem, 3.5vw, 2.5rem);
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
   font-family: var(--font-display);
   font-weight: 300;
-  font-size: clamp(3.25rem, 11vw, 7.25rem);
+  font-size: clamp(2.25rem, 10vw, 7.25rem);
   color: var(--color-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.34em;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.24em;
   line-height: 0.92;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.hero__name {
+  display: grid;
+  justify-items: center;
+  gap: 0.12em;
+  white-space: nowrap;
+}
+
+.hero__surname {
+  font-size: 0.3em;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .hero__date {
@@ -121,6 +142,7 @@
 }
 
 .hero__ampersand {
+  align-self: end;
   color: var(--color-accent);
   font-style: italic;
 }
