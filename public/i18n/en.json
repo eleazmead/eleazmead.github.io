@@ -10,6 +10,8 @@
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",
+    "surname1": "Arcilla",
+    "surname2": "Umandal",
     "weddingDate": "16 January 2027, Saturday",
     "ceremonyVenue": "St. Joseph's Church Victoria Street",
     "receptionVenue": "The Lighthouse Fullerton, Singapore",
@@ -106,7 +108,8 @@
   },
   "withGratitude": {
     "heading": "With Gratitude",
-    "body": "With grateful hearts, we honor these special people whose love, guidance, and support have shaped our lives and will continue to do so. Thank you for all that you have done for us, and for continuing to bless our journey together.",
+    "parentsNote": "Our love story began long before we met, through the love and values our parents instilled in us. With grateful hearts, we honor them for shaping who we are and leading us to this beautiful moment.",
+    "weddingPartyNote": "With heartfelt gratitude, we honor those who stand beside us, blessing our union with their presence and support as we begin this beautiful journey together.",
     "items": {
       "groomsParents": {
         "role": "Groom's Parents",

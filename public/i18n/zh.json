@@ -10,6 +10,8 @@
   "couple": {
     "name1": "Eleaz",
     "name2": "Mead",
+    "surname1": "Arcilla",
+    "surname2": "Umandal",
     "weddingDate": "2027年1月16日，星期六",
     "ceremonyVenue": "聖若瑟堂維多利亞街",
     "receptionVenue": "新加坡富麗敦酒店 The Lighthouse",
@@ -106,7 +108,8 @@
   },
   "withGratitude": {
     "heading": "滿心感謝",
-    "body": "我們懷著感恩的心，向這些特別的人致敬。他們的愛、指引與支持塑造了我們的生命，也將繼續陪伴我們前行。感謝你們為我們所做的一切，也感謝你們繼續祝福我們共同的旅程。",
+    "parentsNote": "我们的爱情故事早在相遇之前就已开始，源于父母给予我们的爱和教导我们的价值观。我们怀着感恩的心向他们致敬，感谢他们塑造了今天的我们，引领我们走到这美好的时刻。",
+    "weddingPartyNote": "我们怀着由衷的感激，向陪伴在我们身旁的人致敬。感谢他们的出席与支持，为我们的结合送上祝福，陪伴我们一起开启这段美好的旅程。",
     "items": {
       "groomsParents": {
         "role": "新郎父母",

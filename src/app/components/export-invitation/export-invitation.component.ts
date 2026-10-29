@@ -15,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { APP_CONFIG } from '../../config/app.config';
 import { FadeUpDirective } from '../../shared/fade-up.directive';
+import { GRATITUDE_GROUPS } from '../../shared/gratitude-groups';
 import { TranslatePipe } from '../../shared/translate.pipe';
 import { TranslationService } from '../../shared/translation.service';
 import { VenueDirectionsComponent } from '../../shared/venue-directions/venue-directions.component';
@@ -115,7 +116,7 @@ export class ExportInvitationComponent implements OnInit {
   readonly monogramImage = 'export/monogram.png';
   readonly venueIds = ['church', 'reception'] as const;
   readonly venuePhotos = APP_CONFIG.assets.venuePhotos;
-  readonly gratitudeIds = ['groomsParents', 'bridesParents', 'witnesses', 'ringBearer'] as const;
+  readonly gratitudeGroups = GRATITUDE_GROUPS;
   readonly hotelGroups = APP_CONFIG.whereToStay.hotelGroups;
   // Pre-rendered raster of export/burnt-paper.svg: rasterizing the live SVG filters inside html2canvas timed out on iPadOS.
   readonly letterPaperImage = 'letter/burnt-paper.webp';

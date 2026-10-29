@@ -165,9 +165,15 @@
             }
           </div>
           <h1 class="export-page__cover-names">
-            {{ 'couple.name1' | translate }}
+            <span class="export-page__cover-name">
+              <span class="export-page__cover-surname">{{ 'couple.surname1' | translate }}</span>
+              <span>{{ 'couple.name1' | translate }}</span>
+            </span>
             <span class="export-page__amp">&amp;</span>
-            {{ 'couple.name2' | translate }}
+            <span class="export-page__cover-name">
+              <span class="export-page__cover-surname">{{ 'couple.surname2' | translate }}</span>
+              <span>{{ 'couple.name2' | translate }}</span>
+            </span>
           </h1>
           <p class="export-page__cover-subtitle">
             {{ 'exportInvitation.coverSubtitle' | translate }}
@@ -328,16 +334,26 @@
         <ng-container *ngTemplateOutlet="floralCorners" />
         <ng-container *ngTemplateOutlet="pageHeader; context: { title: 'withGratitude.heading' }" />
         <div class="export-page__frame">
-          <p class="export-gratitude__body">{{ 'withGratitude.body' | translate }}</p>
-          <div class="export-gratitude__ornament" aria-hidden="true"><span></span></div>
-          <div class="export-gratitude__grid">
-            @for (id of gratitudeIds; track id) {
-              <div class="export-gratitude__card">
-                <p class="export-gratitude__role">{{ gratitudeKey(id, 'role') | translate }}</p>
-                <p class="export-gratitude__names">{{ gratitudeKey(id, 'names') | translate }}</p>
+          @for (group of gratitudeGroups; track group.note; let first = $first) {
+            <div class="export-gratitude__group" [class.export-gratitude__group--parents]="first">
+              @if (first) {
+                <div class="export-gratitude__ornament" aria-hidden="true">
+                  <span></span>
+                </div>
+              }
+              <p class="export-gratitude__note">{{ group.note | translate }}</p>
+              <div class="export-gratitude__grid">
+                @for (id of group.items; track id) {
+                  <div class="export-gratitude__card">
+                    <p class="export-gratitude__role">{{ gratitudeKey(id, 'role') | translate }}</p>
+                    <p class="export-gratitude__names">
+                      {{ gratitudeKey(id, 'names') | translate }}
+                    </p>
+                  </div>
+                }
               </div>
-            }
-          </div>
+            </div>
+          }
         </div>
       </section>
 
